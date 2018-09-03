@@ -2,7 +2,6 @@ create database if not exists ot;
 create table if not exists ot.d2v2g_log(
   chr_id String,
   position UInt32,
-  segment UInt32 MATERIALIZED (position % 1000000),
   ref_allele String,
   alt_allele String,
   stid String,
@@ -25,9 +24,9 @@ create table if not exists ot.d2v2g_log(
   trait_code String,
   ancestry_initial Nullable(String),
   ancestry_replication Nullable(String),
-  n_initial Nullable(UInt32),
-  n_replication Nullable(UInt32),
-  n_cases Nullable(UInt32),
+  n_initial Nullable(Float32),
+  n_replication Nullable(Float32),
+  n_cases Nullable(Float32),
   pval Float64,
   index_variant_rsid String,
   index_chr_id String,
@@ -64,7 +63,6 @@ engine MergeTree partition by (source_id, chr_id) order by (position)
 as select
   chr_id ,
   position,
-  segment ,
   ref_allele ,
   alt_allele ,
   stid ,
@@ -87,10 +85,10 @@ as select
   trait_code ,
   ancestry_initial ,
   ancestry_replication ,
-  n_initial ,
-  n_replication ,
-  n_cases ,
-  pval ,
+  cast(n_initial as Nullable(UInt32)) as n_initial,
+  cast(n_replication as Nullable(UInt32)) as n_replication,
+  cast(n_cases as Nullable(UInt32)) as n_cases,
+  assumeNotNull(if(pval = 0.,toFloat64('4.9e-323') ,pval )) as pval,
   index_variant_rsid ,
   index_chr_id ,
   index_position ,
@@ -127,6 +125,11 @@ as select
   variant_id,
   gene_id,
   source_id,
+  groupArray(feature) as feature_list,
+  groupArray(qtl_score_q) as qtl_list,
+  groupArray(interval_score_q) as interval_list,
+  any(fpred_labels) as fpred_label_list,
+  any(fpred_scores) as fpred_score_list,
   max(ifNull(qtl_score_q, 0.)) AS max_qtl,
   max(ifNull(interval_score_q, 0.)) AS max_int,
   max(ifNull(fpred_max_score, 0.)) AS max_fpred,
@@ -134,13 +137,14 @@ as select
 from ot.d2v2g
 group by source_id, chr_id, variant_id, gene_id
 
-
 create table if not exists ot.d2v2g_score_by_overall
 engine MergeTree partition by (chr_id) order by (variant_id, gene_id)
 as select
   chr_id,
   variant_id,
   gene_id,
+  groupArray(source_id) as source_list,
+  groupArray(source_score) as source_score_list, 
   avg(source_score) as overall_score
 from ot.d2v2g_score_by_source
 group by chr_id, variant_id, gene_id
@@ -181,7 +185,7 @@ group by chr_id, variant_id, gene_id
 --
 select
  index_variant_id,
- top_genes,
+ top_genes
 from
  (
    select
@@ -194,11 +198,11 @@ from
  (
    select
      variant_id as index_variant_id,
-     groupArray(tuple(gene_id,overall_score)) as top_genes,
+     groupArray(tuple(gene_id,overall_score)) as top_genes
    from ot.d2v2g_score_by_overall
    prewhere
      variant_id = index_variant_id and
-     overall_score >= 0.9
+     overall_score > 0.
    group by variant_id
  )
 using index_variant_id
