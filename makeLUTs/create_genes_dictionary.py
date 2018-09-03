@@ -19,7 +19,7 @@ def build_ensembl_genes():
     '''
 
     #connect to Ensembl MySQL public server
-    core = create_engine('mysql+mysqldb://anonymous@ensembldb.ensembl.org:3337/homo_sapiens_core_92_37')
+    core = create_engine('mysql+mysqldb://anonymous@ensembldb.ensembl.org:3337/homo_sapiens_core_93_37')
 
     q = """
     select
