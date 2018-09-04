@@ -198,7 +198,7 @@ from
  (
    select
      variant_id as index_variant_id,
-     groupArray(tuple(gene_id,overall_score)) as top_genes
+     groupArray(tuple(gene_id,dictGetString('gene','gene_name',tuple(gene_id)), overall_score)) as top_genes
    from ot.d2v2g_score_by_overall
    prewhere
      variant_id = index_variant_id and
@@ -212,7 +212,10 @@ SELECT
     stid,
     index_variant_id,
     variant_id,
-    gene_id,            
+    gene_id,
+    dictGetString('gene','gene_name',tuple(gene_id)) gene_name,
+    dictGetUInt8('gene', 'fwdstrand', tuple(gene_id)) gene_isfwd,
+    dictGetUInt32('gene','tss', tuple(gene_id)) gene_tss,             
     overall_score
 FROM                                                                                                                                                           
 (                                                                                                                                                              
