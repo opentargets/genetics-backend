@@ -1,0 +1,34 @@
+
+#!/bin/bash
+
+GENETIC_OUT_BUCKET=genetics-portal-output
+
+usage() {
+    echo "Usage: $0 <nameoftable> \n Choose one of:
+    \n v2g \n v2d \n d2v2g \n variant-index" 1>&2; exit 1; }
+
+if [ -z "$1" ]; then
+    usage
+fi
+
+case "$1" in
+    v2g)
+        bq --location=EU load --source_format=NEWLINE_DELIMITED_JSON g2v.`date +%Y%m%d` "gs://${GENETIC_OUT_BUCKET}/v2g/*.json" ./bq.v2g.schema.json
+        ;;
+    v2d)
+        bq --location=EU load --source_format=NEWLINE_DELIMITED_JSON v2d.`date +%Y%m%d` "gs://${GENETIC_OUT_BUCKET}/v2d/*.json" ./bq.v2d.schema.json
+        ;;
+    d2v2g)
+        bq --location=EU load --source_format=NEWLINE_DELIMITED_JSON d2v2g.`date +%Y%m%d` "gs://${GENETIC_OUT_BUCKET}/d2v2g/*.json" ./bq.d2v2g.schema.json
+        ;;
+    variant-index)
+        bq --location=EU load --source_format=NEWLINE_DELIMITED_JSON variant_index.`date +%Y%m%d` "gs://${GENETIC_OUT_BUCKET}/variant-index/*.json" ./bq.d2v2g.schema.json
+        ;;
+    *)
+        usage
+        ;;
+esac
+
+
+
+
