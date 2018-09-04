@@ -1,5 +1,5 @@
 variable "version-suffix" {
-  default = "0-22-4"
+  default = "0-22-5"
   type = "string"
 }
 
@@ -10,7 +10,7 @@ variable "region" {
 
 // Configure the Google Cloud provider
 provider "google" "google-account" {
-  credentials = "${file("open-targets-genetics-63ea40a7fb68.json")}"
+  credentials = "${file("open-targets-genetics-c3768dfe37e0.json")}"
   project     = "open-targets-genetics"
   region      = "${var.region}"
 }
@@ -41,7 +41,7 @@ resource "google_dataproc_cluster" "gp-cluster" {
         }
 
         worker_config {
-            num_instances     = 3
+            num_instances     = 2
             machine_type      = "n1-highmem-32"
             disk_config {
                 boot_disk_size_gb = 500

@@ -1,1 +1,11 @@
-create table genes (gene_id String, gene_start UInt32, gene_end UInt32, gene_type String, gene_forward Int8) Engine = Dictionary(genes);
+create table ot.gene (
+    gene_id String,
+    gene_name String,
+    biotype String,
+    chr String,
+    tss UInt32,
+    start UInt32,
+    end UInt32,
+    fwdstrand UInt8,
+    exons String
+) Engine = Dictionary(gene)
