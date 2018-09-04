@@ -7,7 +7,7 @@ from sqlalchemy import create_engine
 
 logger = logging.getLogger()
 
-OUTGENENAME = 'genes.json'
+OUTGENENAME = 'gene_dictionary.json'
 VALID_CHROMOSOMES = [*[str(chr) for chr in range(1, 23)], 'X', 'Y', 'MT']
 
 
@@ -26,21 +26,25 @@ def build_ensembl_genes():
     et.exon_id,
     et.transcript_id,
     g.stable_id as gene_id,
+    x.display_label as gene_name,
     g.description,
+    g.biotype,
     r.name as chr,
     g.seq_region_start as start,
     g.seq_region_end as end,
     e.seq_region_start as exon_start,
     e.seq_region_end as exon_end,
     t.seq_region_strand as fwdstrand
-    from exon_transcript et, exon e, gene g, transcript t, seq_region r
+    from exon_transcript et, exon e, gene g, transcript t, seq_region r, xref as x
     where
     g.canonical_transcript_id = et.transcript_id and
     g.seq_region_id = r.seq_region_id and
+    x.xref_id = g.display_xref_id and
     r.coord_system_id = 2 and
     r.name NOT RLIKE 'CHR' and
     et.transcript_id = t.transcript_id and
     e.exon_id = et.exon_id
+    limit 1000
     """
 
     start_time = time.time()
@@ -55,7 +59,7 @@ def build_ensembl_genes():
 
     # Flatten exon list
     df['exons'] = list(zip(df.exon_start, df.exon_end))
-    keepcols = ['gene_id','description','tss','chr','start','end','fwdstrand']
+    keepcols = ['gene_id','gene_name','description','biotype','chr','tss','start','end','fwdstrand']
     genes = pd.DataFrame(df.groupby(keepcols)['exons'].apply(flattened_list)).reset_index()
 
     # Print chromosome counts
@@ -63,8 +67,7 @@ def build_ensembl_genes():
     print(genes['chr'].value_counts().sum())
 
     # Save json
-    genes.set_index('gene_id', inplace=True)
-    genes.to_json(OUTGENENAME,orient='index')
+    genes.to_json(OUTGENENAME, orient='records', lines=True)
 
     print("--- Genes table completed in %s seconds ---" % (time.time() - start_time))
 
