@@ -44,7 +44,6 @@ def build_ensembl_genes():
     r.name NOT RLIKE 'CHR' and
     et.transcript_id = t.transcript_id and
     e.exon_id = et.exon_id
-    limit 1000
     """
 
     start_time = time.time()
