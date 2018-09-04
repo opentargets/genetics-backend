@@ -206,3 +206,36 @@ from
    group by variant_id
  )
 using index_variant_id
+
+-- getting 4-tuples with scores
+SELECT                                                                                                                                                         
+    stid,
+    index_variant_id,
+    variant_id,
+    gene_id,            
+    overall_score
+FROM                                                                                                                                                           
+(                                                                                                                                                              
+    SELECT
+        stid,
+        index_variant_id,
+        variant_id,
+        gene_id
+    FROM ot.d2v2g
+        PREWHERE (chr_id = '3') AND (index_position >= 128000000) AND (index_position <= 130000000)                                                               
+    GROUP BY 
+        stid,
+        index_variant_id,
+        variant_id,
+        gene_id
+)
+ALL LEFT JOIN
+(
+    SELECT 
+        variant_id AS index_variant_id,
+        gene_id,
+        overall_score
+    FROM ot.d2v2g_score_by_overall
+    PREWHERE chr_id = '3'
+) USING (index_variant_id, gene_id)
+LIMIT 10
