@@ -40,7 +40,7 @@
     "mode":"NULLABLE"
 },
 {
-    "name":"mar_1000g_prop",
+    "name":"amr_1000g_prop",
     "type":"FLOAT",
     "mode":"NULLABLE"
 },
@@ -100,6 +100,16 @@
     "mode":"REQUIRED"
 },
 {
+    "name":"trait_efos",
+    "type":"STRING",
+    "mode":"REPEATED"
+},
+{
+    "name":"trait_code",
+    "type":"STRING",
+    "mode":"REQUIRED"
+},
+{
     "name":"ancestry_initial",
     "type":"STRING",
     "mode":"NULLABLE"
@@ -120,24 +130,19 @@
     "mode":"NULLABLE"
 },
 {
-    "name":"efo_code",
-    "type":"STRING",
-    "mode":"REQUIRED"
-},
-{
-    "name":"efo_label",
-    "type":"STRING",
-    "mode":"REQUIRED"
-},
-{
-    "name":"index_rs_id",
-    "type":"STRING",
-    "mode":"REQUIRED"
+    "name":"n_cases",
+    "type":"INTEGER",
+    "mode":"NULLABLE"
 },
 {
     "name":"pval",
     "type":"FLOAT",
-    "mode":"NULLABLE"
+    "mode":"REQUIRED"
+},
+{
+    "name":"index_variant_rsid",
+    "type":"STRING",
+    "mode":"REQUIRED"
 },
 {
     "name":"index_chr_id",
@@ -162,11 +167,11 @@
 {
     "name":"variant_id",
     "type":"STRING",
-    "mode":"NULLABLE"
+    "mode":"REQUIRED"
 },
 {
     "name":"rs_id",
     "type":"STRING",
-    "mode":"NULLABLE"
+    "mode":"REQUIRED"
 }
 ]

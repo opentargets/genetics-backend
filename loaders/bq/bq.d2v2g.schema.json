@@ -20,16 +20,6 @@
     "mode":"REQUIRED"
 },
 {
-    "name":"variant_id",
-    "type":"STRING",
-    "mode":"REQUIRED"
-},
-{
-    "name":"rs_id",
-    "type":"STRING",
-    "mode":"NULLABLE"
-},
-{
     "name":"stid",
     "type":"STRING",
     "mode":"REQUIRED"
@@ -50,7 +40,7 @@
     "mode":"NULLABLE"
 },
 {
-    "name":"mar_1000g_prop",
+    "name":"amr_1000g_prop",
     "type":"FLOAT",
     "mode":"NULLABLE"
 },
@@ -81,7 +71,7 @@
 },
 {
     "name":"pmid",
-    "type":"INTEGER",
+    "type":"STRING",
     "mode":"NULLABLE"
 },
 {
@@ -110,6 +100,16 @@
     "mode":"REQUIRED"
 },
 {
+    "name":"trait_efos",
+    "type":"STRING",
+    "mode":"REPEATED"
+},
+{
+    "name":"trait_code",
+    "type":"STRING",
+    "mode":"REQUIRED"
+},
+{
     "name":"ancestry_initial",
     "type":"STRING",
     "mode":"NULLABLE"
@@ -130,25 +130,21 @@
     "mode":"NULLABLE"
 },
 {
-    "name":"efo_code",
-    "type":"STRING",
-    "mode":"REQUIRED"
-},
-{
-    "name":"efo_label",
-    "type":"STRING",
-    "mode":"REQUIRED"
-},
-{
-    "name":"index_rs_id",
-    "type":"STRING",
-    "mode":"REQUIRED"
+    "name":"n_cases",
+    "type":"INTEGER",
+    "mode":"NULLABLE"
 },
 {
     "name":"pval",
     "type":"FLOAT",
     "mode":"NULLABLE"
 },
+{
+    "name":"index_variant_rsid",
+    "type":"STRING",
+    "mode":"REQUIRED"
+},
+
 {
     "name":"index_chr_id",
     "type":"STRING",
@@ -168,6 +164,16 @@
     "name":"index_alt_allele",
     "type":"STRING",
     "mode":"REQUIRED"
+},
+{
+    "name":"variant_id",
+    "type":"STRING",
+    "mode":"REQUIRED"
+},
+{
+    "name":"rs_id",
+    "type":"STRING",
+    "mode":"NULLABLE"
 },
 {
     "name":"gene_chr",
@@ -210,28 +216,58 @@
     "mode":"REQUIRED"
 },
 {
-    "name":"csq_counts",
-    "type":"INTEGER",
-    "mode":"NULLABLE"
+    "name":"fpred_labels",
+    "type": "STRING",
+    "mode": "REPEATED"
+},
+{
+    "name":"fpred_scores",
+    "type": "FLOAT",
+    "mode": "REPEATED"
+},
+{
+    "name":"fpred_max_label",
+    "type": "STRING",
+    "mode": "NULLABLE"
+},
+{
+    "name":"fpred_max_score",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
 },
 {
     "name":"qtl_beta",
-    "type":"FLOAT",
-    "mode":"NULLABLE"
+    "type": "FLOAT",
+    "mode": "NULLABLE"
 },
 {
     "name":"qtl_se",
-    "type":"FLOAT",
-    "mode":"NULLABLE"
+    "type": "FLOAT",
+    "mode": "NULLABLE"
 },
 {
     "name":"qtl_pval",
-    "type":"FLOAT",
-    "mode":"NULLABLE"
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+},
+{
+    "name":"qtl_score",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
 },
 {
     "name":"interval_score",
-    "type":"FLOAT",
-    "mode":"NULLABLE"
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+},
+{
+    "name":"qtl_score_q",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+},
+{
+    "name":"interval_score_q",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
 }
 ]
