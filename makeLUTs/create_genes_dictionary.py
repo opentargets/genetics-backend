@@ -59,7 +59,10 @@ def build_ensembl_genes():
     # Flatten exon list
     df['exons'] = list(zip(df.exon_start, df.exon_end))
     keepcols = ['gene_id','gene_name','description','biotype','chr','tss','start','end','fwdstrand']
-    genes = pd.DataFrame(df.groupby(keepcols)['exons'].apply(flattened_list)).reset_index()
+    genes = pd.DataFrame(df.groupby(keepcols)['exons'].apply(flatten_exons)).reset_index()
+
+    # For clickhouse bools need to converted (0, 1)
+    genes.fwdstrand = genes.fwdstrand.replace({False: 0, True: 1})
 
     # Print chromosome counts
     print(genes['chr'].value_counts())
@@ -70,16 +73,16 @@ def build_ensembl_genes():
 
     print("--- Genes table completed in %s seconds ---" % (time.time() - start_time))
 
-def flattened_list(srs):
+def flatten_exons(srs):
     ''' Flattens pd.Series list of lists into a single list
     Args:
         srs (pd.Series): Series containing list of lists
     Returns:
-        (list): flatttened list
+        (str): string representation of flatttened list
     '''
     flattened_list = [item for sublist in srs.tolist() for item in sublist]
     assert(len(flattened_list) % 2 == 0)
-    return flattened_list
+    return str(flattened_list)
 
 def main():
     build_ensembl_genes()
