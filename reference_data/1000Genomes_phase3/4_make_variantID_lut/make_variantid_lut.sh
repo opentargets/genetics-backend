@@ -1,10 +1,12 @@
 #!/bin/sh
 #BSUB -J make_varid_lut
-#BSUB -q long # small=batches of 10; normal=12h max; long=48h max; basement=300 job limit; hugemem=512GB mem
-#BSUB -n 4
+#BSUB -q normal # small=batches of 10; normal=12h max; long=48h max; basement=300 job limit; hugemem=512GB mem
+#BSUB -n 2
 #BSUB -R "select[mem>64000] rusage[mem=64000] span[hosts=1]" -M64000
 #BSUB -o output.%J
 #BSUB -e errorfile.%J
+
+# Run interactive:   bsub -q normal -J interactive -n 2 -R "select[mem>32000] rusage[mem=32000] span[hosts=1]" -M32000 -Is bash
 
 set -euo pipefail
 
