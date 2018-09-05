@@ -14,6 +14,6 @@ bsub < 3_convert_to_plink.bsub.sh
 # bash 3_convert_to_plink.sh
 ```
 
-# Requirements
+### Requirements
 
 - plink v1.90b4
