@@ -2,7 +2,7 @@
 
 cores=16
 
-cd plink_format
+cd output/plink_format
 
 # Process vcfs
 for chrom_X in {1..22} X Y; do
@@ -23,4 +23,4 @@ for chrom_X in {1..22} X Y; do
       --out $OUT_FILE
   done
 done | parallel -j $cores
-cd ..
+cd ../..
