@@ -14,7 +14,6 @@ create database if not exists ot;
 create table if not exists ot.v2g_log(
   chr_id String,
   position UInt32,
-  segment UInt32 MATERIALIZED (position % 1000000),
   ref_allele String,
   alt_allele String,
   variant_id String,
