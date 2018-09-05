@@ -85,7 +85,8 @@ def flatten_exons(srs):
     '''
     flattened_list = [item for sublist in srs.tolist() for item in sublist]
     assert(len(flattened_list) % 2 == 0)
-    return str(flattened_list).replace(' ', '')
+    # return str(flattened_list).replace(' ', '')
+    return json.dumps([int(x) for x in flattened_list], separators=(',',':'))
 
 def main():
     build_ensembl_genes()
