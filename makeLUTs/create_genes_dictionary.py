@@ -75,7 +75,9 @@ def build_ensembl_genes():
     print("--- Genes table completed in %s seconds ---" % (time.time() - start_time))
 
 def flatten_exons(srs):
-    ''' Flattens pd.Series list of lists into a single list
+    ''' Flattens pd.Series list of lists into a single list.
+    Clickhouse requires the list to be represented as a string with no spaces.
+
     Args:
         srs (pd.Series): Series containing list of lists
     Returns:
@@ -83,9 +85,7 @@ def flatten_exons(srs):
     '''
     flattened_list = [item for sublist in srs.tolist() for item in sublist]
     assert(len(flattened_list) % 2 == 0)
-    # to remove included spaces into the seralisation
-    # you have to redefine json separators
-    return json.dumps(flattened_list, separators=(',',':'))
+    return str(flattened_list).replace(' ', '')
 
 def main():
     build_ensembl_genes()
