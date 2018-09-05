@@ -17,3 +17,5 @@ bsub < 3_convert_to_plink.bsub.sh
 ### Requirements
 
 - plink v1.90b4
+- bcftools
+- samtools
