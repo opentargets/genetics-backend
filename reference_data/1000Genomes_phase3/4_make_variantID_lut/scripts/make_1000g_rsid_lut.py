@@ -69,7 +69,8 @@ def main():
     print('Merging...')
     merged = pd.merge(bim_df, vcf, left_on='key_1kg', right_on='key_ens', how='left')
 
-    # Out
+    # Write
+    print('Writing output...')
     merged.loc[:, ['rsid_1kg', 'varid_1kg', 'rsid_ens', 'varid_ens']].to_csv(
         args.outf, sep='\t', index=None, compression='gzip')
 
