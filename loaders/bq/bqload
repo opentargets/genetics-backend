@@ -11,15 +11,72 @@ if [ -z "$1" ]; then
     usage
 fi
 
+
+### save queries
+
+
+read -r -d '' V2DQUERY <<'EOF'
+SELECT
+JSON_EXTRACT_SCALAR(item, '$.chr_id') chr_id,
+CAST(JSON_EXTRACT_SCALAR(item, '$.position') as INT64) position,
+JSON_EXTRACT_SCALAR(item, '$.ref_allele') ref_allele,
+JSON_EXTRACT_SCALAR(item, '$.alt_allele') alt_allele,
+JSON_EXTRACT_SCALAR(item, '$.stid') stid,
+JSON_EXTRACT_SCALAR(item, '$.index_variant_id') index_variant_id,
+CAST(JSON_EXTRACT_SCALAR(item, '$.r2') AS FLOAT64) r2,
+CAST(JSON_EXTRACT_SCALAR(item, '$.afr_1000g_prop') AS FLOAT64) afr_1000g_prop,
+CAST(JSON_EXTRACT_SCALAR(item, '$.amr_1000g_prop') AS FLOAT64) amr_1000g_prop,
+CAST(JSON_EXTRACT_SCALAR(item, '$.eas_1000g_prop') AS FLOAT64) eas_1000g_prop,
+CAST(JSON_EXTRACT_SCALAR(item, '$.eur_1000g_prop') AS FLOAT64) eur_1000g_prop,
+CAST(JSON_EXTRACT_SCALAR(item, '$.sas_1000g_prop') AS FLOAT64) sas_1000g_prop,
+CAST(JSON_EXTRACT_SCALAR(item, '$.log10_abf') AS FLOAT64) log10_abf,
+CAST(JSON_EXTRACT_SCALAR(item, '$.posterior_prob') AS FLOAT64) posterior_prob,
+JSON_EXTRACT_SCALAR(item, '$.pmid') pmid,
+JSON_EXTRACT_SCALAR(item, '$.pub_date') pub_date,
+JSON_EXTRACT_SCALAR(item, '$.pub_journal') pub_journal,
+JSON_EXTRACT_SCALAR(item, '$.pub_title') pub_title,
+JSON_EXTRACT_SCALAR(item, '$.pub_author') pub_author,
+JSON_EXTRACT_SCALAR(item, '$.trait_reported') trait_reported,
+JSON_EXTRACT_SCALAR(item, '$.trait_efos') trait_efos,
+JSON_EXTRACT_SCALAR(item, '$.trait_code') trait_code,
+JSON_EXTRACT_SCALAR(item, '$.ancestry_initial') ancestry_initial,
+JSON_EXTRACT_SCALAR(item, '$.ancestry_replication') ancestry_replication,
+CAST(JSON_EXTRACT_SCALAR(item, '$.n_initial') AS INT64) n_initial,
+CAST(JSON_EXTRACT_SCALAR(item, '$.n_replication') AS INT64) n_replication,
+CAST(JSON_EXTRACT_SCALAR(item, '$.n_cases') AS INT64) n_cases,
+CAST(JSON_EXTRACT_SCALAR(item, '$.pval') AS FLOAT64) pval,
+JSON_EXTRACT_SCALAR(item, '$.index_variant_rsid') index_variant_rsid,
+JSON_EXTRACT_SCALAR(item, '$.index_chr_id') index_chr_id,
+CAST(JSON_EXTRACT_SCALAR(item, '$.index_position') AS INT64) index_position,
+JSON_EXTRACT_SCALAR(item, '$.index_ref_allele') index_ref_allele,
+JSON_EXTRACT_SCALAR(item, '$.index_alt_allele') index_alt_allele,
+JSON_EXTRACT_SCALAR(item, '$.variant_id') variant_id,
+JSON_EXTRACT_SCALAR(item, '$.rs_id') rs_id
+
+FROM `v2d.20180905_raw`
+
+EOF
+
+
+
+
+
+
+
 case "$1" in
     v2g)
         bq --location=EU load --source_format=NEWLINE_DELIMITED_JSON v2g.`date +%Y%m%d` "gs://${GENETIC_OUT_BUCKET}/v2g/*.json" ./bq.v2g.schema.json
         ;;
     v2d)
-        bq --location=EU load --source_format=NEWLINE_DELIMITED_JSON v2d.`date +%Y%m%d` "gs://${GENETIC_OUT_BUCKET}/v2d/*.json" ./bq.v2d.schema.json
+        echo --first job: import raw JSON strings
+        bq --location=EU load --source_format=CSV -F "tab"  v2d.`date +%Y%m%d`_raw "gs://${GENETIC_OUT_BUCKET}/v2d/*.json" item
+
+        echo --second job: create table from query
+        bq --location=EU query --destination_table v2d.`date +%Y%m%d` --use_legacy_sql=false '$V2DQUERY'
         ;;
     d2v2g)
-        bq --location=EU load --source_format=NEWLINE_DELIMITED_JSON d2v2g.`date +%Y%m%d` "gs://${GENETIC_OUT_BUCKET}/d2v2g/*.json" ./bq.d2v2g.schema.json
+        echo --first job: import raw JSON strings
+        bq --location=EU load --source_format=CSV -F "tab" d2v2g.`date +%Y%m%d`_raw "gs://${GENETIC_OUT_BUCKET}/d2v2g/*.json" item
         ;;
     variant-index)
         bq --location=EU load --source_format=PARQUET variant_idx.`date +%Y%m%d` "gs://${GENETIC_OUT_BUCKET}/variant-index/*.parquet"
@@ -28,7 +85,4 @@ case "$1" in
         usage
         ;;
 esac
-
-
-
 
