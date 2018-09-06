@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
 
-cores=16
+cores=8
 
 # Download reference genome
 mkdir -p output/ref_grch37

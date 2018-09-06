@@ -13,7 +13,7 @@ set -euo pipefail
 # Get 1000 Genomes bims as input
 mkdir -p input/bims
 cd input/bims
-gsutil -m cp -n "gs://genetics-portal-raw/1000Genomes_phase3/plink_format/*/1kg_p3.20130502.*.*.bim" .
+gsutil -m cp -n "gs://genetics-portal-raw/1000Genomes_phase3/plink_format/*/*.*.1000Gp3.20130502.bim" .
 cd ../..
 
 # Get the 1000 Genomes  ensembl variation VCF as input
