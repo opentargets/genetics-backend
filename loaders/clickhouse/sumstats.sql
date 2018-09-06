@@ -76,7 +76,7 @@ as select
     if(maf = 0, NULL ,maf) as maf,
     if(info = 0, NULL ,info) as info,
 
-    cast(is_cc AS UInt8('True' = 1, 'False' = 0)) as is_cc
+    if(is_cc = 'True', toUInt8(1), toUInt8(0)) as is_cc
 
 from sumstats.gwas_log;
 
