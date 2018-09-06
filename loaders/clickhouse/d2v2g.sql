@@ -24,9 +24,9 @@ create table if not exists ot.d2v2g_log(
   trait_code String,
   ancestry_initial Nullable(String),
   ancestry_replication Nullable(String),
-  n_initial Nullable(Float32),
-  n_replication Nullable(Float32),
-  n_cases Nullable(Float32),
+  n_initial Nullable(UInt32),
+  n_replication Nullable(UInt32),
+  n_cases Nullable(UInt32),
   pval Float64,
   index_variant_rsid String,
   index_chr_id String,
@@ -85,9 +85,9 @@ as select
   trait_code ,
   ancestry_initial ,
   ancestry_replication ,
-  cast(n_initial as Nullable(UInt32)) as n_initial,
-  cast(n_replication as Nullable(UInt32)) as n_replication,
-  cast(n_cases as Nullable(UInt32)) as n_cases,
+  n_initial,
+  n_replication,
+  n_cases,
   assumeNotNull(if(pval = 0.,toFloat64('4.9e-323') ,pval )) as pval,
   index_variant_rsid ,
   index_chr_id ,
@@ -136,6 +136,7 @@ as select
   max_qtl + max_int + max_fpred as source_score
 from ot.d2v2g
 group by source_id, chr_id, variant_id, gene_id
+order by source_id, chr_id, variant_id, gene_id
 
 create table if not exists ot.d2v2g_score_by_overall
 engine MergeTree partition by (chr_id) order by (variant_id, gene_id)
@@ -148,6 +149,7 @@ as select
   avg(source_score) as overall_score
 from ot.d2v2g_score_by_source
 group by chr_id, variant_id, gene_id
+order by chr_id, variant_id, gene_id
 
 -- query to join overall scores
 -- select gene_id, overall_score from (select variant_id, gene_id from ot.d2v2g prewhere chr_id = '10' and v

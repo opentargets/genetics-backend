@@ -88,6 +88,11 @@ as select
   variant_id,
   gene_id,
   source_id,
+  groupArray(feature) as feature_list,
+  groupArray(qtl_score_q) as qtl_list,
+  groupArray(interval_score_q) as interval_list,
+  any(fpred_labels) as fpred_label_list,
+  any(fpred_scores) as fpred_score_list,
   max(ifNull(qtl_score_q, 0.)) AS max_qtl,
   max(ifNull(interval_score_q, 0.)) AS max_int,
   max(ifNull(fpred_max_score, 0.)) AS max_fpred,
@@ -95,75 +100,34 @@ as select
 from ot.v2g
 group by source_id, chr_id, variant_id, gene_id
 
-
+-- generate a list of overall scores
 create table if not exists ot.v2g_score_by_overall
 engine MergeTree partition by (chr_id) order by (variant_id, gene_id)
 as select
   chr_id,
   variant_id,
   gene_id,
+  groupArray(source_id) as source_list,
+  groupArray(source_score) as source_score_list,
   avg(source_score) as overall_score
 from ot.v2g_score_by_source
 group by chr_id, variant_id, gene_id
 
+-- generate list of tissues
+create materialized view ot.v2g_structure
+engine=Memory populate as
+SELECT 
+    type_id,
+    source_id,
+    groupUniqArray(feature) AS feature_set,
+    length(feature_set) AS feature_set_size
+FROM ot.v2g
+WHERE chr_id = '1'
+GROUP BY 
+    type_id,
+    source_id
+ORDER BY 
+    type_id ASC,
+    source_id ASC,
+    feature_set ASC
 
-create table if not exists ot.v2g_nested
-(
-  chr_id String,
-  position UInt32,
-  segment UInt32,
-  ref_allele String,
-  alt_allele String,
-  variant_id String,
-  rs_id String,
-  gene_chr String,
-  gene_id String,
-  gene_start UInt32,
-  gene_end UInt32,
-  gene_type String,
-  gene_name String,
-  type_id String,
-  source_id String,
-  feature String,
-  fpred Nested
-  (
-    label String,
-    score Float64
-  ),
-  beta Float64,
-  se Float64,
-  pval Float64,
-  interval_score Float64
-)
-engine MergeTree partition by (chr_id) order by (chr_id, position)
-
-insert into ot.v2g_nested VALUES
-  ('1', 160650838, 650838, 'T', 'G', '1_160650838_T_G', 'rs1051675500', '1', 'ENSG00000162755' , 161068151, 161070136, 'KLHDC9', ['pchic', 'pchic'], ['javierre2016', 'javierre2016'], ['erythroblasts', 'naive_cd8'], [6.0584891714175795, 7.40737934842716], ['eqtl'], ['gtex_v7'], ['vagina'], [3.34234], [0.23452], [0.00001], ['fpred'], ['vep'], ['unspecified'], ['missense'], ['MODIFIER'], [0.2] ),
-  ('1', 160650838, 650838, 'T', 'G', '1_160650838_T_G', 'rs1051675500', '1', 'ENSG00000179914' , 160846329, 160854960, 'ITLN1', ['pchic', 'pchic'], ['javierre2016', 'javierre2016'], ['erythroblasts', 'naive_cd8'], [6.0584891714175795, 7.40737934842716], ['eqtl'], ['gtex_v7'], ['vagina'], [3.34234], [0.23452], [0.00001], ['fpred'], ['vep'], ['unspecified'], ['missense'], ['MODIFIER'], [0.2] ),
-  ('1', 160650838, 650838, 'T', 'G', '1_160650838_T_G', 'rs1051675500', '1', 'ENSG00000122223' , 160799950, 160832692, 'CD244', ['pchic', 'pchic'], ['javierre2016', 'javierre2016'], ['erythroblasts', 'naive_cd8'], [6.0584891714175795, 7.40737934842716], ['eqtl'], ['gtex_v7'], ['vagina'], [3.34234], [0.23452], [0.00001], ['fpred'], ['vep'], ['unspecified'], ['missense'], ['MODIFIER'], [0.2] )
-
-insert into ot.v2g_nested
-select
-  chr_id,
-  position,
-  segment,
-  ref_allele,
-  alt_allele,
-  variant_id,
-  rs_id,
-  gene_chr,
-  gene_id,
-  gene_start,
-  gene_end,
-  gene_type,
-  gene_name,
-  type_id,
-  source_id,
-  feature,
-  fpred_labels,
-  fpred_scores,
-  qtl_beta,
-  qtl_se,
-  qtl_pval,
-  interval_score
-from ot.v2g_log;
