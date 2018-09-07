@@ -9,7 +9,7 @@ import os
 
 logger = logging.getLogger()
 
-OUTGENENAME = 'output/debug_gene_dictionary.json'
+OUTGENENAME = 'output/gene_dictionary.json'
 VALID_CHROMOSOMES = [*[str(chr) for chr in range(1, 23)], 'X', 'Y', 'MT']
 
 if not os.path.exists(os.path.dirname(OUTGENENAME)):
