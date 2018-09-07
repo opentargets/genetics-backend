@@ -82,6 +82,7 @@ def build_ensembl_genes():
 
     # Save json
     genes = genes.sort_values(['chr', 'start', 'end'])
+    genes = genes.fillna(value='')
     genes.to_json(OUTGENENAME, orient='records', lines=True)
 
     print("--- Genes table completed in %s seconds ---" % (time.time() - start_time))
