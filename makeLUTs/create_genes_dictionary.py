@@ -41,7 +41,6 @@ def build_ensembl_genes():
     from exon_transcript et, exon e, gene g, transcript t, seq_region r, xref as x
     where
     g.canonical_transcript_id = et.transcript_id and
-    g.canonical_transcript_id = et.transcript_id and
     g.seq_region_id = r.seq_region_id and
     x.xref_id = g.display_xref_id and
     r.coord_system_id = 2 and
