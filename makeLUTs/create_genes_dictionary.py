@@ -9,7 +9,7 @@ import os
 
 logger = logging.getLogger()
 
-OUTGENENAME = 'output/gene_dictionary.json'
+OUTGENENAME = 'output/debug_gene_dictionary.json'
 VALID_CHROMOSOMES = [*[str(chr) for chr in range(1, 23)], 'X', 'Y', 'MT']
 
 if not os.path.exists(os.path.dirname(OUTGENENAME)):
@@ -41,6 +41,7 @@ def build_ensembl_genes():
     from exon_transcript et, exon e, gene g, transcript t, seq_region r, xref as x
     where
     g.canonical_transcript_id = et.transcript_id and
+    g.canonical_transcript_id = et.transcript_id and
     g.seq_region_id = r.seq_region_id and
     x.xref_id = g.display_xref_id and
     r.coord_system_id = 2 and
@@ -61,17 +62,27 @@ def build_ensembl_genes():
 
     # Flatten exon list
     df['exons'] = list(zip(df.exon_start, df.exon_end))
-    keepcols = ['gene_id','gene_name','description','biotype','chr','tss','start','end','fwdstrand']
-    genes = pd.DataFrame(df.groupby(keepcols)['exons'].apply(flatten_exons)).reset_index()
+    exons_df = df.groupby('gene_id')['exons'].apply(flatten_exons).reset_index()
+
+    # Merge exons to genes
+    keepcols = ['gene_id', 'gene_name', 'description', 'biotype', 'chr', 'tss',
+                'start', 'end', 'fwdstrand']
+    genes = pd.merge(df.loc[:, keepcols].drop_duplicates(), exons_df,
+                     on='gene_id', how='inner')
 
     # For clickhouse bools need to converted (0, 1)
     genes.fwdstrand = genes.fwdstrand.replace({False: 0, True: 1})
 
     # Print chromosome counts
     print(genes['chr'].value_counts())
-    print(genes['chr'].value_counts().sum())
+
+    # Test
+    print('Number of genes: {}'.format(genes.gene_id.unique().size))
+    for gene in ['ENSG00000169972', 'ENSG00000217801', 'ENSG00000272141']:
+        print('{} is in dataset: {}'.format(gene, gene in genes.gene_id.values))
 
     # Save json
+    genes = genes.sort_values(['chr', 'start', 'end'])
     genes.to_json(OUTGENENAME, orient='records', lines=True)
 
     print("--- Genes table completed in %s seconds ---" % (time.time() - start_time))
