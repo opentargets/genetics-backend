@@ -5,13 +5,15 @@ import logging
 import time
 import pandas as pd
 from sqlalchemy import create_engine
+import os
 
 logger = logging.getLogger()
 
-OUTGENENAME = 'gene_dictionary.json'
+OUTGENENAME = 'output/gene_dictionary.json'
 VALID_CHROMOSOMES = [*[str(chr) for chr in range(1, 23)], 'X', 'Y', 'MT']
 
-
+if not os.path.exists(os.path.dirname(OUTGENENAME)):
+    os.mkdir(os.path.dirname(OUTGENENAME))
 
 def build_ensembl_genes():
     '''queries the MySQL public ensembl database and outputs a gene lookup object
