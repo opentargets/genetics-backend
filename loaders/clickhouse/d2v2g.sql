@@ -133,10 +133,9 @@ as select
   max(ifNull(qtl_score_q, 0.)) AS max_qtl,
   max(ifNull(interval_score_q, 0.)) AS max_int,
   max(ifNull(fpred_max_score, 0.)) AS max_fpred,
-  max_qtl + max_int + max_fpred as source_score
+  (max_qtl + max_int + max_fpred) * dictGetFloat64('v2gw','weight',tuple(source_id)) as source_score
 from ot.d2v2g
 group by source_id, chr_id, variant_id, gene_id
-order by source_id, chr_id, variant_id, gene_id
 
 create table if not exists ot.d2v2g_score_by_overall
 engine MergeTree partition by (chr_id) order by (variant_id, gene_id)
@@ -146,10 +145,9 @@ as select
   gene_id,
   groupArray(source_id) as source_list,
   groupArray(source_score) as source_score_list, 
-  avg(source_score) as overall_score
+  sum(source_score) / (select sum(weight) from ot.v2gw) as overall_score
 from ot.d2v2g_score_by_source
 group by chr_id, variant_id, gene_id
-order by chr_id, variant_id, gene_id
 
 -- query to join overall scores
 -- select gene_id, overall_score from (select variant_id, gene_id from ot.d2v2g prewhere chr_id = '10' and v
