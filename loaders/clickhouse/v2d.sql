@@ -31,9 +31,9 @@ create table if not exists ot.v2d_log(
   trait_code String,
   ancestry_initial Nullable(String),
   ancestry_replication Nullable(String),
-  n_initial Nullable(Float32),
-  n_replication Nullable(Float32),
-  n_cases Nullable(Float32),
+  n_initial Nullable(UInt32),
+  n_replication Nullable(UInt32),
+  n_cases Nullable(UInt32),
   pval Float64,
   index_variant_rsid String,
   index_chr_id String,
@@ -71,9 +71,9 @@ as select
   trait_code,
   ancestry_initial,
   ancestry_replication,
-  cast(n_initial as Nullable(UInt32)) as n_initial,
-  cast(n_replication as Nullable(UInt32)) as n_replication,
-  cast(n_cases as Nullable(UInt32)) as n_cases,
+  n_initial,
+  n_replication,
+  n_cases,
   assumeNotNull(if(pval = 0.,toFloat64('4.9e-323') ,pval )) as pval,
   assumeNotNull(index_variant_rsid) as index_rs_id,
   assumeNotNull(index_chr_id) as index_chr_id,
@@ -111,9 +111,9 @@ as select
   trait_code,
   ancestry_initial,
   ancestry_replication,
-  cast(n_initial as Nullable(UInt32)) as n_initial,
-  cast(n_replication as Nullable(UInt32)) as n_replication,
-  cast(n_cases as Nullable(UInt32)) as n_cases,
+  n_initial,
+  n_replication,
+  n_cases,
   assumeNotNull(if(pval = 0.,toFloat64('4.9e-323') ,pval )) as pval,
   assumeNotNull(index_variant_rsid) as index_rs_id,
   assumeNotNull(index_chr_id) as index_chr_id,
@@ -137,7 +137,7 @@ select
   any(pub_journal) as pub_journal,
   any(pub_title) as pub_title,
   any(pub_author) as pub_author
-from ot.v2d_by_chrpos
+from ot.v2d_by_stchr
 group by stid
-order by stid asc
+order by stid asc;
 
