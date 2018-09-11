@@ -1,15 +1,3 @@
--- a good idea is to include the source_name in order to partition by (chr_id and source_name)
-
--- generate quantiles using clickhouse
--- create materialized view ot.v2g_quantiles engine=Memory populate as select
---  source_id, feature,
---  quantilesIf(0.10, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9)(1 - qtl_pval, qtl_pval > 0) as qtl_quantiles,
---  quantilesIf(0.10, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9)(interval_score, qtl_pval = 0) as interval_quantiles
--- from ot.v2g
--- where source_id <> 'vep'
--- group by source_id, feature
-
--- drop and create the table in the case it exists
 create database if not exists ot;
 create table if not exists ot.v2g_log(
   chr_id String,
@@ -41,14 +29,6 @@ create table if not exists ot.v2g_log(
   interval_score_q Nullable(Float64))
 engine = Log;
 
--- how insert the data from files into the log db
--- insert into ot.v2g_log format TabSeparatedWithNames from '/opt/out/v2g/*.json';
--- for line in $(cat list_files.txt); do
---  gsutil cat $line | clickhouse-client -h 127.0.0.1 --query="insert into ot.v2g_log format TabSeparatedWithNames ";
--- done
-
--- main v2g table with proper mergetree engine
--- maybe partition by chr_id and source_id
 create table if not exists ot.v2g
 engine MergeTree partition by (source_id, chr_id) order by (position)
 as select
@@ -98,9 +78,8 @@ as select
   max(ifNull(fpred_max_score, 0.)) AS max_fpred,
   (max_qtl + max_int + max_fpred) * dictGetFloat64('v2gw','weight',tuple(source_id)) as source_score
 from ot.v2g
-group by source_id, chr_id, variant_id, gene_id
+group by source_id, chr_id, variant_id, gene_id;
 
--- generate a list of overall scores
 create table if not exists ot.v2g_score_by_overall
 engine MergeTree partition by (chr_id) order by (variant_id, gene_id)
 as select
@@ -111,9 +90,8 @@ as select
   groupArray(source_score) as source_score_list,
   sum(source_score) / (select sum(weight) from ot.v2gw) as overall_score
 from ot.v2g_score_by_source
-group by chr_id, variant_id, gene_id
+group by chr_id, variant_id, gene_id;
 
--- generate list of tissues
 create materialized view ot.v2g_structure
 engine=Memory populate as
 SELECT 
@@ -129,5 +107,5 @@ GROUP BY
 ORDER BY 
     type_id ASC,
     source_id ASC,
-    feature_set ASC
+    feature_set ASC;
 

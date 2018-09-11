@@ -139,5 +139,5 @@ select
   any(pub_author) as pub_author
 from ot.v2d_by_stchr
 group by stid
-order by stid asc
+order by stid asc;
 

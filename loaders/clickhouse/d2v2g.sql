@@ -135,7 +135,7 @@ as select
   max(ifNull(fpred_max_score, 0.)) AS max_fpred,
   (max_qtl + max_int + max_fpred) * dictGetFloat64('v2gw','weight',tuple(source_id)) as source_score
 from ot.d2v2g
-group by source_id, chr_id, variant_id, gene_id
+group by source_id, chr_id, variant_id, gene_id;
 
 create table if not exists ot.d2v2g_score_by_overall
 engine MergeTree partition by (chr_id) order by (variant_id, gene_id)
@@ -147,98 +147,5 @@ as select
   groupArray(source_score) as source_score_list, 
   sum(source_score) / (select sum(weight) from ot.v2gw) as overall_score
 from ot.d2v2g_score_by_source
-group by chr_id, variant_id, gene_id
+group by chr_id, variant_id, gene_id;
 
--- query to join overall scores
--- select gene_id, overall_score from (select variant_id, gene_id from ot.d2v2g prewhere chr_id = '10' and v
--- ariant_id = '10_102075479_G_A' group by variant_id, gene_id) all inner join (select chr_id, variant_id, gene_id, overall_score from ot.d2v2g_score_by_overall p
--- rewhere chr_id = '10' and variant_id = '10_102075479_G_A') using variant_id, gene_id order by overall_score desc
---
--- SELECT
---     gene_id,
---     overall_score
--- FROM
--- (
---     SELECT
---         variant_id,
---         gene_id
---     FROM ot.d2v2g
---     PREWHERE (chr_id = '10') AND (variant_id = '10_102075479_G_A')
---     GROUP BY
---         variant_id,
---         gene_id
--- )
--- ALL INNER JOIN
--- (
---     SELECT
---         chr_id,
---         variant_id,
---         gene_id,
---         overall_score
---     FROM ot.d2v2g_score_by_overall
---     PREWHERE (chr_id = '10') AND (variant_id = '10_102075479_G_A')
--- ) USING (variant_id, gene_id)
--- ORDER BY overall_score DESC
-
--- join best genes but missing lambda array to get the top ones
--- select index_variant_id, top_genes from (select index_variant_id from ot.v2d_by_stchr prewhere stid = 'NEALEUKB_50' group by index_variant_id) all left outer join (select variant_id as index_variant_id, groupArray(tuple(gene_id,overall_score)) as top_genes from ot.d2v2g_score_by_overall prewhere variant_id = index_variant_id and overall_score >= 0.9 group by variant_id ) using index_variant_id
---
-select
- index_variant_id,
- top_genes
-from
- (
-   select
-     index_variant_id
-   from ot.v2d_by_stchr
-   prewhere stid = 'NEALEUKB_50'
-   group by index_variant_id
- )
-   all left outer join
- (
-   select
-     variant_id as index_variant_id,
-     groupArray(tuple(gene_id,dictGetString('gene','gene_name',tuple(gene_id)), overall_score)) as top_genes
-   from ot.d2v2g_score_by_overall
-   prewhere
-     variant_id = index_variant_id and
-     overall_score > 0.
-   group by variant_id
- )
-using index_variant_id
-
--- getting 4-tuples with scores
-SELECT                                                                                                                                                         
-    stid,
-    index_variant_id,
-    variant_id,
-    gene_id,
-    dictGetString('gene','gene_name',tuple(gene_id)) gene_name,
-    dictGetUInt8('gene', 'fwdstrand', tuple(gene_id)) gene_isfwd,
-    dictGetUInt32('gene','tss', tuple(gene_id)) gene_tss,             
-    overall_score
-FROM                                                                                                                                                           
-(                                                                                                                                                              
-    SELECT
-        stid,
-        index_variant_id,
-        variant_id,
-        gene_id
-    FROM ot.d2v2g
-        PREWHERE (chr_id = '3') AND (index_position >= 128000000) AND (index_position <= 130000000)                                                               
-    GROUP BY 
-        stid,
-        index_variant_id,
-        variant_id,
-        gene_id
-)
-ALL LEFT JOIN
-(
-    SELECT 
-        variant_id AS index_variant_id,
-        gene_id,
-        overall_score
-    FROM ot.d2v2g_score_by_overall
-    PREWHERE chr_id = '3'
-) USING (index_variant_id, gene_id)
-LIMIT 10
