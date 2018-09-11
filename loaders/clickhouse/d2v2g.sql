@@ -118,6 +118,66 @@ as select
   interval_score_q
 from ot.d2v2g_log;
 
+create table if not exists ot.d2v2g_by_stchr
+engine MergeTree partition by (source_id, chr_id) order by (stid, position)
+as select
+  chr_id ,
+  position,
+  ref_allele ,
+  alt_allele ,
+  stid ,
+  index_variant_id ,
+  r2,
+  afr_1000g_prop ,
+  amr_1000g_prop ,
+  eas_1000g_prop ,
+  eur_1000g_prop ,
+  sas_1000g_prop ,
+  log10_abf ,
+  posterior_prob ,
+  pmid ,
+  pub_date ,
+  pub_journal ,
+  pub_title ,
+  pub_author ,
+  trait_reported ,
+  trait_efos ,
+  trait_code ,
+  ancestry_initial ,
+  ancestry_replication ,
+  n_initial,
+  n_replication,
+  n_cases,
+  assumeNotNull(if(pval = 0.,toFloat64('4.9e-323') ,pval )) as pval,
+  index_variant_rsid ,
+  index_chr_id ,
+  index_position ,
+  index_ref_allele ,
+  index_alt_allele ,
+  variant_id ,
+  rs_id ,
+  gene_chr ,
+  gene_id ,
+  gene_start ,
+  gene_end ,
+  gene_type ,
+  gene_name ,
+  feature ,
+  type_id ,
+  source_id ,
+  fpred_labels ,
+  fpred_scores ,
+  fpred_max_label ,
+  fpred_max_score ,
+  qtl_beta ,
+  qtl_se ,
+  qtl_pval ,
+  qtl_score ,
+  interval_score,
+  qtl_score_q ,
+  interval_score_q
+from ot.d2v2g_log;
+
 create table if not exists ot.d2v2g_score_by_source
 engine MergeTree partition by (source_id, chr_id) order by (variant_id, gene_id)
 as select
