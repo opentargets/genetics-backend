@@ -14,7 +14,7 @@ module load hgi/samtools/1.6-htslib-1.6-htslib-plugins-6f2229e0-irods-git-4.2.2-
 module load hgi/bcftools/1.6-htslib-1.6-htslib-plugins-6f2229e0-irods-git-4.2.2-plugin_kerberos-2.0.0
 
 # Run commands
-bash 1_download_vcfs.sh
+#bash 1_download_vcfs.sh
 bash 2_normalise_vcfs.sh
 bash 3_make_population_ids.sh
 bash 4_convert_to_plink.sh
