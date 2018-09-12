@@ -137,7 +137,7 @@ select
   any(pub_journal) as pub_journal,
   any(pub_title) as pub_title,
   any(pub_author) as pub_author
-from ot.v2d_by_stchr
+from ot.v2d_by_chrpos
 group by stid
 order by stid asc;
 
