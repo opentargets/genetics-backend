@@ -23,9 +23,10 @@ in_ref=../ref_grch37/$ref_name
 for vcf in ../vcf/*.vcf.gz; do
   out_vcf=$(basename $vcf)
   echo "zcat < $vcf | \
+  bcftools filter -e'MAF<0.01' -Ov | \
   bcftools norm -Ov -m -any | \
-  bcftools annotate -Ov -x ID -I +%CHROM:%POS:%REF:%ALT | \
   bcftools norm -Ov -f $in_ref | \
+  bcftools annotate -Ov -x ID -I +%CHROM:%POS:%REF:%ALT | \
   bgzip -c > $out_vcf"
 done | parallel -j $(($cores/2)) # Each requires 2 cores
 cd ../..

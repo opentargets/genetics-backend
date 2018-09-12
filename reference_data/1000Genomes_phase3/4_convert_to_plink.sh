@@ -16,7 +16,6 @@ for chrom_X in {1..22} X Y; do
       --keep-fam $pop.id \
       --geno 0.05 \
       --hwe 1e-6 \
-      --maf 0.005 \
       --make-bed \
       --keep-allele-order \
       --vcf-idspace-to _ \
