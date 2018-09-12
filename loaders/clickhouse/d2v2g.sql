@@ -24,9 +24,9 @@ create table if not exists ot.d2v2g_log(
   trait_code String,
   ancestry_initial Nullable(String),
   ancestry_replication Nullable(String),
-  n_initial Nullable(Float32),
-  n_replication Nullable(Float32),
-  n_cases Nullable(Float32),
+  n_initial Nullable(UInt32),
+  n_replication Nullable(UInt32),
+  n_cases Nullable(UInt32),
   pval Float64,
   index_variant_rsid String,
   index_chr_id String,
@@ -85,9 +85,69 @@ as select
   trait_code ,
   ancestry_initial ,
   ancestry_replication ,
-  cast(n_initial as Nullable(UInt32)) as n_initial,
-  cast(n_replication as Nullable(UInt32)) as n_replication,
-  cast(n_cases as Nullable(UInt32)) as n_cases,
+  n_initial,
+  n_replication,
+  n_cases,
+  assumeNotNull(if(pval = 0.,toFloat64('4.9e-323') ,pval )) as pval,
+  index_variant_rsid ,
+  index_chr_id ,
+  index_position ,
+  index_ref_allele ,
+  index_alt_allele ,
+  variant_id ,
+  rs_id ,
+  gene_chr ,
+  gene_id ,
+  gene_start ,
+  gene_end ,
+  gene_type ,
+  gene_name ,
+  feature ,
+  type_id ,
+  source_id ,
+  fpred_labels ,
+  fpred_scores ,
+  fpred_max_label ,
+  fpred_max_score ,
+  qtl_beta ,
+  qtl_se ,
+  qtl_pval ,
+  qtl_score ,
+  interval_score,
+  qtl_score_q ,
+  interval_score_q
+from ot.d2v2g_log;
+
+create table if not exists ot.d2v2g_by_stchr
+engine MergeTree partition by (source_id, chr_id) order by (stid, position)
+as select
+  chr_id ,
+  position,
+  ref_allele ,
+  alt_allele ,
+  stid ,
+  index_variant_id ,
+  r2,
+  afr_1000g_prop ,
+  amr_1000g_prop ,
+  eas_1000g_prop ,
+  eur_1000g_prop ,
+  sas_1000g_prop ,
+  log10_abf ,
+  posterior_prob ,
+  pmid ,
+  pub_date ,
+  pub_journal ,
+  pub_title ,
+  pub_author ,
+  trait_reported ,
+  trait_efos ,
+  trait_code ,
+  ancestry_initial ,
+  ancestry_replication ,
+  n_initial,
+  n_replication,
+  n_cases,
   assumeNotNull(if(pval = 0.,toFloat64('4.9e-323') ,pval )) as pval,
   index_variant_rsid ,
   index_chr_id ,
@@ -133,9 +193,10 @@ as select
   max(ifNull(qtl_score_q, 0.)) AS max_qtl,
   max(ifNull(interval_score_q, 0.)) AS max_int,
   max(ifNull(fpred_max_score, 0.)) AS max_fpred,
-  max_qtl + max_int + max_fpred as source_score
+  (max_qtl + max_int + max_fpred) as source_score,
+  source_score * dictGetFloat64('v2gw','weight',tuple(source_id)) as source_score_weighted
 from ot.d2v2g
-group by source_id, chr_id, variant_id, gene_id
+group by source_id, chr_id, variant_id, gene_id;
 
 create table if not exists ot.d2v2g_score_by_overall
 engine MergeTree partition by (chr_id) order by (variant_id, gene_id)
@@ -145,100 +206,7 @@ as select
   gene_id,
   groupArray(source_id) as source_list,
   groupArray(source_score) as source_score_list, 
-  avg(source_score) as overall_score
+  sum(source_score_weighted) / (select sum(weight) from ot.v2gw) as overall_score
 from ot.d2v2g_score_by_source
-group by chr_id, variant_id, gene_id
+group by chr_id, variant_id, gene_id;
 
--- query to join overall scores
--- select gene_id, overall_score from (select variant_id, gene_id from ot.d2v2g prewhere chr_id = '10' and v
--- ariant_id = '10_102075479_G_A' group by variant_id, gene_id) all inner join (select chr_id, variant_id, gene_id, overall_score from ot.d2v2g_score_by_overall p
--- rewhere chr_id = '10' and variant_id = '10_102075479_G_A') using variant_id, gene_id order by overall_score desc
---
--- SELECT
---     gene_id,
---     overall_score
--- FROM
--- (
---     SELECT
---         variant_id,
---         gene_id
---     FROM ot.d2v2g
---     PREWHERE (chr_id = '10') AND (variant_id = '10_102075479_G_A')
---     GROUP BY
---         variant_id,
---         gene_id
--- )
--- ALL INNER JOIN
--- (
---     SELECT
---         chr_id,
---         variant_id,
---         gene_id,
---         overall_score
---     FROM ot.d2v2g_score_by_overall
---     PREWHERE (chr_id = '10') AND (variant_id = '10_102075479_G_A')
--- ) USING (variant_id, gene_id)
--- ORDER BY overall_score DESC
-
--- join best genes but missing lambda array to get the top ones
--- select index_variant_id, top_genes from (select index_variant_id from ot.v2d_by_stchr prewhere stid = 'NEALEUKB_50' group by index_variant_id) all left outer join (select variant_id as index_variant_id, groupArray(tuple(gene_id,overall_score)) as top_genes from ot.d2v2g_score_by_overall prewhere variant_id = index_variant_id and overall_score >= 0.9 group by variant_id ) using index_variant_id
---
-select
- index_variant_id,
- top_genes
-from
- (
-   select
-     index_variant_id
-   from ot.v2d_by_stchr
-   prewhere stid = 'NEALEUKB_50'
-   group by index_variant_id
- )
-   all left outer join
- (
-   select
-     variant_id as index_variant_id,
-     groupArray(tuple(gene_id,dictGetString('gene','gene_name',tuple(gene_id)), overall_score)) as top_genes
-   from ot.d2v2g_score_by_overall
-   prewhere
-     variant_id = index_variant_id and
-     overall_score > 0.
-   group by variant_id
- )
-using index_variant_id
-
--- getting 4-tuples with scores
-SELECT                                                                                                                                                         
-    stid,
-    index_variant_id,
-    variant_id,
-    gene_id,
-    dictGetString('gene','gene_name',tuple(gene_id)) gene_name,
-    dictGetUInt8('gene', 'fwdstrand', tuple(gene_id)) gene_isfwd,
-    dictGetUInt32('gene','tss', tuple(gene_id)) gene_tss,             
-    overall_score
-FROM                                                                                                                                                           
-(                                                                                                                                                              
-    SELECT
-        stid,
-        index_variant_id,
-        variant_id,
-        gene_id
-    FROM ot.d2v2g
-        PREWHERE (chr_id = '3') AND (index_position >= 128000000) AND (index_position <= 130000000)                                                               
-    GROUP BY 
-        stid,
-        index_variant_id,
-        variant_id,
-        gene_id
-)
-ALL LEFT JOIN
-(
-    SELECT 
-        variant_id AS index_variant_id,
-        gene_id,
-        overall_score
-    FROM ot.d2v2g_score_by_overall
-    PREWHERE chr_id = '3'
-) USING (index_variant_id, gene_id)
-LIMIT 10

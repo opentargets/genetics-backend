@@ -1,0 +1,29 @@
+<dictionaries>
+        <dictionary>
+                <name>v2gw</name>
+                <source>
+                        <file>
+                                <path>/etc/clickhouse-server/dictionaries/v2g_weights.tsv</path>
+                                <format>TabSeparatedWithNames</format>
+                        </file>
+                </source>
+                <layout>
+                        <complex_key_hashed />
+                </layout>
+                <lifetime>600</lifetime>
+                <structure>
+                        <key>
+                                <attribute>
+                                        <name>source_id</name>
+                                        <type>String</type>
+                                </attribute>
+                        </key>
+                        <attribute>
+                                <name>weight</name>
+                                <type>Float64</type>
+                                <null_value>0.0</null_value>
+                        </attribute>
+                </structure>
+        </dictionary>
+</dictionaries>
+
