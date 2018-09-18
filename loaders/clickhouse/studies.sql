@@ -34,4 +34,4 @@ as select
   n_replication,
   n_cases,
   trait_category
-from ot.studies
+from ot.studies_log
