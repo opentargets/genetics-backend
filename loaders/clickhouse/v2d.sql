@@ -143,7 +143,7 @@ n_replication         Nullable(UInt32),
 n_cases               Nullable(Float64),
 trait_category        Nullable(String)
 ) Engine = TinyLog;
--- gsutil cat gs://genetics-portal-data/v2d/studies.tsv | clickhouse-client -h 127.0.0.1 --query="insert into ot.studies_temp format TabSeparatedWithNames"
+-- gsutil cat gs://genetics-portal-data/v2d/studies.json | clickhouse-client -h 127.0.0.1 --query="insert into ot.studies_temp format JSONEachRow"
 
 
 create table ot.studies
