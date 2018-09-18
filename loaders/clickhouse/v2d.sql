@@ -124,20 +124,44 @@ as select
   assumeNotNull(rs_id) as rs_id
 from ot.v2d_log;
 
--- create studies table
-create materialized view ot.studies
-engine=Memory populate as
-select
-  stid,
-  any(trait_code) as trait_code,
-  any(trait_reported) as trait_reported,
-  any(trait_efos) as trait_efos,
-  any(pmid) as pmid,
-  any(pub_date) as pub_date,
-  any(pub_journal) as pub_journal,
-  any(pub_title) as pub_title,
-  any(pub_author) as pub_author
-from ot.v2d_by_chrpos
-group by stid
-order by stid asc;
 
+-- create studies table from TSV insert
+create table if not exists ot.studies_temp (
+study_id              String,
+pmid                  Nullable(String),
+pub_date              String,
+pub_journal           Nullable(String),
+pub_title             Nullable(String),
+pub_author            String,
+trait_reported        String,
+trait_efos            Nullable(String),
+trait_code            String,
+ancestry_initial      Nullable(String),
+ancestry_replication  Nullable(String),
+n_initial             Nullable(UInt32),
+n_replication         Nullable(UInt32),
+n_cases               Nullable(Float64),
+trait_category        Nullable(String)
+) Engine = TinyLog;
+-- gsutil cat gs://genetics-portal-data/v2d/studies.json | clickhouse-client -h 127.0.0.1 --query="insert into ot.studies_temp format JSONEachRow"
+
+
+create table ot.studies
+engine = Memory
+as select
+study_id,
+pmid,
+toDate(pub_date) as pub_date,
+pub_journal,
+pub_title,
+pub_author,
+trait_reported,
+trait_efos,
+trait_code,
+ancestry_initial,
+ancestry_replication,
+n_initial,
+n_replication,
+toUInt32(n_cases) as n_cases,
+trait_category
+from ot.studies_temp;
