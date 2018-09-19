@@ -30,7 +30,7 @@ engine=Log;
 -- NULL. It's probably ok for this set, since there should be no zero in the
 -- input, however another way could be to replace the empties with \N with sed:
 -- gsutil ls -r gs://genetics-portal-sumstats/gwas/** | xargs -P 16 -I {} sh -c 'CHIP=`echo {} | cut -d/ -f 5`; STUDY=`echo {} | cut -d/ -f 6`; TRAIT=`echo {} | cut -d/ -f 7`; gsutil cat {} | zcat | sed 1d | sed -e "s/^/$CHIP\t$STUDY\t$TRAIT\t/; :0 s/\t\t/\t\\N\t/;t0"  | clickhouse-client -h 127.0.0.1 --query="insert into sumstats.gwas_log format TabSeparated"; echo {} >> done.log;'
--- do however consider that sed look aheads slow the command considerably
+-- do however consider that sed look aheads SLOW the command considerably
 -- more info at https://github.com/yandex/ClickHouse/issues/469
 -- sed trickery from: https://stackoverflow.com/questions/30109554/how-do-i-replace-empty-strings-in-a-tsv-with-a-value
 
@@ -87,6 +87,9 @@ where chrom = '1';
 -- Once done, check loading is complete by making a file list:
 -- clickhouse-client -h 127.0.0.1 --query="select chip,study_id,trait_code, count(*) from sumstats.gwas group by chip, study_id, trait_code format TSV" > mergetree_totals.tsv
 
+------------------
+--- molecular qtl
+
 create table if not exists sumstats.molecular_qtl_log(
     experiment String,
     study_id String,
@@ -110,10 +113,12 @@ create table if not exists sumstats.molecular_qtl_log(
     is_cc String)
 engine=Log;
 
+-- Load all gwas summary stats file by making a recursive, flattened list:
+-- gsutil ls -r gs://genetics-portal-sumstats/molecular_qtl/** | tee qtl-inputlist.txt | xargs -P 16 -I {} sh -c 'EXPERIMENT=`echo {} | cut -d/ -f 5`; STUDY=`echo {} | cut -d/ -f 6`; TISSUE=`echo {} | cut -d/ -f 7`; BIOMARK=`echo {} | cut -d/ -f 8`; gsutil cat {} | zcat | sed 1d | sed -e "s/^/$EXPERIMENT\t$STUDY\t$TISSUE\t$BIOMARK\t/" | clickhouse-client -h 127.0.0.1 --query="insert into sumstats.molecular_qtl_log format TabSeparated"; echo {} | tee -a qtl-done.log;'
 
 
-
-
+-- run the below one time per each chromosome
+-- for chrom in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 'X', 'Y', 'MT']
 create table if not exists sumstats.molecular_qtl_chr_1
 engine MergeTree partition by segment order by pos_b37
 as select
