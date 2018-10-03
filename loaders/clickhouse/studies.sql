@@ -1,6 +1,5 @@
-drop table ot.studies;
 create table if not exists ot.studies
-engine Memory
+engine MergeTree order by (study_id)
 as select
   assumeNotNull(study_id) as study_id,
   pmid,

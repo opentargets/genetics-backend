@@ -1,8 +1,6 @@
-drop table ot.v2g_structure;
-
-create materialized view ot.v2g_structure
-engine=Memory populate as
-SELECT 
+CREATE TABLE if NOT EXISTS ot.v2g_structure
+engine MergeTree ORDER BY (type_id)
+AS SELECT 
     type_id,
     source_id,
     groupUniqArray(feature) AS feature_set,
@@ -16,4 +14,3 @@ ORDER BY
     type_id ASC,
     source_id ASC,
     feature_set ASC;
-
