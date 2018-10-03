@@ -6,7 +6,7 @@ echo create studies tables
 clickhouse-client -m -n < studies_log.sql
 bash "${root_path}/scripts/load_studies.sh"
 clickhouse-client -m -n < studies.sql
-clickhouse-client -m -n -q "drop table ot.studies_log;"
+# clickhouse-client -m -n -q "drop table ot.studies_log;"
 
 echo create studies overlap tables
 clickhouse-client -m -n < studies_overlap_log.sql

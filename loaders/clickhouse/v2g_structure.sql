@@ -1,3 +1,5 @@
+drop table ot.v2g_structure;
+
 create materialized view ot.v2g_structure
 engine=Memory populate as
 SELECT 

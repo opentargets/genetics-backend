@@ -1,3 +1,4 @@
+drop table ot.studies;
 create table if not exists ot.studies
 engine Memory
 as select
@@ -16,4 +17,4 @@ as select
   n_replication,
   n_cases,
   trait_category
-from ot.studies_log
+from ot.studies_log;
