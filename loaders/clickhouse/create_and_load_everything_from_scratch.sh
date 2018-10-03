@@ -43,7 +43,17 @@ clickhouse-client -m -n -q "drop table ot.v2g_log;"
 
 # elasticsearch process
 echo load elasticsearch studies data
+export filename="gs://genetics-portal-data/v2d/studies.json"
+gsutil cat $filename | elasticsearch_loader --index-settings-file index_settings.json --bulk-size 10000 --index studies --type study json --json-lines -
+
 echo load elasticsearch genes data
+export filename="gs://genetics-portal-data/lut/gene_dictionary.json"
+gsutil cat $filename | elasticsearch_loader --index-settings-file index_settings.json --bulk-size 10000 --index genes --type gene json --json-lines -
+
 echo load elasticsearch variants data
+for chr in "1" "2" "3" "4" "5" "6" "7" "8" "9" "10" "11" "12" "13" "14" "15" "16" "17" "18" "19" "20" "21" "22" "X" "Y" "MT"; do
+	clickhouse-client -q "select * from ot.variants prewhere chr_id = '${chr}' format JSONEachRow" | elasticsearch_loader --index-settings-file index_settings.json --bulk-size 10000 --index variant_$chr --type variant json --json-lines -
+done
+
 
 
