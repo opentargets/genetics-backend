@@ -1,14 +1,3 @@
-create table if not exists ot.studies_overlap_log(
-  index_variantid_b37_A String,
-  index_variantid_b37_B String,
-  set_type String,
-  study_id_A String,
-  study_id_B String,
-  overlap_AB UInt32,
-  distinct_A UInt32,
-  distinct_B UInt32)
-engine = Log;
-
 create table if not exists ot.studies_overlap
 engine MergeTree Partition by (study_id_a) order by (index_variant_id_a, index_variant_id_b)
 as select
@@ -20,4 +9,4 @@ as select
   overlap_AB,
   distinct_A,
   distinct_B
-from ot.studies_overlap_log
+from ot.studies_overlap_log;

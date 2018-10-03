@@ -8,9 +8,9 @@ create table ot.gene (
     end UInt32,
     fwdstrand UInt8,
     exons String
-) Engine = Dictionary(gene)
+) Engine = Dictionary(gene);
 
 create table ot.v2gw (
     source_id String,
     weight Float64
-) Engine = Dictionary(v2gw)
+) Engine = Dictionary(v2gw);
