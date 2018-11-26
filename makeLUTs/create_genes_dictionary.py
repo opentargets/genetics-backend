@@ -24,11 +24,12 @@ def build_ensembl_genes():
     #connect to Ensembl MySQL public server
     core = create_engine('mysql+mysqldb://anonymous@ensembldb.ensembl.org:3337/homo_sapiens_core_93_37', connect_args={'compress': True})
 
+    # SQL to retrieve required fields; note a the single % in the LIKE clause have to be escaped as %%
     q = """
     SELECT
     et.exon_id,
     et.transcript_id,
-    g.stable_id as gene_id,
+    g.stable_id AS gene_id,
     x.display_label AS gene_name,
     g.description,
     g.biotype,
@@ -45,7 +46,6 @@ def build_ensembl_genes():
     x.xref_id = g.display_xref_id AND
     r.coord_system_id = cs.coord_system_id AND
     cs.name = 'chromosome' AND cs.attrib LIKE '%%default_version%%' AND
-    r.name NOT RLIKE 'CHR' AND
     et.transcript_id = t.transcript_id AND
     e.exon_id = et.exon_id
     """
