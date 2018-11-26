@@ -22,30 +22,31 @@ def build_ensembl_genes():
     '''
 
     #connect to Ensembl MySQL public server
-    core = create_engine('mysql+mysqldb://anonymous@ensembldb.ensembl.org:3337/homo_sapiens_core_93_37')
+    core = create_engine('mysql+mysqldb://anonymous@ensembldb.ensembl.org:3337/homo_sapiens_core_93_37', connect_args={'compress': True})
 
     q = """
-    select
+    SELECT
     et.exon_id,
     et.transcript_id,
     g.stable_id as gene_id,
-    x.display_label as gene_name,
+    x.display_label AS gene_name,
     g.description,
     g.biotype,
-    r.name as chr,
-    g.seq_region_start as start,
-    g.seq_region_end as end,
-    e.seq_region_start as exon_start,
-    e.seq_region_end as exon_end,
-    t.seq_region_strand as fwdstrand
-    from exon_transcript et, exon e, gene g, transcript t, seq_region r, xref as x
-    where
-    g.canonical_transcript_id = et.transcript_id and
-    g.seq_region_id = r.seq_region_id and
-    x.xref_id = g.display_xref_id and
-    r.coord_system_id = 2 and
-    r.name NOT RLIKE 'CHR' and
-    et.transcript_id = t.transcript_id and
+    r.name AS chr,
+    g.seq_region_start AS start,
+    g.seq_region_end AS end,
+    e.seq_region_start AS exon_start,
+    e.seq_region_end AS exon_end,
+    t.seq_region_strand AS fwdstrand
+    FROM exon_transcript et, exon e, gene g, transcript t, seq_region r, xref AS x, coord_system AS cs
+    WHERE
+    g.canonical_transcript_id = et.transcript_id AND
+    g.seq_region_id = r.seq_region_id AND
+    x.xref_id = g.display_xref_id AND
+    r.coord_system_id = cs.coord_system_id AND
+    cs.name = 'chromosome' AND cs.attrib LIKE '%%default_version%%' AND
+    r.name NOT RLIKE 'CHR' AND
+    et.transcript_id = t.transcript_id AND
     e.exon_id = et.exon_id
     """
 
