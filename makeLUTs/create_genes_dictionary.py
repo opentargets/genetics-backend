@@ -87,7 +87,7 @@ def build_ensembl_genes(pipeline_file_name, ensembl_database):
         df_pipeline['is_reference'] = True
 
         compress = 'gzip' if pipeline_file_name.endswith('.gz') else None
-       
+
         df_pipeline.to_json(pipeline_file_name, orient='records', compression=compress)
         print("Wrote Ensembl gene data to {}".format(pipeline_file_name))
 
@@ -156,7 +156,7 @@ def main():
     parser.add_argument("--pipeline", metavar='FILE', action='store',
                         help="Dump gene information needed for the Open Targets pipeline to the specified file. If the filename ends in .gz, it will be automatically compressed")
 
-    parser.add_argument("--ensembl-database", action='store', 
+    parser.add_argument("--ensembl-database", action='store',
                         help="Use the specified Ensembl database, default is homo_sapiens_core_93_37")
 
     args = parser.parse_args()
