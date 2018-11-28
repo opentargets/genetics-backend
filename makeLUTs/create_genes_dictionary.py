@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-
+import datetime
 import json
 import logging
 import time
@@ -10,14 +10,25 @@ import argparse
 
 logger = logging.getLogger()
 
-OUTGENENAME = 'output/gene_dictionary.json'
+
 VALID_CHROMOSOMES = [*[str(chr) for chr in range(1, 23)], 'X', 'Y', 'MT']
 
-if not os.path.exists(os.path.dirname(OUTGENENAME)):
-    os.mkdir(os.path.dirname(OUTGENENAME))
+
+def make_output_filename(name):
+    """create the path if it does not exist for the filename and
+    return the full filename
+    """
+    if not os.path.exists(os.path.dirname(name)) and os.path.dirname(name):
+        os.mkdir(os.path.dirname(name))
+
+    return name
 
 
-def build_ensembl_genes(pipeline_file_name, ensembl_database):
+def check_compress_enabled(filename):
+    return 'gzip' if filename.endswith('.gz') else None
+
+
+def build_ensembl_genes(pipeline_file_name, enable_platform_mode, ensembl_database):
     """Queries the MySQL public ensembl database and outputs a gene lookup object in JSON format.
     Optionally write an additional file suitable for loading Ensembl gene data into the Open Targets pipeline.
     """
@@ -60,13 +71,13 @@ def build_ensembl_genes(pipeline_file_name, ensembl_database):
     e.exon_id = et.exon_id
     """
 
-    start_time = time.time()
+    start_time = datetime.datetime.now()
     df = pd.read_sql_query(q, core, index_col='exon_id')
 
     # Only keep valid chromosomes
     df = df.loc[df.chr.isin(VALID_CHROMOSOMES), :]
 
-    if (pipeline_file_name):
+    if (enable_platform_mode):
 
         # Create a new data frame with only unique gene_ids, and remove columns we don't need in the output
         df_pipeline = df.drop_duplicates(subset='gene_id')  # only store one of each gene
@@ -86,44 +97,44 @@ def build_ensembl_genes(pipeline_file_name, ensembl_database):
         # all on valid chromosomes so this will always be true
         df_pipeline['is_reference'] = True
 
-        compress = 'gzip' if pipeline_file_name.endswith('.gz') else None
-
-        df_pipeline.to_json(pipeline_file_name, orient='records', compression=compress)
+        df_pipeline.to_json(pipeline_file_name, orient='records',
+                            compression=check_compress_enabled(pipeline_file_name))
         print("Wrote Ensembl gene data to {}".format(pipeline_file_name))
 
-    # Get TSS determined by strand
-    df['fwdstrand'] = df['fwdstrand'].map({1: True, -1: False})
-    df['tss'] = df.apply(lambda row: row['start']
-                         if row['fwdstrand'] else row['end'], axis=1)
+    else:
+        # Get TSS determined by strand
+        df['fwdstrand'] = df['fwdstrand'].map({1: True, -1: False})
+        df['tss'] = df.apply(lambda row: row['start']
+                             if row['fwdstrand'] else row['end'], axis=1)
 
-    # Flatten exon list
-    df['exons'] = list(zip(df.exon_start, df.exon_end))
-    exons_df = df.groupby('gene_id')['exons'].apply(
-        flatten_exons).reset_index()
+        # Flatten exon list
+        df['exons'] = list(zip(df.exon_start, df.exon_end))
+        exons_df = df.groupby('gene_id')['exons'].apply(
+            flatten_exons).reset_index()
 
-    # Merge exons to genes
-    keepcols = ['gene_id', 'gene_name', 'description', 'biotype', 'chr', 'tss', 'start', 'end', 'fwdstrand']
-    genes = pd.merge(df.loc[:, keepcols].drop_duplicates(), exons_df, on='gene_id', how='inner')
+        # Merge exons to genes
+        keepcols = ['gene_id', 'gene_name', 'description', 'biotype', 'chr', 'tss', 'start', 'end', 'fwdstrand']
+        genes = pd.merge(df.loc[:, keepcols].drop_duplicates(), exons_df, on='gene_id', how='inner')
 
-    # For clickhouse bools need to converted (0, 1)
-    genes.fwdstrand = genes.fwdstrand.replace({False: 0, True: 1})
+        # For clickhouse bools need to converted (0, 1)
+        genes.fwdstrand = genes.fwdstrand.replace({False: 0, True: 1})
 
-    # Print chromosome counts
-    print(genes['chr'].value_counts())
+        # Print chromosome counts
+        print(genes['chr'].value_counts())
 
-    # Test
-    print('Number of genes: {}'.format(genes.gene_id.unique().size))
-    for gene in ['ENSG00000169972', 'ENSG00000217801', 'ENSG00000272141']:
-        print('{} is in dataset: {}'.format(
-            gene, gene in genes.gene_id.values))
+        # Test
+        print('Number of genes: {}'.format(genes.gene_id.unique().size))
+        for gene in ['ENSG00000169972', 'ENSG00000217801', 'ENSG00000272141']:
+            print('{} is in dataset: {}'.format(
+                gene, gene in genes.gene_id.values))
 
-    # Save json
-    genes = genes.sort_values(['chr', 'start', 'end'])
-    genes = genes.fillna(value='')
-    genes.to_json(OUTGENENAME, orient='records', lines=True)
+        # Save json
+        genes = genes.sort_values(['chr', 'start', 'end'])
+        genes = genes.fillna(value='')
+        genes.to_json(pipeline_file_name, orient='records', lines=True,
+                      compression=check_compress_enabled(pipeline_file_name))
 
-    print("--- Genes table completed in %s seconds ---" %
-          (time.time() - start_time))
+    print("Genes table completed in {0}.".format(datetime.datetime.now() - start_time))
 
 
 def flatten_exons(srs):
@@ -149,19 +160,27 @@ def get_meta(connection, field):
 
 
 def main():
-
     parser = argparse.ArgumentParser(
         description='Genetics Portal backend data processing')
 
-    parser.add_argument("--pipeline", metavar='FILE', action='store',
-                        help="Dump gene information needed for the Open Targets pipeline to the specified file. If the filename ends in .gz, it will be automatically compressed")
+    parser.add_argument("-o", "--output-file", metavar='FILE', action='store',
+                        help="The name of the output file")
 
-    parser.add_argument("--ensembl-database", action='store',
+    parser.add_argument("-e", "--enable-platform-mode", action='store_true', default=False,
+                        help=("Dump gene information needed for the Open Targets pipeline to "
+                              "the specified file. If the filename ends in .gz, "
+                             "it will be automatically compressed"))
+
+    parser.add_argument("-n", "--ensembl-database", action='store',
                         help="Use the specified Ensembl database, default is homo_sapiens_core_93_37")
 
     args = parser.parse_args()
 
-    build_ensembl_genes(args.pipeline, args.ensembl_database)
+    if not args.output_file:
+        parser.print_help()
+    else:
+        filename = make_output_filename(args.output_file)
+        build_ensembl_genes(filename, args.enable_platform_mode, args.ensembl_database)
 
 
 def build_database_url(ensembl_database):
