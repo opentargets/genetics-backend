@@ -48,7 +48,7 @@ def build_ensembl_genes(pipeline_file_name, ensembl_database):
     e.seq_region_end AS exon_end,
     t.seq_region_strand AS fwdstrand,
     g.seq_region_strand AS strand
-    FROM exon_transcript et, exon e, gene g, transcript t, seq_region r, xref AS x, coord_system AS cs, analysis a
+    FROM exon_transcript et, exon e, gene g, transcript t, seq_region r, xref x, coord_system cs, analysis a
     WHERE
     g.canonical_transcript_id = et.transcript_id AND
     g.seq_region_id = r.seq_region_id AND
