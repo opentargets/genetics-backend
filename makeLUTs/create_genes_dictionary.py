@@ -17,14 +17,16 @@ if not os.path.exists(os.path.dirname(OUTGENENAME)):
     os.mkdir(os.path.dirname(OUTGENENAME))
 
 
-def build_ensembl_genes(pipeline_file_name):
+def build_ensembl_genes(pipeline_file_name, ensembl_database):
     """Queries the MySQL public ensembl database and outputs a gene lookup object in JSON format.
     Optionally write an additional file suitable for loading Ensembl gene data into the Open Targets pipeline.
     """
 
-    # connect to Ensembl MySQL public server
-    core = create_engine(
-        'mysql+mysqldb://anonymous@ensembldb.ensembl.org:3337/homo_sapiens_core_93_37', connect_args={'compress': True})
+    # connect to Ensembl MySQL public server; port used will depend on Ensembl assembly version
+    database_url = build_database_url(ensembl_database)
+    print('Connecting to {}'.format(database_url))
+
+    core = create_engine(database_url, connect_args={'compress': True})
 
     # SQL to retrieve required fields
     # Note that the single % in the LIKE clause have to be escaped as %%
@@ -67,14 +69,11 @@ def build_ensembl_genes(pipeline_file_name):
     if (pipeline_file_name):
 
         # Create a new data frame with only unique gene_ids, and remove columns we don't need in the output
-        df_pipeline = df.drop_duplicates(
-            subset='gene_id')  # only store one of each gene
-        df_pipeline = df_pipeline.drop(
-            columns=['exon_start', 'exon_end', 'fwdstrand', 'transcript_id'])
+        df_pipeline = df.drop_duplicates(subset='gene_id')  # only store one of each gene
+        df_pipeline = df_pipeline.drop(columns=['exon_start', 'exon_end', 'fwdstrand', 'transcript_id'])
 
         # Rename certain columns to those required by the pipeline
-        df_pipeline = df_pipeline.rename(index=str, columns={
-                                         "gene_id": "id", "chr": "seq_region_name", "gene_name": "display_name"})
+        df_pipeline = df_pipeline.rename(index=str, columns={"gene_id": "id", "chr": "seq_region_name", "gene_name": "display_name"})
 
         # Add columns derived from the meta table
         df_pipeline['assembly_name'] = get_meta(core, 'assembly.default')
@@ -87,7 +86,10 @@ def build_ensembl_genes(pipeline_file_name):
         # all on valid chromosomes so this will always be true
         df_pipeline['is_reference'] = True
 
-        df_pipeline.to_json(pipeline_file_name, orient='records', lines=True)
+        compress = 'gzip' if pipeline_file_name.endswith('.gz') else None
+       
+        df_pipeline.to_json(pipeline_file_name, orient='records', compression=compress)
+        print("Wrote Ensembl gene data to {}".format(pipeline_file_name))
 
     # Get TSS determined by strand
     df['fwdstrand'] = df['fwdstrand'].map({1: True, -1: False})
@@ -100,10 +102,8 @@ def build_ensembl_genes(pipeline_file_name):
         flatten_exons).reset_index()
 
     # Merge exons to genes
-    keepcols = ['gene_id', 'gene_name', 'description',
-                'biotype', 'chr', 'tss', 'start', 'end', 'fwdstrand']
-    genes = pd.merge(df.loc[:, keepcols].drop_duplicates(),
-                     exons_df, on='gene_id', how='inner')
+    keepcols = ['gene_id', 'gene_name', 'description', 'biotype', 'chr', 'tss', 'start', 'end', 'fwdstrand']
+    genes = pd.merge(df.loc[:, keepcols].drop_duplicates(), exons_df, on='gene_id', how='inner')
 
     # For clickhouse bools need to converted (0, 1)
     genes.fwdstrand = genes.fwdstrand.replace({False: 0, True: 1})
@@ -143,8 +143,7 @@ def flatten_exons(srs):
 
 # Retrieve specific values from the Ensembl meta table
 def get_meta(connection, field):
-    result = connection.execute(
-        "SELECT meta_value FROM meta WHERE meta_key='%s'" % field)
+    result = connection.execute("SELECT meta_value FROM meta WHERE meta_key='{}'".format(field))
     records = result.fetchall()
     return records[0][0]
 
@@ -155,11 +154,27 @@ def main():
         description='Genetics Portal backend data processing')
 
     parser.add_argument("--pipeline", metavar='FILE', action='store',
-                        help="dump gene information needed for the Open Targets pipeline to the specified file")
+                        help="Dump gene information needed for the Open Targets pipeline to the specified file. If the filename ends in .gz, it will be automatically compressed")
+
+    parser.add_argument("--ensembl-database", action='store', 
+                        help="Use the specified Ensembl database, default is homo_sapiens_core_93_37")
 
     args = parser.parse_args()
 
-    build_ensembl_genes(args.pipeline)
+    build_ensembl_genes(args.pipeline, args.ensembl_database)
+
+
+def build_database_url(ensembl_database):
+    """ Build the correct URL based on the database required
+    GRCh37 databases are on port 3337, all other databases are on port 3306
+    """
+
+    if not ensembl_database:
+        ensembl_database = 'homo_sapiens_core_93_37'
+
+    port = 3337 if str(ensembl_database).endswith('37') else 3306
+
+    return 'mysql+mysqldb://anonymous@ensembldb.ensembl.org:{}/{}'.format(port, ensembl_database)
 
 
 if __name__ == '__main__':
