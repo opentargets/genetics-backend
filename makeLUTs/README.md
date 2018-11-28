@@ -2,8 +2,6 @@
 
 ## Installation
 
-[Install pipenv with homebrew or your method of choice](https://pipenv.readthedocs.io/en/latest/install/#installing-pipenv), then
-
 ```
 conda env create -f environment.yaml
 conda activate genetics-backend
