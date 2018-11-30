@@ -55,7 +55,7 @@ An optional argument can be used to specify a file to which gene information req
 ```
 python create_genes_dictionary.py \
     --enable-platform-mode \
-    -o path/ensembl_genes.json[.json]
+    -o path/ensembl_genes.json[.gz]
 ```
 
 Note that if the filename ends in `.gz` the output will be automatically `gzip`-compressed.
