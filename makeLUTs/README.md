@@ -10,13 +10,13 @@ conda activate genetics-backend
 ## Usage
 
 ```
-usage: create_genes_dictionary.py [-h] [-o FILE] [-e] [-n ENSEMBL_DATABASE]
+usage: create_genes_dictionary.py [-h] [-o PATH] [-e] [-n ENSEMBL_DATABASE]
 
 Genetics Portal backend data processing
 
 optional arguments:
   -h, --help            show this help message and exit
-  -o FILE, --output-file FILE
+  -o PATH, --output-path PATH
                         The name of the output file
   -e, --enable-platform-mode
                         Dump gene information needed for the Open Targets
@@ -30,7 +30,7 @@ optional arguments:
 ### Genes dictionary
 
 ```
-python create_genes_dictionary.py -o path/filename.json[.gz]
+python create_genes_dictionary.py -o path
 ```
 
 will output a `genes.json` file that can be uploaded to the right storage bucket
