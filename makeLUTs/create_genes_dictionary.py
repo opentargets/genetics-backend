@@ -47,7 +47,7 @@ def build_ensembl_genes(pipeline_file_name, enable_platform_mode, ensembl_databa
     et.transcript_id,
     g.stable_id AS gene_id,
     x.display_label AS gene_name,
-    g.description,
+    IFNULL(g.description, "") AS description,
     g.biotype,
     g.source,
     g.version,
