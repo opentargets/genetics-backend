@@ -12,16 +12,20 @@ logger = logging.getLogger()
 
 
 VALID_CHROMOSOMES = [*[str(chr) for chr in range(1, 23)], 'X', 'Y', 'MT']
+ENSEMBL_DEFAULT_DB = 'homo_sapiens_core_93_37'
 
 
-def make_output_filename(name):
+def make_output_filename(name, emsembl_db, enable_compression):
     """create the path if it does not exist for the filename and
     return the full filename
     """
-    if not os.path.exists(os.path.dirname(name)) and os.path.dirname(name):
-        os.mkdir(os.path.dirname(name))
+    dirname = os.path.dirname(name)
+    filename = emsembl_db + '_genes.json' + ('.gz' if enable_compression else '')
 
-    return name
+    if not os.path.exists(dirname) and dirname:
+        os.mkdir(dirname)
+
+    return os.path.join(dirname, filename)
 
 
 def check_compress_enabled(filename):
@@ -97,7 +101,7 @@ def build_ensembl_genes(pipeline_file_name, enable_platform_mode, ensembl_databa
         # all on valid chromosomes so this will always be true
         df_pipeline['is_reference'] = True
 
-        df_pipeline.to_json(pipeline_file_name, orient='records',
+        df_pipeline.to_json(pipeline_file_name, orient='records', lines=True,
                             compression=check_compress_enabled(pipeline_file_name))
         print("Wrote Ensembl gene data to {}".format(pipeline_file_name))
 
@@ -163,37 +167,33 @@ def main():
     parser = argparse.ArgumentParser(
         description='Genetics Portal backend data processing')
 
-    parser.add_argument("-o", "--output-file", metavar='FILE', action='store',
-                        help="The name of the output file")
+    parser.add_argument("-o", "--output-path", metavar='PATH', action='store',
+                        help="The name of the output folder, default ./", default='./')
 
     parser.add_argument("-e", "--enable-platform-mode", action='store_true', default=False,
-                        help=("Dump gene information needed for the Open Targets pipeline to "
-                              "the specified file. If the filename ends in .gz, "
-                             "it will be automatically compressed"))
+                        help=("Dump gene information needed for the Open Targets pipeline, "
+                              "default False"))
+
+    parser.add_argument("-z", "--enable-compression", action='store_true', default=True,
+                        help=("Enable gzip compression for the produced file, default True"))
 
     parser.add_argument("-n", "--ensembl-database", action='store',
-                        help="Use the specified Ensembl database, default is homo_sapiens_core_93_37")
+                        help="Use the specified Ensembl database, default is homo_sapiens_core_93_37",
+                        default=ENSEMBL_DEFAULT_DB)
 
     args = parser.parse_args()
 
-    if not args.output_file:
-        parser.print_help()
-    else:
-        filename = make_output_filename(args.output_file)
-        build_ensembl_genes(filename, args.enable_platform_mode, args.ensembl_database)
+    filename = make_output_filename(args.output_path, args.ensembl_database, args.enable_compression)
+    build_ensembl_genes(filename, args.enable_platform_mode, args.ensembl_database)
 
 
 def build_database_url(ensembl_database):
     """ Build the correct URL based on the database required
     GRCh37 databases are on port 3337, all other databases are on port 3306
     """
-
-    if not ensembl_database:
-        ensembl_database = 'homo_sapiens_core_93_37'
-
     port = 3337 if str(ensembl_database).endswith('37') else 3306
-
-    return 'mysql+mysqldb://anonymous@ensembldb.ensembl.org:{}/{}'.format(port, ensembl_database)
+    return 'mysql+mysqldb://anonymous@ensembldb.ensembl.org:{}/{}'\
+        .format(port, ensembl_database)
 
 
 if __name__ == '__main__':
