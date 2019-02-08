@@ -9,6 +9,8 @@ create table if not exists ot.variants_log (
   rs_id String,
   gene_id_prot_coding String,
   gene_id String,
+  gene_id_distance UInt32,
+  gene_id_prot_coding_distance UInt32,
   most_severe_consequence String,
   raw Float64,
   phred Float64,

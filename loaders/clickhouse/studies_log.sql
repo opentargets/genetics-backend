@@ -1,5 +1,5 @@
 create database if not exists ot;
-create table if not exists ot.studies_log(
+create table if not exists ot.studies_log (
   study_id String,
   pmid Nullable(String),
   pub_date Nullable(String),
@@ -8,11 +8,11 @@ create table if not exists ot.studies_log(
   pub_author Nullable(String),
   trait_reported String,
   trait_efos Array(String) default [],
-  trait_code String,
   ancestry_initial Array(String) default [],
   ancestry_replication Array(String) default [],
   n_initial Nullable(UInt32),
   n_replication Nullable(UInt32),
   n_cases Nullable(UInt32),
-  trait_category Nullable(String))
+  trait_category Nullable(String),
+  num_assoc_loci Nullable(UInt32))
 engine = Log;

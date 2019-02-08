@@ -1,11 +1,17 @@
-create table if not exists ot.studies_overlap_log(
-  index_variantid_b37_A String,
-  index_variantid_b37_B String,
-  set_type String,
-  study_id_A String,
-  study_id_B String,
-  overlap_AB UInt32,
-  distinct_A UInt32,
-  distinct_B UInt32)
+create table if not exists ot.studies_overlap_log (
+  A_chrom String,
+  A_pos UInt32,
+  A_ref String,
+  A_alt String,
+  A_study_id String,
+  B_study_id Array(String),
+  B_chrom Array(String),
+  B_pos Array(UInt32),
+  B_ref Array(String),
+  B_alt Array(String),
+  AB_overlap Array(UInt32),
+  A_distinct Array(UInt32),
+  B_distinct Array(UInt32)
+  )
 engine = Log;
 

@@ -9,6 +9,8 @@ as select
   assumeNotNull(variant_id) as variant_id,
   assumeNotNull(rs_id) as rs_id,
   gene_id,
+  gene_id_distance,
+  gene_id_prot_coding_distance,
   gene_id_prot_coding,
   most_severe_consequence,
   raw,
@@ -26,4 +28,3 @@ as select
   gnomad_nfe_onf,
   gnomad_oth
 from ot.variants_log;
-

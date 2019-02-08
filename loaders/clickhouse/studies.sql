@@ -9,11 +9,11 @@ as select
   pub_author,
   trait_reported,
   trait_efos,
-  trait_code,
   ancestry_initial,
   ancestry_replication,
   n_initial,
   n_replication,
   n_cases,
-  trait_category
+  trait_category,
+  num_assoc_loci
 from ot.studies_log;
