@@ -4,14 +4,7 @@ create table if not exists ot.v2g_log(
   position UInt32,
   ref_allele String,
   alt_allele String,
-  variant_id String,
-  rs_id String,
-  gene_chr String,
   gene_id String,
-  gene_start UInt32,
-  gene_end UInt32,
-  gene_type String,
-  gene_name String,
   feature String,
   type_id String,
   source_id String,
@@ -25,6 +18,9 @@ create table if not exists ot.v2g_log(
   qtl_score Nullable(Float64),
   interval_score Nullable(Float64),
   qtl_score_q Nullable(Float64),
-  interval_score_q Nullable(Float64))
+  interval_score_q Nullable(Float64),
+  d Nullable(UInt32),
+  distance_score Nullable(Float64),
+  distance_score_q Nullable(Float64))
 engine = Log;
 
