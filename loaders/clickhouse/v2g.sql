@@ -26,10 +26,12 @@ as select
 from ot.v2g_log;
 
 create table if not exists ot.v2g_score_by_source
-engine MergeTree partition by (source_id, chr_id) order by (variant_id, gene_id)
+engine MergeTree partition by (source_id, chr_id) order by (chr_id, position, ref_allele, alt_allele, gene_id)
 as select
   chr_id,
-  variant_id,
+  position,
+  ref_allele,
+  alt_allele,
   gene_id,
   source_id,
   groupArray(feature) as feature_list,
@@ -44,17 +46,19 @@ as select
   (max_qtl + max_int + max_fpred + max_distance) as source_score,
   source_score * dictGetFloat64('v2gw','weight',tuple(source_id)) as source_score_weighted
 from ot.v2g
-group by source_id, chr_id, variant_id, gene_id;
+group by source_id, chr_id, position, ref_allele, alt_allele, gene_id;
 
 create table if not exists ot.v2g_score_by_overall
-engine MergeTree partition by (chr_id) order by (variant_id, gene_id)
+engine MergeTree partition by (chr_id) order by (chr_id, position, ref_allele, alt_allele, gene_id)
 as select
   chr_id,
-  variant_id,
+  position,
+  ref_allele,
+  alt_allele,
   gene_id,
   groupArray(source_id) as source_list,
   groupArray(source_score) as source_score_list,
   sum(source_score_weighted) / (select sum(weight) from ot.v2gw) as overall_score
 from ot.v2g_score_by_source
-group by chr_id, variant_id, gene_id;
+group by chr_id, position, ref_allele, alt_allele, gene_id;
 
