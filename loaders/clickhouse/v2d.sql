@@ -11,7 +11,6 @@ create table if not exists ot.v2d_by_chrpos(
   ancestry_replication Array(String) default [],
   n_initial Nullable(UInt32),
   n_replication Nullable(UInt32),
-  rsid String,
   n_cases Nullable(UInt32),
   trait_category Nullable(String),
   num_assoc_loci Nullable(UInt32),
@@ -25,18 +24,15 @@ create table if not exists ot.v2d_by_chrpos(
     A_distinct UInt32,
     B_distinct UInt32
     ),
+  rsid String,
   lead_chrom String,
   lead_pos UInt32,
   lead_ref String,
   lead_alt String,
-  lead_variant_id String,
-  lead_segment UInt32,
   tag_chrom String,
   tag_pos UInt32,
   tag_ref String,
   tag_alt String,
-  tag_segment UInt32,
-  tag_variant_id String,
   overall_r2 Nullable(Float64),
   AFR_1000G_prop Nullable(Float64),
   AMR_1000G_prop Nullable(Float64),
@@ -72,7 +68,6 @@ create table if not exists ot.v2d_by_stchr(
   n_replication Nullable(UInt32),
   n_cases Nullable(UInt32),
   trait_category Nullable(String),
-  rsid String,
   num_assoc_loci Nullable(UInt32),
   overlaps Nested (
     B_study_id String,
@@ -84,18 +79,15 @@ create table if not exists ot.v2d_by_stchr(
     A_distinct UInt32,
     B_distinct UInt32
     ),
+  rsid String,
   lead_chrom String,
   lead_pos UInt32,
   lead_ref String,
   lead_alt String,
-  lead_variant_id String,
-  lead_segment UInt32,
   tag_chrom String,
   tag_pos UInt32,
   tag_ref String,
   tag_alt String,
-  tag_segment UInt32,
-  tag_variant_id String,
   overall_r2 Nullable(Float64),
   AFR_1000G_prop Nullable(Float64),
   AMR_1000G_prop Nullable(Float64),
@@ -116,3 +108,5 @@ create table if not exists ot.v2d_by_stchr(
   pval Float64)
 engine MergeTree partition by (lead_chrom) order by (study_id, lead_pos, lead_ref, lead_alt);
 
+insert into ot.v2d_by_chrpos select * from ot.v2d_log;
+insert into ot.v2d_by_stchr select * from ot.v2d_log;
