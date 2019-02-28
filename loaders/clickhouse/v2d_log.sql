@@ -23,7 +23,6 @@ create table if not exists ot.v2d_log(
   AB_overlap Array(UInt32),
   A_distinct Array(UInt32),
   B_distinct Array(UInt32),
-  rsid String,
   lead_chrom String,
   lead_pos UInt32,
   lead_ref String,

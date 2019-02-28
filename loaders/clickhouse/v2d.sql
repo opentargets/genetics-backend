@@ -1,3 +1,4 @@
+create database if not exists ot;
 create table if not exists ot.v2d_by_chrpos(
   study_id String,
   pmid Nullable(String),
@@ -24,7 +25,6 @@ create table if not exists ot.v2d_by_chrpos(
     A_distinct UInt32,
     B_distinct UInt32
     ),
-  rsid String,
   lead_chrom String,
   lead_pos UInt32,
   lead_ref String,
@@ -79,7 +79,6 @@ create table if not exists ot.v2d_by_stchr(
     A_distinct UInt32,
     B_distinct UInt32
     ),
-  rsid String,
   lead_chrom String,
   lead_pos UInt32,
   lead_ref String,

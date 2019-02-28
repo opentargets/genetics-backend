@@ -37,6 +37,7 @@ as select
   groupArray(feature) as feature_list,
   groupArray(qtl_score_q) as qtl_list,
   groupArray(interval_score_q) as interval_list,
+  groupArray(distance_score_q) as distance_list,
   any(fpred_labels) as fpred_label_list,
   any(fpred_scores) as fpred_score_list,
   max(ifNull(qtl_score_q, 0.)) AS max_qtl,
