@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# CURRENTLY, IN ORDER TO BUILD SOME TABLES WE NEED A HIGHMEM MACHINE
+
 root_path=$(pwd)
 base_path="gs://genetics-portal-output/1903"
 echo "loading file ${filename}"
