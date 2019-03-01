@@ -44,6 +44,15 @@ gsutil cat "${base_path}/v2g/part-*" | clickhouse-client -h 127.0.0.1 --query="i
 clickhouse-client -m -n < v2g.sql
 clickhouse-client -m -n -q "drop table ot.v2g_log;"
 
+echo create v2g structure
+clickhouse-client -m -n < v2g_structure.sql
+
+echo compute v2g_scored table
+clickhouse-client -m -n < v2g_scored.sql
+
+echo compute d2v2g_scored table
+clickhouse-client -m -n < d2v2g_scored.sql
+
 # elasticsearch process
 echo load elasticsearch studies data
 gsutil cat "${base_path}/lut/study-index/part-*" | elasticsearch_loader --index-settings-file index_settings.json --bulk-size 10000 --index studies --type study json --json-lines -
