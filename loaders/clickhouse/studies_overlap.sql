@@ -20,7 +20,7 @@ engine MergeTree order by (A_study_id, A_chrom, A_pos, A_ref, A_alt);
 insert into ot.studies_overlap select * from ot.studies_overlap_log;
 
 create table if not exists ot.studies_overlap_exploded
-engine MergeTree order by (A_study_id, A_chrom, A_pos, A_ref, A_alt)
+engine MergeTree order by (A_study_id, B_study_id, A_chrom, A_pos, A_ref, A_alt, B_chrom, B_pos, B_ref, B_alt)
 as select
   A_chrom,
   A_pos,
