@@ -2,7 +2,6 @@ create database if not exists ot;
 create table if not exists ot.variants_log (
   chr_id String,
   position UInt32,
-  segment UInt32 MATERIALIZED (intDiv(position,1000000)),
   ref_allele String,
   alt_allele String,
   variant_id String MATERIALIZED (concat(chr_id,'_',toString(position),'_',ref_allele,'_',alt_allele)),

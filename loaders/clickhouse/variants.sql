@@ -3,7 +3,6 @@ engine MergeTree order by (variant_id)
 as select
   assumeNotNull(chr_id) as chr_id,
   assumeNotNull(position) as position,
-  segment,
   assumeNotNull(ref_allele) as ref_allele,
   assumeNotNull(alt_allele) as alt_allele,
   assumeNotNull(variant_id) as variant_id,

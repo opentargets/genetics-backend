@@ -1,0 +1,79 @@
+{
+  "settings": {
+    "index" : {
+      "number_of_replicas" : 0
+    }
+  },
+  "mappings": {
+    "gene": {
+      "properties": {
+        "biotype": {
+          "type": "text",
+          "fields": {
+            "keyword": {
+              "type": "keyword",
+              "ignore_above": 256
+            }
+          }
+        },
+        "chr": {
+          "type": "text",
+          "fields": {
+            "keyword": {
+              "type": "keyword",
+              "ignore_above": 256
+            }
+          }
+        },
+        "description": {
+          "type": "text",
+          "fields": {
+            "keyword": {
+              "type": "keyword",
+              "ignore_above": 256
+            }
+          }
+        },
+        "end": {
+          "type": "long"
+        },
+        "exons": {
+          "type": "text",
+          "fields": {
+            "keyword": {
+              "type": "keyword",
+              "ignore_above": 256
+            }
+          }
+        },
+        "fwdstrand": {
+          "type": "long"
+        },
+        "gene_id": {
+          "type": "text",
+          "fields": {
+            "keyword": {
+              "type": "keyword",
+              "ignore_above": 256
+            }
+          }
+        },
+        "gene_name": {
+          "type": "text",
+          "fields": {
+            "keyword": {
+              "type": "keyword",
+              "ignore_above": 256
+            }
+          }
+        },
+        "start": {
+          "type": "long"
+        },
+        "tss": {
+          "type": "long"
+        }
+      }
+    }
+  }
+}

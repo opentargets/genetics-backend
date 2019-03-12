@@ -57,16 +57,16 @@ clickhouse-client -m -n < d2v2g_scored.sql
 
 # elasticsearch process
 echo load elasticsearch studies data
-gsutil cat "${base_path}/lut/study-index/part-*" | elasticsearch_loader --index-settings-file index_settings.json --bulk-size 10000 --index studies --type study json --json-lines -
+gsutil cat "${base_path}/lut/study-index/part-*" | elasticsearch_loader --index-settings-file index_settings_studies.json --bulk-size 10000 --index studies --type study json --json-lines -
 
 echo load elasticsearch genes data
-gsutil cat "gs://genetics-portal-data/lut/gene_dictionary.json" | elasticsearch_loader --index-settings-file index_settings.json --bulk-size 10000 --index genes --type gene json --json-lines -
+gsutil cat "gs://genetics-portal-data/lut/gene_dictionary.json" | elasticsearch_loader --index-settings-file index_settings_genes.json --bulk-size 10000 --index genes --type gene json --json-lines -
 
 echo load elasticsearch variants data
 for chr in "1" "2" "3" "4" "5" "6" "7" "8" "9" "10" "11" "12" "13" "14" "15" "16" "17" "18" "19" "20" "21" "22" "x" "y" "mt"; do
 	chrU=$(echo -n $chr | awk '{print toupper($0)}')
 	curl -XDELETE localhost:9200/variant_$chr
-	clickhouse-client -q "select * from ot.variants prewhere chr_id = '${chrU}' format JSONEachRow" | elasticsearch_loader --index-settings-file index_settings.json --bulk-size 10000 --index variant_$chr --type variant json --json-lines -
+	clickhouse-client -q "select * from ot.variants prewhere chr_id = '${chrU}' format JSONEachRow" | elasticsearch_loader --index-settings-file index_settings_variants.json --bulk-size 10000 --index variant_$chr --type variant json --json-lines -
 done
 
 
