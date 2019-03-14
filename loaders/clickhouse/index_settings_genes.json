@@ -109,7 +109,9 @@
             "keyword": {
               "type": "keyword",
               "ignore_above": 256
-            }
+            },
+          "analyzer": "autocomplete",
+          "search_analyzer": "autocomplete_search"
           }
         },
         "start": {
