@@ -15,14 +15,6 @@ create table if not exists ot.v2d_log(
   n_cases Nullable(UInt32),
   trait_category Nullable(String),
   num_assoc_loci Nullable(UInt32),
-  B_study_id Array(String),
-  B_chrom Array(String),
-  B_pos Array(UInt32),
-  B_ref Array(String),
-  B_alt Array(String),
-  AB_overlap Array(UInt32),
-  A_distinct Array(UInt32),
-  B_distinct Array(UInt32),
   lead_chrom String,
   lead_pos UInt32,
   lead_ref String,
@@ -48,6 +40,7 @@ create table if not exists ot.v2d_log(
   beta_ci_upper Nullable(Float64),
   pval_mantissa Float64,
   pval_exponent Int32,
-  pval Float64)
+  pval Float64,
+  ld_available Nullable(UInt8))
 engine = Log;
 
