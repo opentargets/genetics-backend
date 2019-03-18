@@ -40,7 +40,6 @@ create table if not exists ot.v2d_log(
   beta_ci_upper Nullable(Float64),
   pval_mantissa Float64,
   pval_exponent Int32,
-  pval Float64,
-  ld_available Nullable(UInt8))
+  pval Float64)
 engine = Log;
 

@@ -43,7 +43,6 @@ as select
      pval_mantissa ,
      pval_exponent ,
      pval ,
-     ld_available,
      gene_id ,
      feature ,
      type_id ,

@@ -40,7 +40,6 @@ create table if not exists ot.d2v2g(
   pval_mantissa Float64,
   pval_exponent Int32,
   pval Float64,
-  ld_available Nullable(UInt8),
   gene_id String,
   feature String,
   type_id String,

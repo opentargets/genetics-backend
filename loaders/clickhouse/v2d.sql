@@ -129,8 +129,7 @@ select
   beta_ci_upper ,
   pval_mantissa ,
   pval_exponent ,
-  pval,
-  ld_available
+  pval
 from ot.v2d_log;
 insert into ot.v2d_by_stchr
 select
@@ -174,6 +173,5 @@ select
   beta_ci_upper ,
   pval_mantissa ,
   pval_exponent ,
-  pval,
- ld_available
+  pval
 from ot.v2d_log;
