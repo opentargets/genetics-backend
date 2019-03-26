@@ -63,9 +63,11 @@ clickhouse-client -m -n < d2v2g_scored_l2g.sql
 
 # elasticsearch process
 echo load elasticsearch studies data
+curl -XDELETE localhost:9200/studies
 gsutil cat "${base_path}/lut/study-index/part-*" | elasticsearch_loader --index-settings-file index_settings_studies.json --bulk-size 10000 --index studies --type study json --json-lines -
 
 echo load elasticsearch genes data
+curl -XDELETE localhost:9200/genes
 gsutil cat "${base_path}/lut/gene-index/part-*" | elasticsearch_loader --index-settings-file index_settings_genes.json --bulk-size 10000 --index genes --type gene json --json-lines -
 
 echo load elasticsearch variants data
