@@ -31,13 +31,13 @@ create table if not exists ot.d2v2g_log(
   SAS_1000G_prop Nullable(Float64),
   log10_ABF Nullable(Float64),
   posterior_prob Nullable(Float64),
-  odds_ratio Float64,
-  oddsr_ci_lower Float64,
-  oddsr_ci_upper Float64,
-  direction String,
-  beta Float64,
-  beta_ci_lower Float64,
-  beta_ci_upper Float64,
+  odds_ratio Nullable(Float64),
+  oddsr_ci_lower Nullable(Float64),
+  oddsr_ci_upper Nullable(Float64),
+  direction Nullable(String),
+  beta Nullable(Float64),
+  beta_ci_lower Nullable(Float64),
+  beta_ci_upper Nullable(Float64),
   pval_mantissa Float64,
   pval_exponent Int32,
   pval Float64,
@@ -56,9 +56,8 @@ create table if not exists ot.d2v2g_log(
   interval_score Nullable(Float64),
   qtl_score_q Nullable(Float64),
   interval_score_q Nullable(Float64),
-  d Nullable(Float64),
+  d Nullable(UInt32),
   distance_score Nullable(Float64),
   distance_score_q Nullable(Float64))
 engine = Log;
 
--- d have to be UInt32 for the next run
