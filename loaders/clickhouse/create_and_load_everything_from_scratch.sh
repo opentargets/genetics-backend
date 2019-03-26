@@ -6,6 +6,9 @@ root_path=$(pwd)
 base_path="gs://genetics-portal-output/1903"
 echo "loading file ${filename}"
 
+echo create genes table
+clickhouse-client -m -n < genes.sql
+gsutil cat "${base_path}/lut/gene-index/part-*" | clickhouse-client -h 127.0.0.1 --query="insert into ot.genes format JSONEachRow "
 
 echo create studies tables
 clickhouse-client -m -n < studies_log.sql
