@@ -1,5 +1,6 @@
 create table if not exists ot.genes (
     gene_id String,
+    description String,
     gene_name String,
     biotype String,
     chr String,
@@ -7,5 +8,5 @@ create table if not exists ot.genes (
     start UInt32,
     end UInt32,
     fwdstrand UInt8,
-    exons Array(UInt32) default []
+    exons String
 ) engine MergeTree order by (gene_id)
