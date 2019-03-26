@@ -55,6 +55,9 @@ clickhouse-client -m -n < v2g_scored.sql
 echo compute d2v2g_scored table
 clickhouse-client -m -n < d2v2g_scored.sql
 
+echo compute locus 2 gene table
+clickhouse-client -m -n < d2v2g_scored_l2g.sql
+
 # elasticsearch process
 echo load elasticsearch studies data
 gsutil cat "${base_path}/lut/study-index/part-*" | elasticsearch_loader --index-settings-file index_settings_studies.json --bulk-size 10000 --index studies --type study json --json-lines -
