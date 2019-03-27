@@ -52,8 +52,8 @@ clickhouse-client -m -n -q "drop table ot.v2g_log;"
 echo create v2g structure
 clickhouse-client -m -n < v2g_structure.sql
 
-echo compute v2g_scored table
-clickhouse-client -m -n < v2g_scored.sql
+#echo compute v2g_scored table
+#clickhouse-client -m -n < v2g_scored.sql
 
 echo compute d2v2g_scored table
 clickhouse-client -m -n < d2v2g_scored.sql
