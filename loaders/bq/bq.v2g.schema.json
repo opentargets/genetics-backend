@@ -96,7 +96,7 @@
 },
   {
   "name":"d",
-  "type": "FLOAT",
+  "type": "INTEGER",
   "mode": "NULLABLE"
 },
 {
