@@ -1,3 +1,4 @@
+create database if not exists ot;
 create table if not exists ot.v2g_scored
   engine MergeTree partition by (source_id, chr_id) order by (position)
 as select

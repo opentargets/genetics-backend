@@ -1,3 +1,4 @@
+create database if not exists ot;
 CREATE TABLE if NOT EXISTS ot.v2g_structure
 engine MergeTree ORDER BY (type_id)
 AS SELECT 

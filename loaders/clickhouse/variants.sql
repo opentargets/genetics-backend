@@ -1,3 +1,4 @@
+create database if not exists ot;
 create table if not exists ot.variants
 engine MergeTree order by (variant_id)
 as select

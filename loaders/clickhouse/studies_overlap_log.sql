@@ -1,3 +1,4 @@
+create database if not exists ot;
 create table if not exists ot.studies_overlap_log (
   A_chrom String,
   A_pos UInt32,
