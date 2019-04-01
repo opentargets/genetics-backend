@@ -8,7 +8,7 @@ echo "loading file ${filename}"
 
 echo create genes table
 clickhouse-client -m -n < genes.sql
-gsutil cat "${base_path}/lut/gene-index/part-*" | clickhouse-client -h 127.0.0.1 --query="insert into ot.genes format JSONEachRow "
+gsutil cat "${base_path}/lut/genes-index/part-*" | clickhouse-client -h 127.0.0.1 --query="insert into ot.genes format JSONEachRow "
 
 echo create studies tables
 clickhouse-client -m -n < studies_log.sql
@@ -68,7 +68,7 @@ gsutil cat "${base_path}/lut/study-index/part-*" | elasticsearch_loader --index-
 
 echo load elasticsearch genes data
 curl -XDELETE localhost:9200/genes
-gsutil cat "${base_path}/lut/gene-index/part-*" | elasticsearch_loader --index-settings-file index_settings_genes.json --bulk-size 10000 --index genes --type gene json --json-lines -
+gsutil cat "${base_path}/lut/genes-index/part-*" | elasticsearch_loader --index-settings-file index_settings_genes.json --bulk-size 10000 --index genes --type gene json --json-lines -
 
 echo load elasticsearch variants data
 for chr in "1" "2" "3" "4" "5" "6" "7" "8" "9" "10" "11" "12" "13" "14" "15" "16" "17" "18" "19" "20" "21" "22" "x" "y" "mt"; do
