@@ -7,7 +7,7 @@
 {
   "name":"description",
   "type": "STRING",
-  "mode": "REQUIRED"
+  "mode": "NULLABLE"
 },
 {
   "name":"gene_name",
