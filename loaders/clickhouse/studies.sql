@@ -1,3 +1,4 @@
+create database if not exists ot;
 create table if not exists ot.studies
 engine MergeTree order by (study_id)
 as select

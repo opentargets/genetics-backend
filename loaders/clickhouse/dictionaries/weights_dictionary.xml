@@ -3,7 +3,7 @@
                 <name>v2gw</name>
                 <source>
                         <file>
-                                <path>/etc/clickhouse-server/dictionaries/v2g_weights.tsv</path>
+                                <path>/etc/clickhouse-server/dictionaries/v2g_scoring_source_weights.tsv</path>
                                 <format>TabSeparatedWithNames</format>
                         </file>
                 </source>

@@ -1,0 +1,309 @@
+[
+     {
+  "name":"study_id",
+  "type": "STRING",
+  "mode": "REQUIRED"
+},
+  {
+  "name":"pmid",
+  "type": "STRING",
+  "mode": "NULLABLE"
+},
+    {
+  "name":"pub_date",
+  "type": "STRING",
+  "mode": "NULLABLE"
+},
+  {
+  "name":"pub_journal",
+  "type": "STRING",
+  "mode": "NULLABLE"
+},
+  {
+  "name":"pub_title",
+  "type": "STRING",
+  "mode": "NULLABLE"
+},
+    {
+  "name":"pub_author",
+  "type": "STRING",
+  "mode": "NULLABLE"
+},
+      {
+  "name":"trait_reported",
+  "type": "STRING",
+  "mode": "REQUIRED"
+},
+  {
+  "name":"trait_efos",
+  "type": "STRING",
+  "mode": "REPEATED"
+},
+  {
+  "name":"ancestry_initial",
+  "type": "STRING",
+  "mode": "REPEATED"
+},
+    {
+  "name":"ancestry_replication",
+  "type": "STRING",
+  "mode": "REPEATED"
+},
+  {
+  "name":"n_initial",
+  "type": "INTEGER",
+  "mode": "NULLABLE"
+},
+ {
+  "name":"n_replication",
+  "type": "INTEGER",
+  "mode": "NULLABLE"
+},
+  {
+  "name":"n_cases",
+  "type": "INTEGER",
+  "mode": "NULLABLE"
+},
+
+     {
+  "name":"trait_category",
+  "type": "STRING",
+  "mode": "NULLABLE"
+},
+ {
+  "name":"num_assoc_loci",
+  "type": "INTEGER",
+  "mode": "NULLABLE"
+},
+      {
+  "name":"lead_chrom",
+  "type": "STRING",
+  "mode": "REQUIRED"
+},
+      {
+  "name":"lead_pos",
+  "type": "INTEGER",
+  "mode": "REQUIRED"
+},
+      {
+  "name":"lead_ref",
+  "type": "STRING",
+  "mode": "REQUIRED"
+},
+      {
+  "name":"lead_alt",
+  "type": "STRING",
+  "mode": "REQUIRED"
+},
+      {
+  "name":"tag_chrom",
+  "type": "STRING",
+  "mode": "REQUIRED"
+},
+      {
+  "name":"tag_pos",
+  "type": "INTEGER",
+  "mode": "REQUIRED"
+},
+      {
+  "name":"tag_ref",
+  "type": "STRING",
+  "mode": "REQUIRED"
+},
+      {
+  "name":"tag_alt",
+  "type": "STRING",
+  "mode": "REQUIRED"
+},
+      {
+  "name":"overall_r2",
+  "type": "FLOAT",
+  "mode": "NULLABLE"
+},
+      {
+  "name":"AFR_1000G_prop",
+  "type": "FLOAT",
+  "mode": "NULLABLE"
+},
+          {
+  "name":"AMR_1000G_prop",
+  "type": "FLOAT",
+  "mode": "NULLABLE"
+},
+
+          {
+  "name":"EAS_1000G_prop",
+  "type": "FLOAT",
+  "mode": "NULLABLE"
+},
+
+          {
+  "name":"EUR_1000G_prop",
+  "type": "FLOAT",
+  "mode": "NULLABLE"
+},
+
+          {
+  "name":"SAS_1000G_prop",
+  "type": "FLOAT",
+  "mode": "NULLABLE"
+},
+
+           {
+  "name":"log10_ABF",
+  "type": "FLOAT",
+  "mode": "NULLABLE"
+},
+           {
+  "name":"posterior_prob",
+  "type": "FLOAT",
+  "mode": "NULLABLE"
+},
+
+               {
+  "name":"odds_ratio",
+  "type": "FLOAT",
+  "mode": "NULLABLE"
+},
+           {
+  "name":"oddsr_ci_lower",
+  "type": "FLOAT",
+  "mode": "NULLABLE"
+},
+           {
+  "name":"oddsr_ci_upper",
+  "type": "FLOAT",
+  "mode": "NULLABLE"
+},
+
+               {
+  "name":"direction",
+  "type": "STRING",
+  "mode": "NULLABLE"
+},
+
+               {
+  "name":"beta",
+  "type": "FLOAT",
+  "mode": "NULLABLE"
+},
+
+               {
+  "name":"beta_ci_lower",
+  "type": "FLOAT",
+  "mode": "NULLABLE"
+},
+
+               {
+  "name":"beta_ci_upper",
+  "type": "FLOAT",
+  "mode": "NULLABLE"
+},
+
+               {
+  "name":"pval_mantissa",
+  "type": "FLOAT",
+  "mode": "REQUIRED"
+},
+
+                   {
+  "name":"pval_exponent",
+  "type": "FLOAT",
+  "mode": "REQUIRED"
+},
+                   {
+  "name":"pval",
+  "type": "FLOAT",
+  "mode": "REQUIRED"
+},
+{
+  "name":"gene_id",
+  "type": "STRING",
+  "mode": "REQUIRED"
+},
+{
+  "name":"feature",
+  "type": "STRING",
+  "mode": "REQUIRED"
+},
+{
+  "name":"type_id",
+  "type": "STRING",
+  "mode": "REQUIRED"
+},
+{
+  "name":"source_id",
+  "type": "STRING",
+  "mode": "REQUIRED"
+},
+{
+  "name":"fpred_labels",
+  "type": "STRING",
+  "mode": "REPEATED"
+},
+{
+  "name":"fpred_scores",
+  "type": "FLOAT",
+  "mode": "REPEATED"
+},
+{
+  "name":"fpred_max_label",
+  "type": "STRING",
+  "mode": "NULLABLE"
+},
+{
+  "name":"fpred_max_score",
+  "type": "FLOAT",
+  "mode": "NULLABLE"
+},
+{
+  "name":"qtl_beta",
+  "type": "FLOAT",
+  "mode": "NULLABLE"
+},
+{
+  "name":"qtl_se",
+  "type": "FLOAT",
+  "mode": "NULLABLE"
+},
+{
+  "name":"qtl_pval",
+  "type": "FLOAT",
+  "mode": "NULLABLE"
+},
+{
+  "name":"qtl_score",
+  "type": "FLOAT",
+  "mode": "NULLABLE"
+},
+{
+  "name":"interval_score",
+  "type": "FLOAT",
+  "mode": "NULLABLE"
+},
+{
+  "name":"qtl_score_q",
+  "type": "FLOAT",
+  "mode": "NULLABLE"
+},
+{
+  "name":"interval_score_q",
+  "type": "FLOAT",
+  "mode": "NULLABLE"
+},
+  {
+  "name":"d",
+  "type": "INTEGER",
+  "mode": "NULLABLE"
+},
+{
+  "name":"distance_score",
+  "type": "FLOAT",
+  "mode": "NULLABLE"
+},
+{
+  "name":"distance_score_q",
+  "type": "FLOAT",
+  "mode": "NULLABLE"
+}
+]

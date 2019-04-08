@@ -1,15 +1,15 @@
+create database if not exists ot;
 create table if not exists ot.variants
-engine MergeTree partition by (chr_id, segment) order by (variant_id)
+engine MergeTree order by (variant_id)
 as select
   assumeNotNull(chr_id) as chr_id,
   assumeNotNull(position) as position,
-  segment,
   assumeNotNull(ref_allele) as ref_allele,
   assumeNotNull(alt_allele) as alt_allele,
   assumeNotNull(variant_id) as variant_id,
   assumeNotNull(rs_id) as rs_id,
-  gene_id,
-  gene_id_distance,
+  gene_id_any,
+  gene_id_any_distance,
   gene_id_prot_coding_distance,
   gene_id_prot_coding,
   most_severe_consequence,

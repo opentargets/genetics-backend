@@ -1,0 +1,78 @@
+  [
+      {
+  "name":"study_id",
+  "type": "STRING",
+  "mode": "REQUIRED"
+},
+  {
+  "name":"pmid",
+  "type": "STRING",
+  "mode": "NULLABLE"
+},
+    {
+  "name":"pub_date",
+  "type": "STRING",
+  "mode": "NULLABLE"
+},
+  {
+  "name":"pub_journal",
+  "type": "STRING",
+  "mode": "NULLABLE"
+},
+  {
+  "name":"pub_title",
+  "type": "STRING",
+  "mode": "NULLABLE"
+},
+    {
+  "name":"pub_author",
+  "type": "STRING",
+  "mode": "NULLABLE"
+},
+      {
+  "name":"trait_reported",
+  "type": "STRING",
+  "mode": "REQUIRED"
+},
+  {
+  "name":"trait_efos",
+  "type": "STRING",
+  "mode": "REPEATED"
+},
+  {
+  "name":"ancestry_initial",
+  "type": "STRING",
+  "mode": "REPEATED"
+},
+    {
+  "name":"ancestry_replication",
+  "type": "STRING",
+  "mode": "REPEATED"
+},
+  {
+  "name":"n_initial",
+  "type": "INTEGER",
+  "mode": "NULLABLE"
+},
+ {
+  "name":"n_replication",
+  "type": "INTEGER",
+  "mode": "NULLABLE"
+},
+  {
+  "name":"n_cases",
+  "type": "INTEGER",
+  "mode": "NULLABLE"
+},
+
+     {
+  "name":"trait_category",
+  "type": "STRING",
+  "mode": "NULLABLE"
+},
+ {
+  "name":"num_assoc_loci",
+  "type": "INTEGER",
+  "mode": "NULLABLE"
+}
+]
