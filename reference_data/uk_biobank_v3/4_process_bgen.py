@@ -21,6 +21,7 @@ def main():
     # to_keep_list = 'output/ukb_10k_downsampled.sample_list.tsv'
     # out_plink = 'output/ukb_v3_downsampled10k_plink/ukb_v3_chr{chrom}.downsampled10k'
     # cores = 1 # Use "*" for all
+    # maf_threshold = 0.001
     
     # Args (server)
     chrom = sys.argv[1]
@@ -30,6 +31,7 @@ def main():
     to_keep_list = '/nfs/users/nfs_e/em21/otcoregen/em21/uk_biobank_analysis/create_10k_subsample/input_data/ukb_10k_downsampled.sample_list.tsv'
     out_plink = '/nfs/users/nfs_e/em21/otcoregen/em21/uk_biobank_analysis/create_10k_subsample/output/ukb_v3_downsampled10k_plink/ukb_v3_chr{chrom}.downsampled10k'
     cores = sys.argv[2] # Use "*" for all
+    maf_threshold = 0.001
 
     # Set the maximum number of cores
     hl.init(master="local[{}]".format(cores))
@@ -76,6 +78,13 @@ def main():
         
     # Re-call to remove phasing (required for plink output)
     # mt = mt.annotate_entries(GT=hl.call(mt.GT[0], mt.GT[1], phased=False))
+
+    # Filter on MAF
+    mt = hl.variant_qc(mt)
+    mt = mt.annotate_rows(
+        variant_qc=mt.variant_qc.annotate(MAF=hl.min(mt.variant_qc.AF))
+    )
+    mt = mt.filter_rows(mt.variant_qc.MAF >= maf_threshold)
 
     # Liftover
     mt = mt.annotate_rows(
