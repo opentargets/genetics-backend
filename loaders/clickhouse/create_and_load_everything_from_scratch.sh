@@ -3,7 +3,7 @@
 # CURRENTLY, IN ORDER TO BUILD SOME TABLES WE NEED A HIGHMEM MACHINE
 
 root_path=$(pwd)
-base_path="gs://genetics-portal-output/190303"
+base_path="gs://genetics-portal-output/190304"
 echo "loading file ${filename}"
 
 echo create genes table
