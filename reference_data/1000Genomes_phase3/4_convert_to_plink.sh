@@ -2,7 +2,7 @@
 
 cores=8
 
-cd output/plink_format
+cd output/plink_format_b37
 
 # Process vcfs
 for chrom_X in {1..22} X Y; do

@@ -55,6 +55,9 @@ def main():
     if not hl.hadoop_exists(in_bgen.format(chrom=chrom) + '.idx2'):
         hl.index_bgen(
             in_bgen.format(chrom=chrom),
+            contig_recoding={"01": "1", "02": "2", "03": "3", "04": "4",
+                             "05": "5", "06": "6", "07": "7", "08": "8",
+                             "09": "9"},
             reference_genome='GRCh37'
         )
 
