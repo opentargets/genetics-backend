@@ -15,6 +15,7 @@ for chrom_X in {1..22} X Y; do
       --in_plink $IN_FILE \
       --out_plink $OUT_FILE \
       --chainfile grch37_to_grch38.over.chain.gz \
+      --min_partitions 64
     
   done
 done
