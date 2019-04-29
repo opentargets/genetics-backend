@@ -35,7 +35,8 @@ def main():
         bed=args.in_plink + '.bed',
         bim=args.in_plink + '.bim',
         fam=args.in_plink + '.fam',
-        reference_genome='GRCh37'
+        reference_genome='GRCh37',
+        min_partitions=args.min_partitions
     )
 
     # # Re-call to remove phasing (required for plink output)
@@ -75,6 +76,8 @@ def parse_args():
     parser.add_argument('--in_plink', metavar="<file>", type=str, required=True)
     parser.add_argument('--out_plink', metavar="<file>", type=str, required=True)
     parser.add_argument('--chainfile', metavar="<file>", type=str, required=True)
+    parser.add_argument('--min_partitions', metavar="<int>",
+                        type=int, required=False, default=None)
     args = parser.parse_args()
     return args
 
