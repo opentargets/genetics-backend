@@ -11,9 +11,6 @@ export PYSPARK_SUBMIT_ARGS="--driver-memory 8g pyspark-shell"
 import hail as hl
 import sys
 import argparse
-import pyspark
-from pyspark.sql.functions import *
-from pyspark.sql.types import *
 
 def main():
 

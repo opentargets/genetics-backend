@@ -2,10 +2,10 @@
 
 mkdir -p output/plink_format_b38
 
-# for chrom_X in {1..22} X Y; do
-#   for pop in EUR AFR AMR EAS SAS; do
-for chrom_X in 22; do
-  for pop in EUR AFR; do
+# for chrom_X in 22; do
+#   for pop in EUR AFR; do
+for chrom_X in {1..22} X Y; do
+  for pop in EUR AFR AMR EAS SAS; do
     
     IN_FILE=output/plink_format_b37/$pop/$pop.$chrom_X.1000Gp3.20130502
     OUT_FILE=output/plink_format_b38/$pop/$pop.$chrom_X.1000Gp3.20130502
