@@ -1,6 +1,6 @@
 #!/bin/sh
-#BSUB -J ukb_downsample[1-23]
-#BSUB -q long # small=batches of 10; normal=12h max; long=48h max; basement=300 job limit; hugemem=512GB mem
+#BSUB -J ukb_downsample[1-9]
+#BSUB -q basement # small=batches of 10; normal=12h max; long=48h max; basement=300 job limit; hugemem=512GB mem
 #BSUB -n 8
 #BSUB -R "select[mem>16000] rusage[mem=16000] span[hosts=1]" -M16000
 #BSUB -o output.%J.%I

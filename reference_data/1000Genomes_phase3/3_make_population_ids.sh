@@ -1,6 +1,6 @@
 # Change to plink folder
-mkdir -p output/plink_format
-cd output/plink_format
+mkdir -p output/plink_format_b37
+cd output/plink_format_b37
 
 # Get super population IDs
 for pop in AFR AMR EAS EUR SAS; do

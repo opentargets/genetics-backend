@@ -25,7 +25,7 @@ def main():
     # Args
     in_sample = 'example_data/ukb33896_imp_chr1_v3_s487320.sample'
     in_exclusions = 'output/exclusion_list.tsv'
-    out_sample = 'output/ukb_10k_downsampled.sample'
+    # out_sample = 'output/ukb_10k_downsampled.sample'
     out_sample_list = 'output/ukb_10k_downsampled.sample_list.tsv'
     n_downsample = 10000
     seed = 123
@@ -69,12 +69,12 @@ def main():
         .replace({False: 0, True: 1})
     )
 
-    # Write new sample file
-    df.to_csv(
-        out_sample,
-        sep=' ',
-        index=None
-    )
+    # # Write new sample file
+    # df.to_csv(
+    #     out_sample,
+    #     sep=' ',
+    #     index=None
+    # )
 
     # Write list of samples to a file
     with open(out_sample_list, 'w') as out_h:
