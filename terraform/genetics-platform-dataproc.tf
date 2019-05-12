@@ -41,7 +41,7 @@ resource "google_dataproc_cluster" "gp-cluster" {
         }
 
         worker_config {
-            num_instances     = 2
+            num_instances     = 3
             machine_type      = "n1-highmem-64"
             disk_config {
                 boot_disk_size_gb = 1000

@@ -1,0 +1,20 @@
+create table if not exists ot.v2d_sa_molecular_trait_log(
+  type String,
+  study_id String,
+  chrom String,
+  pos UInt32,
+  ref String,
+  alt String,
+  beta Float64,
+  se Float64,
+  pval Float64,
+  n_total UInt32,
+  eaf Float64,
+  mac Float64,
+  num_tests Float64,
+  info Float64,
+  is_cc UInt8,
+  phenotype_id String,
+  gene_id String,
+  bio_feature String)
+engine = Log;
