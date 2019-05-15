@@ -26,6 +26,9 @@ echo "loading files from ${base_path}"
 es_host="${ES_HOST:-localhost}"
 clickhouse_host="${CLICKHOUSE_HOST:-localhost}"
 
+echo "drop ot database"
+clickhouse-client -h "${clickhouse_host}" -m -n -q "drop database ot;"
+
 echo "loading data to clikhouse with host ${clickhouse_host}"
 echo create genes table
 clickhouse-client -h "${clickhouse_host}" -m -n < ${script_dir}/genes.sql
