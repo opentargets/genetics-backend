@@ -8,6 +8,7 @@ as select
      pub_journal,
      pub_title,
      pub_author,
+      has_sumstats,
      trait_reported,
      trait_efos,
      ancestry_initial,

@@ -6,6 +6,7 @@ create table if not exists ot.v2d_log(
   pub_journal Nullable(String),
   pub_title Nullable(String),
   pub_author Nullable(String),
+  has_sumstats UInt8,
   trait_reported String,
   trait_efos Array(String) default [],
   ancestry_initial Array(String) default [],
