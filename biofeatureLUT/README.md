@@ -2,6 +2,6 @@
 
 Create LUT to map bio feature codes to labels.
 
-New bio features must be added to `create_LUT.py`. The output is then copied to `gs://genetics-portal-data/lut/`
+Scripts to make the original LUT are in `create_original_lut`. After that, LUT has been updated manually. The latest version will be kept in `latest` and `gs://genetics-portal-data/lut/`.
 
-`gsutil cp biofeature_lut_190208.json gs://genetics-portal-data/lut/biofeature_lut_190208.json`
+For June 2019 release, we hacked the data to combine (source, feature) columns. Scripts to add these hacked fields are in `hack_for_June2019_release`.
