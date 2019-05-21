@@ -19,7 +19,7 @@ else
    list_files="find $1/gwas/** -type f "
 fi
 
-clickhouse_host="${CLICKHOUSE_HOST:-localhost}"
+clickhouse_host="${SUMSTATS_CLICKHOUSE_HOST:-localhost}"
 
 echo "create database"
 clickhouse-client -h "${clickhouse_host}" --query="create database if not exists sumstats"

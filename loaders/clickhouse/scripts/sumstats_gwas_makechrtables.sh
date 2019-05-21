@@ -1,6 +1,6 @@
 #!/bin/bash
 
-clickhouse_host="${CLICKHOUSE_HOST:-localhost}"
+clickhouse_host="${SUMSTATS_CLICKHOUSE_HOST:-localhost}"
 
 for chrom in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 X Y MT; do
 echo "Building gwas table for $chrom chromosome"
