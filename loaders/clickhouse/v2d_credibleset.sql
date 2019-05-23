@@ -20,13 +20,9 @@ as select
     multisignal_method,
     phenotype_id,
     postprob,
-    postprob_cumsum,
     tag_beta,
-    tag_beta_cond,
     tag_pval,
-    tag_pval_cond,
     tag_se,
-    tag_se_cond,
     cast(assumeNotNull(type) as Enum8('eqtl' = 1, 'pqtl' = 2, 'gwas' = 3)) as data_type
 from ot.v2d_credset_log;
 

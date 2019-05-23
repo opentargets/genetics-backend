@@ -22,7 +22,6 @@ create table if not exists ot.v2d_coloc_log(
     coloc_log2_h4_h3 Float64,
     is_flipped UInt8,
     right_gene_id String,
-    right_bio_feature String,
-    right_phenotype String)
+    right_bio_feature Nullable(String),
+    right_phenotype Nullable(String))
 engine = Log;
-
