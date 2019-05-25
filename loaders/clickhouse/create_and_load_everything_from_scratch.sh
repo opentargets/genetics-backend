@@ -2,6 +2,9 @@
 
 # CURRENTLY, IN ORDER TO BUILD SOME TABLES WE NEED A HIGHMEM MACHINE
 
+# drop all dbs
+clickhouse-client -h 127.0.0.1 --query="drop database ot;"
+
 root_path=$(pwd)
 base_path="gs://genetics-portal-output/190501"
 echo "loading file ${filename}"

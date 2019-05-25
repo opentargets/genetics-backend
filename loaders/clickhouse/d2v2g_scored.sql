@@ -8,7 +8,7 @@ as select
      pub_journal,
      pub_title,
      pub_author,
-      has_sumstats,
+     has_sumstats,
      trait_reported,
      trait_efos,
      ancestry_initial,
@@ -78,31 +78,31 @@ as select
      ORDER BY tag_chrom, tag_pos, tag_ref, tag_alt, gene_id
     ) USING (tag_chrom, tag_pos, tag_ref, tag_alt, gene_id);
 
-SELECT
-    study_id,
-    lead_chrom,
-    lead_pos,
-    lead_ref,
-    lead_alt,
-    tag_chrom,
-    tag_pos,
-    tag_ref,
-    tag_alt,
-    gene_id,
-    any(posterior_prob) AS posterior_prob,
-    any(overall_r2) AS overall_r2,
-    any(overall_score) AS overall_score,
-    if(isNull(posterior_prob), overall_r2 * overall_score, posterior_prob * overall_score) AS l2g
-FROM ot.d2v2g_scored
-PREWHERE (study_id = 'NEALEUKB_23105') AND (gene_id = 'ENSG00000111785')
-GROUP BY
-    study_id,
-    lead_chrom,
-    lead_pos,
-    lead_ref,
-    lead_alt,
-    tag_chrom,
-    tag_pos,
-    tag_ref,
-    tag_alt,
-    gene_id;
+-- SELECT
+--     study_id,
+--     lead_chrom,
+--     lead_pos,
+--     lead_ref,
+--     lead_alt,
+--     tag_chrom,
+--     tag_pos,
+--     tag_ref,
+--     tag_alt,
+--     gene_id,
+--     any(posterior_prob) AS posterior_prob,
+--     any(overall_r2) AS overall_r2,
+--     any(overall_score) AS overall_score,
+--     if(isNull(posterior_prob), overall_r2 * overall_score, posterior_prob * overall_score) AS l2g
+-- FROM ot.d2v2g_scored
+-- PREWHERE (study_id = 'NEALEUKB_23105') AND (gene_id = 'ENSG00000111785')
+-- GROUP BY
+--     study_id,
+--     lead_chrom,
+--     lead_pos,
+--     lead_ref,
+--     lead_alt,
+--     tag_chrom,
+--     tag_pos,
+--     tag_ref,
+--     tag_alt,
+--     gene_id;
