@@ -1,0 +1,6 @@
+<?xml version="1.0" ?>
+<config>
+    <max_partitions_per_insert_block>10000</max_partitions_per_insert_block>
+    <!-- Use all memory we have for data loading queries -->
+    <max_memory_usage>0</max_memory_usage>
+</config>
