@@ -3,7 +3,7 @@
 # CURRENTLY, IN ORDER TO BUILD SOME TABLES WE NEED A HIGHMEM MACHINE
 
 # drop all dbs
-clickhouse-client -h 127.0.0.1 --query="drop database ot;"
+clickhouse-client -h 127.0.0.1 --query="drop database if exists ot;"
 
 root_path=$(pwd)
 base_path="gs://genetics-portal-output/190501"
@@ -63,6 +63,18 @@ clickhouse-client -m -n < d2v2g_scored.sql
 
 echo compute locus 2 gene table
 clickhouse-client -m -n < d2v2g_scored_l2g.sql
+
+echo load coloc data
+clickhouse-client -m -n < v2d_coloc_log.sql
+gsutil cat "gs://genetics-portal-staging/coloc/190513/coloc_processed.json/part-*" | zcat |  clickhouse-client -h 127.0.0.1 --query="insert into ot.v2d_coloc_log format JSONEachRow "
+clickhouse-client -m -n < v2d_coloc.sql
+clickhouse-client -m -n -q "drop table ot.v2d_coloc_log;"
+
+echo load credible set
+clickhouse-client -m -n < v2d_credibleset_log.sql
+gsutil cat "gs://genetics-portal-staging/finemapping/190430/credset/part-*" | zcat |  clickhouse-client -h 127.0.0.1 --query="insert into ot.v2d_credset_log format JSONEachRow "
+clickhouse-client -m -n < v2d_credibleset.sql
+clickhouse-client -m -n -q "drop table ot.v2d_credset_log;"
 
 # elasticsearch process
 echo load elasticsearch studies data

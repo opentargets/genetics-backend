@@ -125,10 +125,10 @@ select
   d,
   distance_score,
   distance_score_q
-from ot.d2v2g_log;
+from (select * from ot.d2v2g_log where tag_chrom in ('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', 'X', 'Y','MT'));
 
 create table if not exists ot.d2v2g_score_by_source
-engine MergeTree partition by (source_id, tag_chrom) order by (tag_chrom, tag_pos, tag_ref, tag_alt, gene_id)
+engine MergeTree partition by (source_id) order by (tag_chrom, tag_pos, tag_ref, tag_alt, gene_id)
 as select
   tag_chrom,
   tag_pos,

@@ -24,7 +24,7 @@ as select
   d,
   distance_score,
   distance_score_q
-from ot.v2g_log;
+from (select * from ot.v2g_log where chr_id in ('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', 'X', 'Y','MT'));
 
 create table if not exists ot.v2g_score_by_source
 engine MergeTree partition by (source_id, chr_id) order by (chr_id, position, ref_allele, alt_allele, gene_id)
