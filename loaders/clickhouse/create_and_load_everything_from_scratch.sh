@@ -86,6 +86,7 @@ for file in $gwas_files; do
              --query="insert into ot.v2d_sa_gwas_log format Parquet "
 done
 clickhouse-client -m -n < v2d_sa_gwas.sql
+clickhouse-client -m -n -q "drop table if exists ot.v2d_sa_gwas_log;"
 
 echo generate sumstats molecular trait tables
 clickhouse-client -m -n < v2d_sa_molecular_traits_log.sql
@@ -97,6 +98,7 @@ for file in $moltraits_files; do
              --query="insert into ot.v2d_sa_molecular_trait_log format Parquet "
 done
 clickhouse-client -m -n < v2d_sa_molecular_traits.sql
+clickhouse-client -m -n -q "drop table if exists ot.v2d_sa_molecular_trait_log;"
 
 # elasticsearch process
 echo load elasticsearch studies data
