@@ -3,4 +3,7 @@
     <max_partitions_per_insert_block>10000</max_partitions_per_insert_block>
     <!-- Use all memory we have for data loading queries -->
     <max_memory_usage>0</max_memory_usage>
+    <!-- Use disk for sorting and grouping when query grows bigger then 40Gb -->
+    <max_bytes_before_external_sort>40G</max_bytes_before_external_sort>
+    <max_bytes_before_external_group_by>40G</max_bytes_before_external_group_by>
 </config>
