@@ -1,5 +1,5 @@
 create table if not exists ot.v2d_sa_molecular_trait_log(
-  type String,
+  type_id String,
   study_id String,
   chrom String,
   pos UInt32,

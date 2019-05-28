@@ -76,6 +76,28 @@ gsutil cat "gs://genetics-portal-staging/finemapping/190430/credset/part-*" | zc
 clickhouse-client -m -n < v2d_credibleset.sql
 clickhouse-client -m -n -q "drop table ot.v2d_credset_log;"
 
+echo generate sumstats gwas tables
+clickhouse-client -m -n < v2d_sa_gwas_log.sql
+gwas_files=$(gsutil ls "gs://genetics-portal-data/v2d_sa/190501/ot_v2d_sa_gwas_*")
+for file in $gwas_files; do
+        echo $file
+        gsutil cat "${file}" | \
+         clickhouse-client -h 127.0.0.1 \
+             --query="insert into ot.v2d_sa_gwas_log format Parquet "
+done
+clickhouse-client -m -n < v2d_sa_gwas.sql
+
+echo generate sumstats molecular trait tables
+clickhouse-client -m -n < v2d_sa_molecular_traits_log.sql
+moltraits_files=$(gsutil ls "gs://genetics-portal-data/v2d_sa/190501/ot_v2d_sa_molecular_trait_*")
+for file in $moltraits_files; do
+        echo $file
+        gsutil cat "${file}" | \
+         clickhouse-client -h 127.0.0.1 \
+             --query="insert into ot.v2d_sa_molecular_trait_log format Parquet "
+done
+clickhouse-client -m -n < v2d_sa_molecular_traits.sql
+
 # elasticsearch process
 echo load elasticsearch studies data
 curl -XDELETE localhost:9200/studies

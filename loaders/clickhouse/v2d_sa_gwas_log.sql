@@ -1,6 +1,6 @@
 create database if not exists ot;
 create table if not exists ot.v2d_sa_gwas_log(
-  type String,
+  type_id String,
   study_id String,
   chrom String,
   pos UInt32,
