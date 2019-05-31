@@ -80,28 +80,30 @@ as select
 
 create database if not exists ot;
 create table if not exists ot.d2v2g_scored_agg
-  engine MergeTree partition by (lead_chrom)
-      order by (study_id, lead_chrom, lead_pos, lead_ref, lead_alt)
+  engine MergeTree partition by (chrom)
+      order by (study, chrom, pos, ref, alt)
 as select
-          study_id,
-          lead_chrom,
-          lead_pos,
-          lead_ref,
-            lead_alt,
+          study,
+          chrom,
+          pos,
+          ref,
+          alt,
             top10_genes,
           top10_genes.2 as top10_genes_ids,
-          top10_genes.1 as top10_genes_scores
+          top10_genes.1 as top10_genes_scores,
+          agg_type
           from (
                 select
-                       study_id,
-                       lead_chrom,
-                       lead_pos,
-                       lead_ref,
-                       lead_alt,
+                       study_id as study,
+                       lead_chrom as chrom,
+                       lead_pos as pos,
+                       lead_ref as ref,
+                       lead_alt as alt,
                        arraySlice(
                            arrayReverseSort(
                                arrayReduce('groupUniqArray',
-                                   groupArray((overall_score, gene_id)))),1,10) AS top10_genes
+                                   groupArray((overall_score, gene_id)))),1,10) AS top10_genes,
+                    'raw' as agg_type
                 from ot.d2v2g_scored
                group by study_id,
                         lead_chrom,

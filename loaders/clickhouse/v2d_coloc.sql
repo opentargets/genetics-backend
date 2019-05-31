@@ -35,30 +35,33 @@ as select
 from (select * from ot.v2d_coloc_log where left_chrom in ('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', 'X', 'Y','MT') and
                                            right_chrom in ('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', 'X', 'Y','MT'));
 
+create database if not exists ot;
 create table if not exists ot.v2d_coloc_agg
     engine MergeTree
-        partition by (left_chrom)
-        order by (left_study, left_chrom, left_pos, left_ref, left_alt)
+        partition by (chrom)
+        order by (study, chrom, pos, ref, alt)
 as select
-          left_study,
-          left_chrom,
-          left_pos,
-          left_ref,
-          left_alt,
+          study,
+          chrom,
+          pos,
+          ref,
+          alt,
           top10_genes,
           top10_genes.2 as top10_genes_ids,
-          top10_genes.1 as top10_genes_scores
+          top10_genes.1 as top10_genes_scores,
+          agg_type
 from (select
-             left_study,
-             left_chrom,
-              left_pos,
-              left_ref,
-              left_alt,
+             left_study as study,
+             left_chrom as chrom,
+              left_pos as pos,
+              left_ref as ref,
+              left_alt as alt,
           arraySlice(
               arrayReverseSort(
                   arrayReduce('groupUniqArray',
                       groupArray((coloc_h4, right_gene_id)))),1, 10)
-              as top10_genes
+              as top10_genes,
+             'coloc' as agg_type
     from ot.v2d_coloc
     where coloc_h4 >= 0.8 and
       coloc_log2_h4_h3 >= log2(5) and
