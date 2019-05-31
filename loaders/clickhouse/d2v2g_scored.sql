@@ -78,31 +78,34 @@ as select
      ORDER BY tag_chrom, tag_pos, tag_ref, tag_alt, gene_id
     ) USING (tag_chrom, tag_pos, tag_ref, tag_alt, gene_id);
 
--- SELECT
---     study_id,
---     lead_chrom,
---     lead_pos,
---     lead_ref,
---     lead_alt,
---     tag_chrom,
---     tag_pos,
---     tag_ref,
---     tag_alt,
---     gene_id,
---     any(posterior_prob) AS posterior_prob,
---     any(overall_r2) AS overall_r2,
---     any(overall_score) AS overall_score,
---     if(isNull(posterior_prob), overall_r2 * overall_score, posterior_prob * overall_score) AS l2g
--- FROM ot.d2v2g_scored
--- PREWHERE (study_id = 'NEALEUKB_23105') AND (gene_id = 'ENSG00000111785')
--- GROUP BY
---     study_id,
---     lead_chrom,
---     lead_pos,
---     lead_ref,
---     lead_alt,
---     tag_chrom,
---     tag_pos,
---     tag_ref,
---     tag_alt,
---     gene_id;
+create database if not exists ot;
+create table if not exists ot.d2v2g_scored_agg
+  engine MergeTree partition by (lead_chrom)
+      order by (study_id, lead_chrom, lead_pos, lead_ref, lead_alt)
+as select
+          study_id,
+          lead_chrom,
+          lead_pos,
+          lead_ref,
+            lead_alt,
+            top10_genes,
+          top10_genes.2 as top10_genes_ids,
+          top10_genes.1 as top10_genes_scores
+          from (
+                select
+                       study_id,
+                       lead_chrom,
+                       lead_pos,
+                       lead_ref,
+                       lead_alt,
+                       arraySlice(
+                           arrayReverseSort(
+                               arrayReduce('groupUniqArray',
+                                   groupArray((overall_score, gene_id)))),1,10) AS top10_genes
+                from ot.d2v2g_scored
+               group by study_id,
+                        lead_chrom,
+                        lead_pos,
+                        lead_ref,
+                        lead_alt
+            );
