@@ -1,0 +1,22 @@
+#!/bin/bash
+
+clickhouse_host="${CLICKHOUSE_HOST:-localhost}"
+
+echo "studies_overlap_exploded Has to have more rows than the studies_overlap table"
+clickhouse-client -h "${clickhouse_host}" -m -n -q "select count(*) from ot.studies_overlap_exploded;"
+echo "d2v2g_score_by_source. Has to be 0 < N <= d2v2g"
+clickhouse-client -h "${clickhouse_host}" -m -n -q "select count(*) from ot.d2v2g_score_by_source;"
+echo "d2v2g_score_by_overall. Has to be 0 < N <= d2v2g_score_by_source"
+clickhouse-client -h "${clickhouse_host}" -m -n -q "select count(*) from ot.d2v2g_score_by_overall;"
+echo "d2v2g_scored. Has to be 0 < N <= d2v2g"
+clickhouse-client -h "${clickhouse_host}" -m -n -q "select count(*) from ot.d2v2g_scored;"
+echo "d2l2g_raw_scores. Has to be 0 < N <= d2v2g_scored"
+clickhouse-client -h "${clickhouse_host}" -m -n -q "select count(*) from ot.d2l2g_raw_scores;"
+echo "d2l2g_norm_scores. Has to be 0 < N <= d2l2g_raw_scores"
+clickhouse-client -h "${clickhouse_host}" -m -n -q "select count(*) from ot.d2l2g_norm_scores;"
+echo "v2g_score_by_source. Has to be 0 < N <= v2g"
+clickhouse-client -h "${clickhouse_host}" -m -n -q "select count(*) from ot.v2g_score_by_source;"
+echo "v2g_score_by_overall. Has to be 0 < N <= v2g_score_by_source"
+clickhouse-client -h "${clickhouse_host}" -m -n -q "select count(*) from ot.v2g_score_by_overall;"
+echo "v2g_structure. Has to be 0 < N <= v2g"
+clickhouse-client -h "${clickhouse_host}" -m -n -q "select count(*) from ot.v2g_structure;"
