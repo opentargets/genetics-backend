@@ -6,7 +6,7 @@
 clickhouse-client -h 127.0.0.1 --query="drop database if exists ot;"
 
 root_path=$(pwd)
-base_path="gs://genetics-portal-output/190501"
+base_path="gs://genetics-portal-output/190502"
 echo "loading file ${filename}"
 
 echo create genes table
