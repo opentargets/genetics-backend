@@ -83,6 +83,9 @@
         "num_assoc_loci": {
           "type": "long"
         },
+        "has_sumstats": {
+          "type": "boolean"
+        },
         "pmid": {
           "type": "text",
           "fields": {
