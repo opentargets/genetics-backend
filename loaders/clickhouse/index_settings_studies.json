@@ -115,7 +115,8 @@
               "type": "keyword",
               "ignore_above": 256
             }
-          }
+          },
+          "copy_to": "mixed_field"
         },
         "pub_title": {
           "type": "text",

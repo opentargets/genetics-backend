@@ -66,7 +66,7 @@ clickhouse-client -m -n < d2v2g_scored.sql
 
 echo load coloc data
 clickhouse-client -m -n < v2d_coloc_log.sql
-gsutil cat "gs://genetics-portal-output/190502/v2d_coloc/part-*" | clickhouse-client -h 127.0.0.1 --query="insert into ot.v2d_coloc_log format JSONEachRow "
+gsutil cat "${base_path}/v2d_coloc/part-*" | clickhouse-client -h 127.0.0.1 --query="insert into ot.v2d_coloc_log format JSONEachRow "
 clickhouse-client -m -n < v2d_coloc.sql
 clickhouse-client -m -n -q "drop table ot.v2d_coloc_log;"
 
