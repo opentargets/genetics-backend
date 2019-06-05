@@ -88,9 +88,7 @@ as select
           pos,
           ref,
           alt,
-            top10_genes,
-          top10_genes.2 as top10_genes_ids,
-          top10_genes.1 as top10_genes_scores,
+          top10_genes as top10_genes,
           agg_type
           from (
                 select

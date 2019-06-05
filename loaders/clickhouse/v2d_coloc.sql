@@ -47,8 +47,6 @@ as select
           ref,
           alt,
           top10_genes,
-          top10_genes.2 as top10_genes_ids,
-          top10_genes.1 as top10_genes_scores,
           agg_type
 from (select
              left_study as study,
