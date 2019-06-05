@@ -15,11 +15,7 @@ gsutil cat "${base_path}/lut/genes-index/part-*" | clickhouse-client -h 127.0.0.
 
 echo create studies tables
 clickhouse-client -m -n < studies_log.sql
-# TODO this is a temporal workaround as elasticsearch does not like explicit null values for fields and the studies are not yet properly filetered
-# gsutil cat "${base_path}/lut/study-index/part-*" | clickhouse-client -h 127.0.0.1 --query="insert into ot.studies_log format JSONEachRow "
-clickhouse-client -h 127.0.0.1 --query="select * from ot.studies format JSONEachRow "| \
-    jq -r 'del(.[] | nulls)|@json' | \
-    elasticsearch_loader --index-settings-file index_settings_studies.json --bulk-size 10000 --index studies --type study json --json-lines -
+gsutil cat "${base_path}/lut/study-index/part-*" | clickhouse-client -h 127.0.0.1 --query="insert into ot.studies_log format JSONEachRow "
 clickhouse-client -m -n < studies.sql
 clickhouse-client -m -n -q "drop table ot.studies_log;"
 
@@ -107,7 +103,11 @@ clickhouse-client -m -n -q "drop table if exists ot.v2d_sa_molecular_trait_log;"
 # elasticsearch process
 echo load elasticsearch studies data
 curl -XDELETE localhost:9200/studies
-gsutil cat "${base_path}/lut/study-index/part-*" | elasticsearch_loader --index-settings-file index_settings_studies.json --bulk-size 10000 --index studies --type study json --json-lines -
+# TODO this is a temporal workaround as elasticsearch does not like explicit null values for fields and the studies are not yet properly filetered
+# gsutil cat "${base_path}/lut/study-index/part-*" | elasticsearch_loader --index-settings-file index_settings_studies.json --bulk-size 10000 --index studies --type study json --json-lines -
+clickhouse-client -h 127.0.0.1 --query="select * from ot.studies format JSONEachRow "| \
+    jq -r 'del(.[] | nulls)|@json' | \
+    elasticsearch_loader --index-settings-file index_settings_studies.json --bulk-size 10000 --index studies --type study json --json-lines -
 
 echo load elasticsearch genes data
 curl -XDELETE localhost:9200/genes
