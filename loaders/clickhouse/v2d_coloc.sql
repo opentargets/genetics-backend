@@ -54,10 +54,9 @@ from (select
               left_pos as pos,
               left_ref as ref,
               left_alt as alt,
-          arraySlice(
               arrayReverseSort(
                   arrayReduce('groupUniqArray',
-                      groupArray((coloc_h4, right_gene_id)))),1, 10)
+                      groupArray((coloc_h4, right_gene_id))))
               as top10_genes,
              'coloc' as agg_type
     from ot.v2d_coloc

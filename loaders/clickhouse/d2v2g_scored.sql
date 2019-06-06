@@ -97,10 +97,9 @@ as select
                        lead_pos as pos,
                        lead_ref as ref,
                        lead_alt as alt,
-                       arraySlice(
                            arrayReverseSort(
                                arrayReduce('groupUniqArray',
-                                   groupArray((overall_score, gene_id)))),1,10) AS top10_genes,
+                                   groupArray((overall_score, gene_id)))) AS top10_genes,
                     'raw' as agg_type
                 from ot.d2v2g_scored
                group by study_id,
