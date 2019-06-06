@@ -9,7 +9,7 @@ create table if not exists ot.v2d_sa_gwas_log(
   eaf Float64,
   mac Float64,
   mac_cases Float64,
-  info Float64,
+  info Nullable(Float64),
   beta Float64,
   se Float64,
   pval Float64,

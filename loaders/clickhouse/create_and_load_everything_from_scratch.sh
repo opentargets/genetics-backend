@@ -90,7 +90,7 @@ clickhouse-client -m -n -q "drop table if exists ot.v2d_sa_gwas_log;"
 
 echo generate sumstats molecular trait tables
 clickhouse-client -m -n < v2d_sa_molecular_traits_log.sql
-moltraits_files=$(gsutil ls "gs://genetics-portal-data/v2d_sa/190501/ot_v2d_sa_molecular_trait_*")
+moltraits_files=$(gsutil ls "gs://genetics-portal-sumstats-b38/filtered/pvalue_0.05/molecular_trait/190606/part-*")
 for file in $moltraits_files; do
         echo $file
         gsutil cat "${file}" | \
