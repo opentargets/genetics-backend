@@ -61,7 +61,7 @@ from (select
               as top10_genes,
              'coloc' as agg_type
     from ot.v2d_coloc
-    where coloc_h4 >= 0.8 and
+    where coloc_h4 >= 0.95 and
       coloc_log2_h4_h3 >= log2(5) and
       right_type <> 'gwas'
     group by left_study, left_chrom, left_pos, left_ref, left_alt );
