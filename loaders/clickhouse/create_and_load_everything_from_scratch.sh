@@ -6,7 +6,7 @@
 clickhouse-client -h 127.0.0.1 --query="drop database if exists ot;"
 
 root_path=$(pwd)
-base_path="gs://genetics-portal-output/190502"
+base_path="gs://genetics-portal-output/190503"
 echo "loading file ${filename}"
 
 echo create genes table
@@ -78,7 +78,7 @@ clickhouse-client -m -n -q "drop table ot.v2d_credset_log;"
 
 echo generate sumstats gwas tables
 clickhouse-client -m -n < v2d_sa_gwas_log.sql
-gwas_files=$(gsutil ls "gs://genetics-portal-data/v2d_sa/190501/ot_v2d_sa_gwas_*")
+gwas_files=$(gsutil ls "${base_path}/sa/gwas/*.parquet")
 for file in $gwas_files; do
         echo $file
         gsutil cat "${file}" | \
@@ -90,7 +90,7 @@ clickhouse-client -m -n -q "drop table if exists ot.v2d_sa_gwas_log;"
 
 echo generate sumstats molecular trait tables
 clickhouse-client -m -n < v2d_sa_molecular_traits_log.sql
-moltraits_files=$(gsutil ls "gs://genetics-portal-sumstats-b38/filtered/pvalue_0.05/molecular_trait/190606/part-*")
+moltraits_files=$(gsutil ls "${base_path}/sa/molecular_trait/*.parquet")
 for file in $moltraits_files; do
         echo $file
         gsutil cat "${file}" | \
