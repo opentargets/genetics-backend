@@ -36,33 +36,3 @@ from (select * from ot.v2d_coloc_log where left_chrom in ('1', '2', '3', '4', '5
                                            right_chrom in ('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', 'X', 'Y','MT') and
                                            coloc_n_vars >= 200
      );
-
-create database if not exists ot;
-create table if not exists ot.v2d_coloc_agg
-    engine MergeTree
-        partition by (chrom)
-        order by (study, chrom, pos, ref, alt)
-as select
-          study,
-          chrom,
-          pos,
-          ref,
-          alt,
-          top10_genes,
-          agg_type
-from (select
-             left_study as study,
-             left_chrom as chrom,
-              left_pos as pos,
-              left_ref as ref,
-              left_alt as alt,
-              arrayReverseSort(
-                  arrayReduce('groupUniqArray',
-                      groupArray((coloc_h4, right_gene_id))))
-              as top10_genes,
-             'coloc' as agg_type
-    from ot.v2d_coloc
-    where coloc_h4 >= 0.95 and
-      coloc_log2_h4_h3 >= log2(5) and
-      right_type <> 'gwas'
-    group by left_study, left_chrom, left_pos, left_ref, left_alt );

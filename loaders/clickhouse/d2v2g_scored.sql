@@ -77,34 +77,3 @@ as select
      FROM ot.d2v2g_score_by_overall
      ORDER BY tag_chrom, tag_pos, tag_ref, tag_alt, gene_id
     ) USING (tag_chrom, tag_pos, tag_ref, tag_alt, gene_id);
-
-create database if not exists ot;
-create table if not exists ot.d2v2g_scored_agg
-  engine MergeTree partition by (chrom)
-      order by (study, chrom, pos, ref, alt)
-as select
-          study,
-          chrom,
-          pos,
-          ref,
-          alt,
-          top10_genes as top10_genes,
-          agg_type
-          from (
-                select
-                       study_id as study,
-                       lead_chrom as chrom,
-                       lead_pos as pos,
-                       lead_ref as ref,
-                       lead_alt as alt,
-                           arrayReverseSort(
-                               arrayReduce('groupUniqArray',
-                                   groupArray((overall_score, gene_id)))) AS top10_genes,
-                    'raw' as agg_type
-                from ot.d2v2g_scored
-               group by study_id,
-                        lead_chrom,
-                        lead_pos,
-                        lead_ref,
-                        lead_alt
-            );
