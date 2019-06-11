@@ -100,6 +100,9 @@ done
 clickhouse-client -m -n < v2d_sa_molecular_traits.sql
 clickhouse-client -m -n -q "drop table if exists ot.v2d_sa_molecular_trait_log;"
 
+echo building manhattan table
+clickhouse-client -m -n < manhattan.sql
+
 # elasticsearch process
 echo load elasticsearch studies data
 curl -XDELETE localhost:9200/studies
