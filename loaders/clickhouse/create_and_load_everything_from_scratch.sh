@@ -6,7 +6,7 @@
 clickhouse-client -h 127.0.0.1 --query="drop database if exists ot;"
 
 root_path=$(pwd)
-base_path="gs://genetics-portal-output/190503"
+base_path="gs://genetics-portal-output/190504"
 echo "loading file ${filename}"
 
 echo create genes table
@@ -72,7 +72,7 @@ clickhouse-client -m -n -q "drop table ot.v2d_coloc_log;"
 
 echo load credible set
 clickhouse-client -m -n < v2d_credibleset_log.sql
-gsutil cat "gs://genetics-portal-data/credible_sets/190430/part-*" | zcat |  clickhouse-client -h 127.0.0.1 --query="insert into ot.v2d_credset_log format JSONEachRow "
+gsutil cat "${base_path}/v2d_credset/part-*" | zcat |  clickhouse-client -h 127.0.0.1 --query="insert into ot.v2d_credset_log format JSONEachRow "
 clickhouse-client -m -n < v2d_credibleset.sql
 clickhouse-client -m -n -q "drop table ot.v2d_credset_log;"
 
