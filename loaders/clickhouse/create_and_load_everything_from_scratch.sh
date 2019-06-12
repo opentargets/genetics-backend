@@ -48,7 +48,13 @@ clickhouse-client -m -n -q "drop table ot.v2d_log;"
 
 echo create v2g tables
 clickhouse-client -m -n < v2g_log.sql
-gsutil cat "${base_path}/v2g/part-*" | clickhouse-client -h 127.0.0.1 --query="insert into ot.v2g_log format JSONEachRow "
+v2g_files=$(gsutil ls "${base_path}/v2g/part-*")
+for file in $v2g_files; do
+        echo $file
+        gsutil cat "${file}" | \
+         clickhouse-client -h 127.0.0.1 \
+             --query="insert into ot.v2g_log format JSONEachRow "
+done
 clickhouse-client -m -n < v2g.sql
 clickhouse-client -m -n -q "drop table ot.v2g_log;"
 
