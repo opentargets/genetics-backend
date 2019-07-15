@@ -36,8 +36,18 @@ echo "\n         tail -f done.log \n"
 echo "\n   You can also monitor if there are any clickhouse errors in the main logs: \n"
 echo "\n         tail /var/log/clickhouse/clickhouse-server.err.log \n"
 
-gsutil ls -r gs://genetics-portal-sumstats/gwas/** | tee inputlist.txt | xargs -P 16 -I {} sh -c 'CHIP=`echo {} | cut -d/ -f 5`; STUDY=`echo {} | cut -d/ -f 6`; TRAIT=`echo {} | cut -d/ -f 7`; gsutil cat {} | zcat | sed 1d | sed -e "s/^/$CHIP\t$STUDY\t$TRAIT\t/" | clickhouse-client -h 127.0.0.1 --query="insert into sumstats.gwas_log format TabSeparated"; echo {} | tee -a done.log;'
-
+gsutil ls -r gs://genetics-portal-sumstats/gwas/** \
+    | tee inputlist.txt \
+    | xargs -P 16 -I {} sh -c '
+        CHIP=`echo {} | cut -d/ -f 5`
+        STUDY=`echo {} | cut -d/ -f 6`
+        TRAIT=`echo {} | cut -d/ -f 7`
+        gsutil cat {} \
+            | zcat \
+            | sed 1d \
+            | sed -e "s/^/$CHIP\t$STUDY\t$TRAIT\t/" \
+            | clickhouse-client -h 127.0.0.1 --query="insert into sumstats.gwas_log format TabSeparated"
+        echo {} | tee -a done.log'
 # The above imports all empty fields (integers or floats) as zeros rather than
 # NULL. It's probably ok for this set, since there should be no zero in the
 # input, however another way could be to replace the empties with \N with sed:

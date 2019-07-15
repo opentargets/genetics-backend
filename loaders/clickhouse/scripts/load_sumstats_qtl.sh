@@ -27,4 +27,16 @@ create table if not exists sumstats.molecular_qtl_log(
 engine=Log;
 "
 
-gsutil ls -r gs://genetics-portal-sumstats/molecular_qtl/** | tee qtl-inputlist.txt | xargs -P 16 -I {} sh -c 'EXPERIMENT=`echo {} | cut -d/ -f 5`; STUDY=`echo {} | cut -d/ -f 6`; TISSUE=`echo {} | cut -d/ -f 7`; BIOMARK=`echo {} | cut -d/ -f 8`; gsutil cat {} | zcat | sed 1d | sed -e "s/^/$EXPERIMENT\t$STUDY\t$TISSUE\t$BIOMARK\t/" | clickhouse-client -h 127.0.0.1 --query="insert into sumstats.molecular_qtl_log format TabSeparated"; echo {} | tee -a qtl-done.log;'
+gsutil ls -r gs://genetics-portal-sumstats/molecular_qtl/** \
+    | tee qtl-inputlist.txt \
+    | xargs -P 16 -I {} sh -c '
+        EXPERIMENT=`echo {} | cut -d/ -f 5`
+        STUDY=`echo {} | cut -d/ -f 6`
+        TISSUE=`echo {} | cut -d/ -f 7`
+        BIOMARK=`echo {} | cut -d/ -f 8`
+        gsutil cat {} \
+            | zcat \
+            | sed 1d \
+            | sed -e "s/^/$EXPERIMENT\t$STUDY\t$TISSUE\t$BIOMARK\t/" \
+            | clickhouse-client -h 127.0.0.1 --query="insert into sumstats.molecular_qtl_log format TabSeparated"
+        echo {} | tee -a qtl-done.log;'
