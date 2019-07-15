@@ -1,14 +1,16 @@
 #!/usr/bin/env bash
 
-if [ $# -eq 0 ]; then
+if [ $# -ne 1 ]; then
     echo "Loads single gwas compressed file data accompanied with chip, study and trait information that are parsed from the path to the database."
     echo "Example: $0 gs://genetics-portal-sumstats/gwas/chip/study/trait/data.tsv.gz"
     exit 1
 fi
 
-CHIP=`echo $1 | cut -d/ -f 5`
-STUDY=`echo $1 | cut -d/ -f 6`
-TRAIT=`echo $1 | cut -d/ -f 7`
+IFS='/' read -r -a path <<< "$1"
+PARTS=${#path[@]}
+CHIP=${path[$PARTS-4]}
+STUDY=${path[$PARTS-3]}
+TRAIT=${path[$PARTS-2]}
 gsutil cat $1 \
     | zcat \
     | sed 1d \
