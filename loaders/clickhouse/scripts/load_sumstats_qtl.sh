@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 
-# clickhouse-client -h 127.0.0.1 --query="create database if not exists sumstats"
+export SUMSTATS_CLICKHOUSE_HOST="${SUMSTATS_CLICKHOUSE_HOST:-localhost}"
 
-clickhouse-client -h 127.0.0.1 --query="
+# clickhouse-client -h "${SUMSTATS_CLICKHOUSE_HOST}" --query="create database if not exists sumstats"
+
+clickhouse-client -h "${SUMSTATS_CLICKHOUSE_HOST}" --query="
 create table if not exists sumstats.molecular_qtl_log(
     experiment String,
     study_id String,
@@ -38,5 +40,6 @@ gsutil ls -r gs://genetics-portal-sumstats/molecular_qtl/** \
             | zcat \
             | sed 1d \
             | sed -e "s/^/$EXPERIMENT\t$STUDY\t$TISSUE\t$BIOMARK\t/" \
-            | clickhouse-client -h 127.0.0.1 --query="insert into sumstats.molecular_qtl_log format TabSeparated"
-        echo {} | tee -a qtl-done.log;'
+            | clickhouse-client -h "${SUMSTATS_CLICKHOUSE_HOST}" --query="insert into sumstats.molecular_qtl_log format TabSeparated"
+
+        echo {} | tee -a qtl-done.log'
