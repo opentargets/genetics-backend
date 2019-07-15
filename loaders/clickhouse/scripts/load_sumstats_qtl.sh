@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 export SUMSTATS_CLICKHOUSE_HOST="${SUMSTATS_CLICKHOUSE_HOST:-localhost}"
+export SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 # clickhouse-client -h "${SUMSTATS_CLICKHOUSE_HOST}" --query="create database if not exists sumstats"
 
@@ -32,14 +33,5 @@ engine=Log;
 gsutil ls -r gs://genetics-portal-sumstats/molecular_qtl/** \
     | tee qtl-inputlist.txt \
     | xargs -P 16 -I {} sh -c '
-        EXPERIMENT=`echo {} | cut -d/ -f 5`
-        STUDY=`echo {} | cut -d/ -f 6`
-        TISSUE=`echo {} | cut -d/ -f 7`
-        BIOMARK=`echo {} | cut -d/ -f 8`
-        gsutil cat {} \
-            | zcat \
-            | sed 1d \
-            | sed -e "s/^/$EXPERIMENT\t$STUDY\t$TISSUE\t$BIOMARK\t/" \
-            | clickhouse-client -h "${SUMSTATS_CLICKHOUSE_HOST}" --query="insert into sumstats.molecular_qtl_log format TabSeparated"
-
+        "${SCRIPT_DIR}/load_sumstats_qtl_file.sh" {}
         echo {} | tee -a qtl-done.log'
