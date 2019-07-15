@@ -3,6 +3,14 @@
 export SUMSTATS_CLICKHOUSE_HOST="${SUMSTATS_CLICKHOUSE_HOST:-localhost}"
 export SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
+if [ $# -ne 1 ]; then
+    echo "Loads gwas sumstats data"
+    echo "Example: $0 gs://genetics-portal-sumstats"
+    exit 1
+fi
+
+base_path=$1
+
 echo "create database"
 clickhouse-client -h "${SUMSTATS_CLICKHOUSE_HOST}" --query="create database if not exists sumstats"
 
@@ -39,7 +47,7 @@ echo "\n         tail -f done.log \n"
 echo "\n   You can also monitor if there are any clickhouse errors in the main logs: \n"
 echo "\n         tail /var/log/clickhouse/clickhouse-server.err.log \n"
 
-gsutil ls -r gs://genetics-portal-sumstats/gwas/** \
+"${SCRIPT_DIR}/../run.sh" ls -r "${base_path}/gwas/**" \
     | tee inputlist.txt \
     | xargs -P 16 -I {} sh -c '
         "${SCRIPT_DIR}/load_sumstats_gwas_file.sh" {}

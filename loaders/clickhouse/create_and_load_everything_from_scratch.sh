@@ -1,7 +1,17 @@
 #!/bin/bash
 
+# CURRENTLY, IN ORDER TO BUILD SOME TABLES WE NEED A HIGHMEM MACHINE
+
 export ES_HOST="${ES_HOST:-localhost}"
 export CLICKHOUSE_HOST="${CLICKHOUSE_HOST:-localhost}"
+export SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
+if [ $# -ne 1 ]; then
+    echo "Recreates ot database and loads data."
+    echo "Example: $0 gs://genetics-portal-output/190504"
+    exit 1
+fi
+base_path="${1}"
 
 load_foreach_json(){
     # you need two parameters, the path_prefix to make the wildcard and
@@ -9,10 +19,10 @@ load_foreach_json(){
     local path_prefix=$1
     local table_name=$2
     echo loading $path_prefix glob files into this table $table_name
-    gs_files=$(gsutil ls "${path_prefix}/part-*")
+    gs_files=$("${SCRIPT_DIR}/run.sh" ls "${path_prefix}"/part-*)
     for file in $gs_files; do
             echo $file
-            gsutil cat "${file}" | \
+            "${SCRIPT_DIR}/run.sh" cat "${file}" | \
              clickhouse-client -h "${CLICKHOUSE_HOST}" \
                  --query="insert into ${table_name} format JSONEachRow "
     done
@@ -25,10 +35,10 @@ load_foreach_parquet(){
     local path_prefix=$1
     local table_name=$2
     echo loading $path_prefix glob files into this table $table_name
-    gs_files=$(gsutil ls "${path_prefix}/*.parquet")
+    gs_files=$("${SCRIPT_DIR}/run.sh" ls "${path_prefix}"/*.parquet)
     for file in $gs_files; do
             echo $file
-            gsutil cat "${file}" | \
+            "${SCRIPT_DIR}/run.sh" cat "${file}" | \
              clickhouse-client -h "${CLICKHOUSE_HOST}" \
                  --query="insert into ${table_name} format Parquet "
     done
@@ -39,9 +49,6 @@ load_foreach_parquet(){
 
 # drop all dbs
 clickhouse-client -h "${CLICKHOUSE_HOST}" --query="drop database if exists ot;"
-
-root_path=$(pwd)
-base_path="gs://genetics-portal-output/190505"
 
 echo create genes table
 clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < genes.sql
@@ -129,14 +136,14 @@ clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < manhattan.sql
 echo load elasticsearch studies data
 curl -XDELETE "${ES_HOST}:9200/studies"
 # TODO this is a temporal workaround as elasticsearch does not like explicit null values for fields and the studies are not yet properly filetered
-# gsutil cat "${base_path}/lut/study-index/part-*" | elasticsearch_loader --es-host "http://${ES_HOST}:9200" --index-settings-file index_settings_studies.json --bulk-size 10000 --index studies --type study json --json-lines -
+# "${SCRIPT_DIR}/run.sh" cat "${base_path}"/lut/study-index/part-* | elasticsearch_loader --es-host "http://${ES_HOST}:9200" --index-settings-file index_settings_studies.json --bulk-size 10000 --index studies --type study json --json-lines -
 clickhouse-client -h "${CLICKHOUSE_HOST}" --query="select * from ot.studies format JSONEachRow "| \
     jq -r 'del(.[] | nulls)|@json' | \
     elasticsearch_loader --es-host "http://${ES_HOST}:9200" --index-settings-file index_settings_studies.json --bulk-size 10000 --index studies --type study json --json-lines -
 
 echo load elasticsearch genes data
 curl -XDELETE "${ES_HOST}:9200/genes"
-gsutil cat "${base_path}/lut/genes-index/part-*" | elasticsearch_loader --es-host "http://${ES_HOST}:9200" --index-settings-file index_settings_genes.json --bulk-size 10000 --index genes --type gene json --json-lines -
+"${SCRIPT_DIR}/run.sh" cat "${base_path}"/lut/genes-index/part-* | elasticsearch_loader --es-host "http://${ES_HOST}:9200" --index-settings-file index_settings_genes.json --bulk-size 10000 --index genes --type gene json --json-lines -
 
 echo load elasticsearch variants data
 for chr in "1" "2" "3" "4" "5" "6" "7" "8" "9" "10" "11" "12" "13" "14" "15" "16" "17" "18" "19" "20" "21" "22" "x" "y" "mt"; do

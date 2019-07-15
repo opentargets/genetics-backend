@@ -3,6 +3,13 @@
 export SUMSTATS_CLICKHOUSE_HOST="${SUMSTATS_CLICKHOUSE_HOST:-localhost}"
 export SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
+if [ $# -ne 1 ]; then
+    echo "Loads qtl sumstats data"
+    echo "Example: $0 gs://genetics-portal-sumstats"
+    exit 1
+fi
+
+base_path=$1
 # clickhouse-client -h "${SUMSTATS_CLICKHOUSE_HOST}" --query="create database if not exists sumstats"
 
 clickhouse-client -h "${SUMSTATS_CLICKHOUSE_HOST}" --query="
@@ -30,7 +37,7 @@ create table if not exists sumstats.molecular_qtl_log(
 engine=Log;
 "
 
-gsutil ls -r gs://genetics-portal-sumstats/molecular_qtl/** \
+"${SCRIPT_DIR}/../run.sh" ls -r "${base_path}/molecular_qtl/**" \
     | tee qtl-inputlist.txt \
     | xargs -P 16 -I {} sh -c '
         "${SCRIPT_DIR}/load_sumstats_qtl_file.sh" {}
