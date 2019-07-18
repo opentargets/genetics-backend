@@ -1,24 +1,58 @@
 #!/bin/bash
 
+load_foreach_json(){
+    # you need two parameters, the path_prefix to make the wildcard and
+    # the table_name name to load into
+    local path_prefix=$1
+    local table_name=$2
+    echo loading $path_prefix glob files into this table $table_name
+    gs_files=$(gsutil ls "${path_prefix}/part-*")
+    for file in $gs_files; do
+            echo $file
+            gsutil cat "${file}" | \
+             clickhouse-client -h 127.0.0.1 \
+                 --query="insert into ${table_name} format JSONEachRow "
+    done
+    echo "done loading $path_prefix glob files into this table $table_name"
+}
+
+load_foreach_parquet(){
+    # you need two parameters, the path_prefix to make the wildcard and
+    # the table_name name to load into
+    local path_prefix=$1
+    local table_name=$2
+    echo loading $path_prefix glob files into this table $table_name
+    gs_files=$(gsutil ls "${path_prefix}/*.parquet")
+    for file in $gs_files; do
+            echo $file
+            gsutil cat "${file}" | \
+             clickhouse-client -h 127.0.0.1 \
+                 --query="insert into ${table_name} format Parquet "
+    done
+    echo "done loading $path_prefix glob files into this table $table_name"
+}
+
 # CURRENTLY, IN ORDER TO BUILD SOME TABLES WE NEED A HIGHMEM MACHINE
 
+# drop all dbs
+clickhouse-client -h 127.0.0.1 --query="drop database if exists ot;"
+
 root_path=$(pwd)
-base_path="gs://genetics-portal-output/190304"
-echo "loading file ${filename}"
+base_path="gs://genetics-portal-output/190505"
 
 echo create genes table
 clickhouse-client -m -n < genes.sql
-gsutil cat "${base_path}/lut/genes-index/part-*" | clickhouse-client -h 127.0.0.1 --query="insert into ot.genes format JSONEachRow "
+load_foreach_json "${base_path}/lut/genes-index" "ot.genes"
 
 echo create studies tables
 clickhouse-client -m -n < studies_log.sql
-gsutil cat "${base_path}/lut/study-index/part-*" | clickhouse-client -h 127.0.0.1 --query="insert into ot.studies_log format JSONEachRow "
+load_foreach_json "${base_path}/lut/study-index" "ot.studies_log"
 clickhouse-client -m -n < studies.sql
 clickhouse-client -m -n -q "drop table ot.studies_log;"
 
 echo create studies overlap tables
 clickhouse-client -m -n < studies_overlap_log.sql
-gsutil cat "${base_path}/lut/overlap-index/part-*" | clickhouse-client -h 127.0.0.1 --query="insert into ot.studies_overlap_log format JSONEachRow "
+load_foreach_json "${base_path}/lut/overlap-index" "ot.studies_overlap_log"
 clickhouse-client -m -n < studies_overlap.sql
 clickhouse-client -m -n -q "drop table ot.studies_overlap_log;"
 
@@ -27,25 +61,25 @@ clickhouse-client -m -n < dictionaries.sql
 
 echo create variants tables
 clickhouse-client -m -n < variants_log.sql
-gsutil cat "${base_path}/lut/variant-index/part-*" | clickhouse-client -h 127.0.0.1 --query="insert into ot.variants_log format JSONEachRow "
+load_foreach_json "${base_path}/lut/variant-index" "ot.variants_log"
 clickhouse-client -m -n < variants.sql
 clickhouse-client -m -n -q "drop table ot.variants_log;"
 
 echo create d2v2g tables
 clickhouse-client -m -n < d2v2g_log.sql
-gsutil cat "${base_path}/d2v2g/part-*" | clickhouse-client -h 127.0.0.1 --query="insert into ot.d2v2g_log format JSONEachRow "
+load_foreach_json "${base_path}/d2v2g" "ot.d2v2g_log"
 clickhouse-client -m -n < d2v2g.sql
 clickhouse-client -m -n -q "drop table ot.d2v2g_log;"
 
 echo create v2d tables
 clickhouse-client -m -n < v2d_log.sql
-gsutil cat "${base_path}/v2d/part-*" | clickhouse-client -h 127.0.0.1 --query="insert into ot.v2d_log format JSONEachRow "
+load_foreach_json "${base_path}/v2d" "ot.v2d_log"
 clickhouse-client -m -n < v2d.sql
 clickhouse-client -m -n -q "drop table ot.v2d_log;"
 
 echo create v2g tables
 clickhouse-client -m -n < v2g_log.sql
-gsutil cat "${base_path}/v2g/part-*" | clickhouse-client -h 127.0.0.1 --query="insert into ot.v2g_log format JSONEachRow "
+load_foreach_json "${base_path}/v2g" "ot.v2g_log"
 clickhouse-client -m -n < v2g.sql
 clickhouse-client -m -n -q "drop table ot.v2g_log;"
 
@@ -58,13 +92,44 @@ clickhouse-client -m -n < v2g_structure.sql
 echo compute d2v2g_scored table
 clickhouse-client -m -n < d2v2g_scored.sql
 
-echo compute locus 2 gene table
-clickhouse-client -m -n < d2v2g_scored_l2g.sql
+# echo compute locus 2 gene table
+# clickhouse-client -m -n < d2v2g_scored_l2g.sql
+
+echo load coloc data
+clickhouse-client -m -n < v2d_coloc_log.sql
+load_foreach_json "${base_path}/v2d_coloc" "ot.v2d_coloc_log"
+clickhouse-client -m -n < v2d_coloc.sql
+clickhouse-client -m -n -q "drop table ot.v2d_coloc_log;"
+
+echo load credible set
+clickhouse-client -m -n < v2d_credibleset_log.sql
+load_foreach_json "${base_path}/v2d_credset" "ot.v2d_credset_log"
+clickhouse-client -m -n < v2d_credibleset.sql
+clickhouse-client -m -n -q "drop table ot.v2d_credset_log;"
+
+echo generate sumstats gwas tables
+clickhouse-client -m -n < v2d_sa_gwas_log.sql
+load_foreach_parquet "${base_path}/sa/gwas" "ot.v2d_sa_gwas_log"
+clickhouse-client -m -n < v2d_sa_gwas.sql
+clickhouse-client -m -n -q "drop table if exists ot.v2d_sa_gwas_log;"
+
+echo generate sumstats molecular trait tables
+clickhouse-client -m -n < v2d_sa_molecular_traits_log.sql
+load_foreach_parquet "${base_path}/sa/molecular_trait" "ot.v2d_sa_molecular_trait_log"
+clickhouse-client -m -n < v2d_sa_molecular_traits.sql
+clickhouse-client -m -n -q "drop table if exists ot.v2d_sa_molecular_trait_log;"
+
+echo building manhattan table
+clickhouse-client -m -n < manhattan.sql
 
 # elasticsearch process
 echo load elasticsearch studies data
 curl -XDELETE localhost:9200/studies
-gsutil cat "${base_path}/lut/study-index/part-*" | elasticsearch_loader --index-settings-file index_settings_studies.json --bulk-size 10000 --index studies --type study json --json-lines -
+# TODO this is a temporal workaround as elasticsearch does not like explicit null values for fields and the studies are not yet properly filetered
+# gsutil cat "${base_path}/lut/study-index/part-*" | elasticsearch_loader --index-settings-file index_settings_studies.json --bulk-size 10000 --index studies --type study json --json-lines -
+clickhouse-client -h 127.0.0.1 --query="select * from ot.studies format JSONEachRow "| \
+    jq -r 'del(.[] | nulls)|@json' | \
+    elasticsearch_loader --index-settings-file index_settings_studies.json --bulk-size 10000 --index studies --type study json --json-lines -
 
 echo load elasticsearch genes data
 curl -XDELETE localhost:9200/genes

@@ -11,7 +11,7 @@ AS SELECT
     any(v2g_source_list) as v2g_source_list,
     any(v2g_source_score_list) as v2g_source_score_list,
     any(v2g_overall_score) as v2g_overall_score,
-    sum(l2g) AS l2g_raw
+    sum(l2g_raw) as l2g_raw
 FROM
 (
     SELECT
@@ -26,7 +26,7 @@ FROM
         any(source_list) as v2g_source_list,
         any(source_score_list) as v2g_source_score_list,
         any(overall_score) AS v2g_overall_score,
-        if(isNull(posterior_prob), overall_r2 * v2g_overall_score, posterior_prob * v2g_overall_score) AS l2g
+        if(isNull(posterior_prob), overall_r2 * v2g_overall_score, posterior_prob * v2g_overall_score) AS l2g_raw
     FROM ot.d2v2g_scored
     GROUP BY
         study_id,

@@ -1,5 +1,5 @@
 create table if not exists ot.v2d_sa_molecular_trait_log(
-  type String,
+  type_id String,
   study_id String,
   chrom String,
   pos UInt32,
@@ -12,7 +12,7 @@ create table if not exists ot.v2d_sa_molecular_trait_log(
   eaf Float64,
   mac Float64,
   num_tests Float64,
-  info Float64,
+  info Nullable(Float64),
   is_cc UInt8,
   phenotype_id String,
   gene_id String,
