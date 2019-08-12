@@ -13,11 +13,11 @@ Build image and tag it with a name for convenience of calling later:
     docker build --tag otg-etl .
 ```
 
-### Use the Google Cloud Storage as source
+### Use the Google Cloud Storage as source to load release data
 
 Start a docker container in interactive mode.
 
-Host names must not contain protocol (`https` is assumed) or slashes. The data loading script uses `localhost` if no hostname provided.
+Host names must not contain protocol (`https` is assumed) or slashes. The data loading script uses `localhost` if no host name provided.
 
 ```
     docker run -it --rm \
@@ -32,23 +32,17 @@ Authenticate google cloud storage.
     gcloud auth application-default login
 ```
 
-Load release data to `ot` database and the elasticserch.
+Load release data to `ot` database and the Elasticserch.
 
 ```
-    bash genetics-backend/loaders/clickhouse/create_and_load_everything_from_scratch.sh
+    bash genetics-backend/loaders/clickhouse/create_and_load_everything_from_scratch.sh gs://genetics-portal-output/190504
 ```
 
-To load the sumstats data.
-
-```
-    bash genetics-backend/loaders/clickhouse/create_and_load_everything_from_scratch_summary_stats.sh
-```
-
-### Use local disk as source
+### Use local disk as source to load release data
 
 Start a docker container in interactive mode.
 
-Host names must not contain protocol (`https` is assumed) or slashes. The data loading script uses `localhost` if no hostname provided.
+Host names must not contain protocol (`https` is assumed) or slashes. The data loading script uses `localhost` if no host name provided.
 
 ```
     docker run -it --rm \
@@ -58,14 +52,8 @@ Host names must not contain protocol (`https` is assumed) or slashes. The data l
     otg-etl
 ```
 
-Load release data to `ot` database and the elasticserch.
+Load release data to `ot` database and the Elasticserch.
 
 ```
     bash genetics-backend/loaders/clickhouse/create_and_load_everything_from_scratch.sh /data
-```
-
-To load the sumstats data.
-
-```
-    bash genetics-backend/loaders/clickhouse/create_and_load_everything_from_scratch_summary_stats.sh /data
 ```
