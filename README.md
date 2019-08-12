@@ -57,3 +57,11 @@ Load release data to `ot` database and the Elasticserch.
 ```
     bash genetics-backend/loaders/clickhouse/create_and_load_everything_from_scratch.sh /data
 ```
+
+### Download release data from FTP to local file system
+
+You can use wget to download the release data. Below is an example of the command for `19.05.04` release data.
+
+```bash
+    wget --mirror ftp://ftp.ebi.ac.uk/pub/databases/opentargets/genetics/190504/
+```
