@@ -1,6 +1,10 @@
+#!/usr/bin/env bash
+
+export SUMSTATS_CLICKHOUSE_HOST="${SUMSTATS_CLICKHOUSE_HOST:-localhost}"
+
 for chrom in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 X Y MT; do
 echo $chrom
-clickhouse-client --query="create table if not exists sumstats.molecular_qtl_chr_$chrom
+clickhouse-client -h "${SUMSTATS_CLICKHOUSE_HOST}" --query="create table if not exists sumstats.molecular_qtl_chr_$chrom
 engine MergeTree partition by segment order by pos_b37
 as select
     CAST(assumeNotNull(experiment) AS Enum8('eqtl' = 1, 'pqtl' = 2, 'cell_counts' = 3, 'metabolites' = 4)) AS experiment,
