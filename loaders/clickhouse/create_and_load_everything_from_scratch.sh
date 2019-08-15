@@ -29,6 +29,24 @@ load_foreach_json(){
     echo "done loading $path_prefix glob files into this table $table_name"
 }
 
+load_foreach_json_gz(){
+    # you need two parameters, the path_prefix to make the wildcard and
+    # the table_name name to load into
+    # this function is a temporal fix for a jsonlines dataset where files
+    # come compressed
+    local path_prefix=$1
+    local table_name=$2
+    echo loading $path_prefix glob files into this table $table_name
+    gs_files=$("${SCRIPT_DIR}/run.sh" ls "${path_prefix}"/part-*)
+    for file in $gs_files; do
+            echo $file
+            "${SCRIPT_DIR}/run.sh" cat "${file}" | gunzip | \
+             clickhouse-client -h "${CLICKHOUSE_HOST}" \
+                 --query="insert into ${table_name} format JSONEachRow "
+    done
+    echo "done loading $path_prefix glob files into this table $table_name"
+}
+
 load_foreach_parquet(){
     # you need two parameters, the path_prefix to make the wildcard and
     # the table_name name to load into
@@ -113,7 +131,7 @@ clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n -q "drop table ot.v2d_coloc_log;
 
 echo load credible set
 clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/v2d_credibleset_log.sql"
-load_foreach_json "${base_path}/v2d_credset" "ot.v2d_credset_log"
+load_foreach_json_gz "${base_path}/v2d_credset" "ot.v2d_credset_log"
 clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/v2d_credibleset.sql"
 clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n -q "drop table ot.v2d_credset_log;"
 
