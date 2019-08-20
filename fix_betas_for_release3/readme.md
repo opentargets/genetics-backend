@@ -3,10 +3,10 @@ Fix betas for June 2019 release
 
 Just before the June 2019 release, we released that a number of high profile immune related studies have the wrong alleles extracted, therefore the incorrect effect directions. These scripts fix errors in the following files:
 
-- Top loci ✓
-- Filtered sumstats ✓
-- Credible set file ✓
-- Coloc file ✓
+- Top loci
+- Filtered sumstats
+- Credible set file
+- Coloc file
 
 Studies to flip betas for:
 - GCST004131
