@@ -125,7 +125,7 @@
     "pub_date": "Publication date",
     "pub_journal": "Publication journal",
     "pub_title": "Publication title",
-    "pval": "P-vaue of association",
+    "pval": "P-value of association",
     "pval_exponent": "P-value exponent",
     "pval_mantissa": "P-value mantissa",
     "qtl_beta": "Beta for the molecular QTL",
