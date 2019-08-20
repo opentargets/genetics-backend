@@ -1,0 +1,143 @@
+[
+  {
+    "name":"left_alt",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name":"left_chrom",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name":"left_ref",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name":"left_study",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name":"left_type",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name":"left_pos",
+    "type": "INTEGER",
+    "mode": "REQUIRED"
+  },
+
+  {
+    "name":"right_alt",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name":"right_chrom",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name":"right_ref",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name":"right_study",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name":"right_type",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name":"right_pos",
+    "type": "INTEGER",
+    "mode": "REQUIRED"
+  },
+  {
+    "name":"right_bio_feature",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name":"right_phenotype",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name":"right_gene_id",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name":"is_flipped",
+    "type": "BOOLEAN",
+    "mode": "REQUIRED"
+  },
+  {
+    "name":"coloc_n_vars",
+    "type": "INTEGER",
+    "mode": "REQUIRED"
+  },
+  {
+    "name":"coloc_h0",
+    "type": "FLOAT",
+    "mode": "REQUIRED"
+  },
+  {
+    "name":"coloc_h1",
+    "type": "FLOAT",
+    "mode": "REQUIRED"
+  },
+  {
+    "name":"coloc_h2",
+    "type": "FLOAT",
+    "mode": "REQUIRED"
+  },
+  {
+    "name":"coloc_h3",
+    "type": "FLOAT",
+    "mode": "REQUIRED"
+  },
+  {
+    "name":"coloc_h4",
+    "type": "FLOAT",
+    "mode": "REQUIRED"
+  },
+  {
+    "name":"coloc_log2_h4_h3",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  },
+  {
+    "name":"coloc_h4_h3",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  },
+  {
+    "name":"left_var_right_study_beta",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  },
+  {
+    "name":"left_var_right_study_se",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  },
+  {
+    "name":"left_var_right_study_pval",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  },
+  {
+    "name":"left_var_right_isCC",
+    "type": "BOOLEAN",
+    "mode": "NULLABLE"
+  }
+]

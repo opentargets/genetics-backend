@@ -1,1 +1,1 @@
-Run the `bqload` command to load the JSON data from google storage to bigQuery
+Run the `bq_loader.sh <datarelease>` command to load the data from google storage to bigQuery
