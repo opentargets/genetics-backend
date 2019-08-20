@@ -17,53 +17,53 @@ bq --project=open-targets-genetics mk -t --location=EU --description "Variant to
 
 # load data into tables
 bq --project=open-targets-genetics load --source_format=PARQUET \
-  190505.variants \
-  gs://genetics-portal-output/190505/variant-index/part-\*
+  $data_release.variants \
+  gs://genetics-portal-output/$data_release/variant-index/part-\*
 
 bq --project=open-targets-genetics load --source_format=NEWLINE_DELIMITED_JSON \
   --schema=bq.genes.schema.json \
-  190505.genes \
-  gs://genetics-portal-output/190505/lut/genes-index/part-\*
+  $data_release.genes \
+  gs://genetics-portal-output/$data_release/lut/genes-index/part-\*
 
 bq --project=open-targets-genetics load --source_format=NEWLINE_DELIMITED_JSON \
   --schema=bq.studies.schema.json \
-  190505.studies \
-  gs://genetics-portal-output/190505/lut/study-index/part-\*
+  $data_release.studies \
+  gs://genetics-portal-output/$data_release/lut/study-index/part-\*
 
 bq --project=open-targets-genetics load --source_format=NEWLINE_DELIMITED_JSON \
   --schema=bq.studies_overlap.schema.json \
-  190505.studies_overlap \
-  gs://genetics-portal-output/190505/lut/overlap-index/part-\*
+  $data_release.studies_overlap \
+  gs://genetics-portal-output/$data_release/lut/overlap-index/part-\*
 
 bq --project=open-targets-genetics load --source_format=NEWLINE_DELIMITED_JSON \
   --schema=bq.v2g.schema.json \
-  190505.variant_gene \
-  gs://genetics-portal-output/190505/v2g/part-\*
+  $data_release.variant_gene \
+  gs://genetics-portal-output/$data_release/v2g/part-\*
 
 bq --project=open-targets-genetics load --source_format=NEWLINE_DELIMITED_JSON \
   --schema=bq.v2d.schema.json \
-  190505.variant_disease \
-  gs://genetics-portal-output/190505/v2d/part-\*
+  $data_release.variant_disease \
+  gs://genetics-portal-output/$data_release/v2d/part-\*
 
 bq --project=open-targets-genetics load --source_format=NEWLINE_DELIMITED_JSON \
   --schema=bq.d2v2g.schema.json \
-  190505.disease_variant_gene \
-  gs://genetics-portal-output/190505/d2v2g/part-\*
+  $data_release.disease_variant_gene \
+  gs://genetics-portal-output/$data_release/d2v2g/part-\*
 
 bq --project=open-targets-genetics load --source_format=PARQUET \
-  190505.sa_gwas \
-  gs://genetics-portal-output/190505/sa/gwas/part-\*
+  $data_release.sa_gwas \
+  gs://genetics-portal-output/$data_release/sa/gwas/part-\*
 
 bq --project=open-targets-genetics load --source_format=PARQUET \
-  190505.sa_molecular_trait \
-  gs://genetics-portal-output/190505/sa/molecular_trait/part-\*
+  $data_release.sa_molecular_trait \
+  gs://genetics-portal-output/$data_release/sa/molecular_trait/part-\*
 
 bq --project=open-targets-genetics load --source_format=NEWLINE_DELIMITED_JSON \
   --schema=bq.v2d_coloc.schema.json \
-  190505.variant_disease_coloc \
-  gs://genetics-portal-output/190505/v2d_coloc/part-\*
+  $data_release.variant_disease_coloc \
+  gs://genetics-portal-output/$data_release/v2d_coloc/part-\*
 
  bq --project=open-targets-genetics load --source_format=NEWLINE_DELIMITED_JSON \
   --schema=bq.v2d_credset.schema.json \
-  190505.variant_disease_credset \
-  gs://genetics-portal-output/190505/v2d_credset/part-\*
+  $data_release.variant_disease_credset \
+  gs://genetics-portal-output/$data_release/v2d_credset/part-\*
