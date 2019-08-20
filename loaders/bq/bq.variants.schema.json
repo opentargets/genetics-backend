@@ -1,0 +1,141 @@
+[
+  {
+    "mode": "NULLABLE",
+    "name": "chr_id",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "position",
+    "type": "INTEGER"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "ref_allele",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "alt_allele",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "chr_id_b37",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "position_b37",
+    "type": "INTEGER"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "rs_id",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "most_severe_consequence",
+    "type": "STRING"
+  },
+  {
+    "fields": [
+      {
+        "mode": "NULLABLE",
+        "name": "raw",
+        "type": "FLOAT"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "phred",
+        "type": "FLOAT"
+      }
+    ],
+    "mode": "NULLABLE",
+    "name": "cadd",
+    "type": "RECORD"
+  },
+  {
+    "fields": [
+      {
+        "mode": "NULLABLE",
+        "name": "gnomad_afr",
+        "type": "FLOAT"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "gnomad_amr",
+        "type": "FLOAT"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "gnomad_asj",
+        "type": "FLOAT"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "gnomad_eas",
+        "type": "FLOAT"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "gnomad_fin",
+        "type": "FLOAT"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "gnomad_nfe",
+        "type": "FLOAT"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "gnomad_nfe_est",
+        "type": "FLOAT"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "gnomad_nfe_nwe",
+        "type": "FLOAT"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "gnomad_nfe_onf",
+        "type": "FLOAT"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "gnomad_nfe_seu",
+        "type": "FLOAT"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "gnomad_oth",
+        "type": "FLOAT"
+      }
+    ],
+    "mode": "NULLABLE",
+    "name": "af",
+    "type": "RECORD"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "gene_id_any_distance",
+    "type": "INTEGER"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "gene_id_any",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "gene_id_prot_coding_distance",
+    "type": "INTEGER"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "gene_id_prot_coding",
+    "type": "STRING"
+  }
+]

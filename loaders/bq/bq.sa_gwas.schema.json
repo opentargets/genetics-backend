@@ -1,0 +1,82 @@
+[
+  {
+    "mode": "NULLABLE",
+    "name": "alt",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "beta",
+    "type": "FLOAT"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "chrom",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "eaf",
+    "type": "FLOAT"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "info",
+    "type": "FLOAT"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "is_cc",
+    "type": "BOOLEAN"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "mac",
+    "type": "FLOAT"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "mac_cases",
+    "type": "FLOAT"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "n_cases",
+    "type": "INTEGER"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "n_total",
+    "type": "INTEGER"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "pos",
+    "type": "INTEGER"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "pval",
+    "type": "FLOAT"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "ref",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "se",
+    "type": "FLOAT"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "study_id",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "type",
+    "type": "STRING"
+  }
+]

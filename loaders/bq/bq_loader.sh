@@ -63,7 +63,13 @@ bq --project=open-targets-genetics load --source_format=NEWLINE_DELIMITED_JSON \
   $data_release.variant_disease_coloc \
   gs://genetics-portal-output/$data_release/v2d_coloc/part-\*
 
- bq --project=open-targets-genetics load --source_format=NEWLINE_DELIMITED_JSON \
+bq --project=open-targets-genetics load --source_format=NEWLINE_DELIMITED_JSON \
   --schema=bq.v2d_credset.schema.json \
   $data_release.variant_disease_credset \
   gs://genetics-portal-output/$data_release/v2d_credset/part-\*
+
+# get schema from parquet ones as we need in json format
+# bq show --format=prettyjson open-targets-genetics:$data_release.variants | jq '.schema.fields' > bq.variants.schema.json
+# bq show --format=prettyjson open-targets-genetics:190505.sa_gwas | jq '.schema.fields' > bq.sa_gwas.schema.json
+# bq show --format=prettyjson open-targets-genetics:190505.sa_molecular_trait | jq '.schema.fields' > bq.sa_molecular_trait.schema.json
+
