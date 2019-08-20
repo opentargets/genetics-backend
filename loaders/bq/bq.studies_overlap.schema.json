@@ -1,67 +1,67 @@
-  [
-      {
-  "name":"A_chrom",
-  "type": "STRING",
-  "mode": "REQUIRED"
-},
+[
   {
-  "name":"A_pos",
-  "type": "INTEGER",
-  "mode": "REQUIRED"
-},
-    {
-  "name":"A_ref",
-  "type": "STRING",
-  "mode": "REQUIRED"
-},
+    "name": "A_chrom",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
   {
-  "name":"A_alt",
-  "type": "STRING",
-  "mode": "REQUIRED"
-},
+    "name": "A_pos",
+    "type": "INTEGER",
+    "mode": "REQUIRED"
+  },
   {
-  "name":"A_study_id",
-  "type": "STRING",
-  "mode": "REQUIRED"
-},
-    {
-  "name":"B_study_id",
-  "type": "STRING",
-  "mode": "REPEATED"
-},
-    {
-  "name":"B_chrom",
-  "type": "STRING",
-  "mode": "REPEATED"
-},
+    "name": "A_ref",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
   {
-  "name":"B_pos",
-  "type": "INTEGER",
-  "mode": "REPEATED"
-},
-    {
-  "name":"B_ref",
-  "type": "STRING",
-  "mode": "REPEATED"
-},
+    "name": "A_alt",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
   {
-  "name":"B_alt",
-  "type": "STRING",
-  "mode": "REPEATED"
-},
-     {
-  "name":"AB_overlap",
-  "type": "INTEGER",
-  "mode": "REPEATED"
-},
+    "name": "A_study_id",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
   {
-  "name":"A_distinct",
-  "type": "INTEGER",
-  "mode": "REPEATED"
-},
+    "name": "B_study_id",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
   {
-  "name":"B_distinct",
-  "type": "INTEGER",
-  "mode": "REPEATED"
-}
+    "name": "B_chrom",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "B_pos",
+    "type": "INTEGER",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "B_ref",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "B_alt",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "AB_overlap",
+    "type": "INTEGER",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "A_distinct",
+    "type": "INTEGER",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "B_distinct",
+    "type": "INTEGER",
+    "mode": "REQUIRED"
+  }
 ]

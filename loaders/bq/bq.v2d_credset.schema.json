@@ -1,0 +1,132 @@
+[
+  {
+    "name": "study_id",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "type",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "bio_feature",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "is99_credset",
+    "type": "BOOLEAN",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "is95_credset",
+    "type": "BOOLEAN",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "lead_chrom",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "lead_pos",
+    "type": "INTEGER",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "lead_ref",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "lead_alt",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "lead_variant_id",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "logABF",
+    "type": "FLOAT",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "multisignal_method",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "phenotype_id",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "postprob",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "postprob_cumsum",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "tag_chrom",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "tag_variant_id",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "tag_pos",
+    "type": "INTEGER",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "tag_ref",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "tag_alt",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "tag_beta",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "tag_beta_cond",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "tag_pval",
+    "type": "FLOAT",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "tag_pval_cond",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "tag_se",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "tag_se_cond",
+    "type": "FLOAT",
+    "mode": "NULLABLE"
+  }
+]
