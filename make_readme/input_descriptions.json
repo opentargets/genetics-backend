@@ -165,6 +165,6 @@
     "trait_reported": "Trait name",
     "tss": "Position of the transcription start site",
     "type": "Study type. GWAS studies will be gwas. Molecular trait studies can take other values, e.g. eqtl, pqtl",
-    "type_id": "Evidence type in the V2G pipeline"
+    "type_id": "Evidence type"
   }
 }
