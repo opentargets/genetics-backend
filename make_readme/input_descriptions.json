@@ -39,7 +39,7 @@
     "beta": "Effect size (beta coefficient from the linear regression) with respect to the alternative allele",
     "beta_ci_lower": "Lower 95% confidence interval for the beta",
     "beta_ci_upper": "Upper 95% confidence interval for the beta",
-    "bio_feature": "An ID for the tissue measured in the molecular QTL (biological feature). Will be null if biotype is GWAS.",
+    "bio_feature": "An ID for the tissue measured in the molecular QTL (biological feature). Will be null if type is GWAS.",
     "biotype": "Biotype gene classification from Ensembl",
     "cadd": "CADD score",
     "chr": "Chromosome",
