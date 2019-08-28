@@ -7,5 +7,5 @@ Script to read BigQuery schemas and add file/field descriptions to make a readme
 python make_readme.py \
   --in_bq "../loaders/bq/bq.*.schema.json" \
   --in_desc input_descriptions.json \
-  --out output/schemas_w_descriptions
+  --out output/ftp_readme
 ```
