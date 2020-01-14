@@ -9,7 +9,8 @@ variable "region" {
 }
 
 // Configure the Google Cloud provider
-provider "google" "google-account" {
+// provider "google" "google-account" {
+provider "google" {
   credentials = "${file("open-targets-genetics-c3768dfe37e0.json")}"
   project     = "open-targets-genetics"
   region      = "${var.region}"
