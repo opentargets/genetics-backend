@@ -131,3 +131,45 @@ FROM (
                    ref,
                    alt
          ) USING (study, chrom, pos, ref, alt);
+
+create view if not exists ot.manhattan_with_l2g as
+    select study,
+       chrom,
+       pos,
+       ref,
+       alt,
+       pval,
+       pval_mantissa,
+       pval_exponent,
+       odds,
+       oddsL,
+       oddsU,
+       direction,
+       beta,
+       betaL,
+       betaU,
+       credibleSetSize,
+       ldSetSize,
+       uniq_variants,
+       top10_genes_raw_ids,
+       top10_genes_raw_score,
+       top10_genes_coloc_ids,
+       top10_genes_coloc_score,
+       L.top10_genes_l2g as top10_genes_l2g
+    from ot.manhattan
+    ANY LEFT JOIN
+    (
+        SELECT
+            study_id,
+            pos,
+            ref,
+            alt,
+            groupUniqArray(gene_id) AS top10_genes_l2g
+        FROM ot.l2g_by_slg
+        PREWHERE (y_proba_full_model >= 0.5)
+        GROUP BY
+            study_id,
+            pos,
+            ref,
+            alt
+    ) AS L ON (study = L.study_id) AND (pos = L.pos) AND (ref = L.ref) AND (alt = L.alt);
