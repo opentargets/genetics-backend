@@ -155,7 +155,8 @@ create view if not exists ot.manhattan_with_l2g as
        top10_genes_raw_score,
        top10_genes_coloc_ids,
        top10_genes_coloc_score,
-       L.top10_genes_l2g as top10_genes_l2g
+       L.top10_genes_l2g.2 as top10_genes_l2g_ids,
+       L.top10_genes_l2g.1 as top10_genes_l2g_score
     from ot.manhattan
     ANY LEFT JOIN
     (
@@ -164,7 +165,7 @@ create view if not exists ot.manhattan_with_l2g as
             pos,
             ref,
             alt,
-            groupUniqArray(gene_id) AS top10_genes_l2g
+            arrayReverseSort(groupUniqArray((y_proba_full_model, gene_id))) AS top10_genes_l2g
         FROM ot.l2g_by_slg
         PREWHERE (y_proba_full_model >= 0.5)
         GROUP BY
