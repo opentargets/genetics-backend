@@ -21,9 +21,9 @@ Studies to flip betas for:
 # Start cluster
 gcloud beta dataproc clusters create \
     em-cluster-fix-betas \
-    --image-version=preview \
-    --properties=spark:spark.debug.maxToStringFields=100,spark:spark.executor.cores=31,spark:spark.executor.instances=1 \
-    --master-machine-type=n1-standard-32 \
+    --image-version=1.4 \
+    --properties=spark:spark.debug.maxToStringFields=100,spark:spark.executor.cores=15,spark:spark.executor.instances=1 \
+    --master-machine-type=n1-standard-16 \
     --master-boot-disk-size=1TB \
     --num-master-local-ssds=1 \
     --zone=europe-west1-d \
@@ -34,20 +34,19 @@ gcloud beta dataproc clusters create \
 # Submit to cluster
 gcloud dataproc jobs submit pyspark \
     --cluster=em-cluster-fix-betas \
-    scripts/top_loci_fix.py \
-    --async
+    scripts/top_loci_fix.py
 gcloud dataproc jobs submit pyspark \
     --cluster=em-cluster-fix-betas \
-    scripts/credset_fix.py \
-    --async
+    scripts/credset_fix.py
 gcloud dataproc jobs submit pyspark \
     --cluster=em-cluster-fix-betas \
-    scripts/coloc_fix.py \
-    --async
+    scripts/coloc_fix.py
 gcloud dataproc jobs submit pyspark \
     --cluster=em-cluster-fix-betas \
-    scripts/sumstats_fix.py \
-    --async
+    scripts/sumstats_fix.py
+gcloud dataproc jobs submit pyspark \
+    --cluster=em-cluster-fix-betas \
+    scripts/fine_mapping_top_loci_fix.py
 
 # To monitor
 gcloud compute ssh em-cluster-fix-betas-m \
