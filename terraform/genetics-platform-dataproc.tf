@@ -1,6 +1,6 @@
 variable "version-suffix" {
-  default = "19-05-05"
-  type = "string"
+  default = "20-02-01"
+  type = string
 }
 
 variable "region" {
