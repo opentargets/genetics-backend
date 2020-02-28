@@ -50,7 +50,6 @@ FROM (
              lead_ref,
              lead_alt
          )
-         ANY
          FULL OUTER JOIN
      (
          select study,
