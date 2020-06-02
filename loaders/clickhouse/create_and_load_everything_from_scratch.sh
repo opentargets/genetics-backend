@@ -147,6 +147,12 @@ load_foreach_parquet "${base_path}/sa/molecular_trait" "ot.v2d_sa_molecular_trai
 clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/v2d_sa_molecular_traits.sql"
 clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n -q "drop table if exists ot.v2d_sa_molecular_trait_log;"
 
+echo load locus 2 gene
+clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/l2g_log.sql"
+load_foreach_parquet "${base_path}/l2g" "ot.l2g_log"
+clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/l2g.sql"
+clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n -q "drop table ot.l2g_log;"
+
 echo building manhattan table
 clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/manhattan.sql"
 

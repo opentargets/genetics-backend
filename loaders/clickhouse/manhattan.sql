@@ -50,7 +50,6 @@ FROM (
              lead_ref,
              lead_alt
          )
-         ANY
          FULL OUTER JOIN
      (
          select study,
@@ -131,3 +130,46 @@ FROM (
                    ref,
                    alt
          ) USING (study, chrom, pos, ref, alt);
+
+create view if not exists ot.manhattan_with_l2g as
+    select study,
+       chrom,
+       pos,
+       ref,
+       alt,
+       pval,
+       pval_mantissa,
+       pval_exponent,
+       odds,
+       oddsL,
+       oddsU,
+       direction,
+       beta,
+       betaL,
+       betaU,
+       credibleSetSize,
+       ldSetSize,
+       uniq_variants,
+       top10_genes_raw_ids,
+       top10_genes_raw_score,
+       top10_genes_coloc_ids,
+       top10_genes_coloc_score,
+       top10_genes_l2g.2 as top10_genes_l2g_ids,
+       top10_genes_l2g.1 as top10_genes_l2g_score
+    from ot.manhattan
+    ANY LEFT JOIN
+    (
+        SELECT
+            study_id as study,
+            pos,
+            ref,
+            alt,
+            arrayReverseSort(groupUniqArray((y_proba_full_model, gene_id))) AS top10_genes_l2g
+        FROM ot.l2g_by_slg
+        PREWHERE (y_proba_full_model >= 0.5)
+        GROUP BY
+            study_id,
+            pos,
+            ref,
+            alt
+    ) USING (study, pos, ref, alt);

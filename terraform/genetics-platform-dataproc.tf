@@ -1,6 +1,6 @@
 variable "version-suffix" {
-  default = "19-05-05"
-  type = "string"
+  default = "20-02-01"
+  type = string
 }
 
 variable "region" {
@@ -9,7 +9,8 @@ variable "region" {
 }
 
 // Configure the Google Cloud provider
-provider "google" "google-account" {
+// provider "google" "google-account" {
+provider "google" {
   credentials = "${file("open-targets-genetics-c3768dfe37e0.json")}"
   project     = "open-targets-genetics"
   region      = "${var.region}"
