@@ -7,7 +7,7 @@ if [ -f "$OT_RCFILE" ]; then
     exit 0
 fi
 
-clickhouseVersion=20.4.1.14
+clickhouseVersion=20.4.5.36
 elastic_version=7.7.1
 
 apt-get update && DEBIAN_FRONTEND=noninteractive \
@@ -26,15 +26,15 @@ apt-get update && DEBIAN_FRONTEND=noninteractive \
 pip install elasticsearch-loader
 
 
-elastic_deb=https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${elastic_version}.deb
+elastic_deb=https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${elastic_version}-amd64.deb
 kibana_deb=https://artifacts.elastic.co/downloads/kibana/kibana-${elastic_version}-amd64.deb
 
 cluster_id=$(uuidgen -r)
 
 (cd /tmp; \
  wget --no-check-certificate $elastic_deb; \
- dpkg -i elasticsearch-${elastic_version}.deb; \
- rm -f elasticsearch-${elastic_version}.deb)
+ dpkg -i elasticsearch-${elastic_version}-amd64.deb; \
+ rm -f elasticsearch-${elastic_version}-amd64.deb)
 
 cat <<EOF > /etc/elasticsearch/elasticsearch.yml
 cluster.name: ${cluster_id}
