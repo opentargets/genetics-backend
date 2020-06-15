@@ -1,139 +1,136 @@
 {
-        "settings": {
-                "index" : {
-                        "number_of_replicas" : 0
-                }
-        },
-
-        "mappings": {
-                "variant": {
-                        "properties": {
-                                "alt_allele": {
-                                        "type": "text",
-                                        "fields": {
-                                                "keyword": {
-                                                        "type": "keyword",
-                                                        "ignore_above": 256
-                                                }
-                                        }
-                                },
-                                "chr_id": {
-                                        "type": "text",
-                                        "fields": {
-                                                "keyword": {
-                                                        "type": "keyword",
-                                                        "ignore_above": 256
-                                                }
-                                        }
-                                },
-                                "gene_id": {
-                                        "type": "text",
-                                        "fields": {
-                                                "keyword": {
-                                                        "type": "keyword",
-                                                        "ignore_above": 256
-                                                }
-                                        }
-                                },
-                                "gene_id_distance": {
-                                        "type": "long"
-                                },
-                                "gene_id_prot_coding": {
-                                        "type": "text",
-                                        "fields": {
-                                                "keyword": {
-                                                        "type": "keyword",
-                                                        "ignore_above": 256
-                                                }
-                                        }
-                                },
-                                "gene_id_prot_coding_distance": {
-                                        "type": "long"
-                                },
-                                "gnomad_afr": {
-                                        "type": "float"
-                                },
-                                "gnomad_amr": {
-                                        "type": "float"
-                                },
-                                "gnomad_asj": {
-                                        "type": "float"
-                                },
-                               "gnomad_eas": {
-                                        "type": "float"
-                                },
-                                "gnomad_fin": {
-                                        "type": "float"
-                                },
-                                "gnomad_nfe": {
-                                        "type": "float"
-                                },
-                                "gnomad_nfe_est": {
-                                        "type": "float"
-                                },
-                                "gnomad_nfe_nwe": {
-                                        "type": "float"
-                                },
-                                "gnomad_nfe_onf": {
-                                        "type": "float"
-                                },
-                                "gnomad_nfe_seu": {
-                                        "type": "float"
-                                },
-                                "gnomad_oth": {
-                                        "type": "float"
-                                },
-                                "gnomad_seu": {
-                                        "type": "float"
-                                },
-                               "most_severe_consequence": {
-                                        "type": "text",
-                                        "fields": {
-                                                "keyword": {
-                                                        "type": "keyword",
-                                                        "ignore_above": 256
-                                                }
-                                        }
-                                },
-                                "phred": {
-                                        "type": "float"
-                                },
-                                "position": {
-                                        "type": "long"
-                                },
-                                "raw": {
-                                        "type": "float"
-                                },
-                                "ref_allele": {
-                                        "type": "text",
-                                        "fields": {
-                                                "keyword": {
-                                                        "type": "keyword",
-                                                        "ignore_above": 256
-                                                }
-                                        }
-                                },
-                               "rs_id": {
-                                        "type": "text",
-                                        "fields": {
-                                                "keyword": {
-                                                        "type": "keyword",
-                                                        "ignore_above": 256
-                                                }
-                                        }
-                                },
-                                "variant_id": {
-                                        "type": "text",
-                                        "fields": {
-                                                "keyword": {
-                                                        "type": "keyword",
-                                                        "ignore_above": 256
-                                                }
-                                        }
-                                }
-                        }
-                }
+  "settings": {
+    "index": {
+      "number_of_replicas": 0
+    }
+  },
+  "mappings": {
+    "properties": {
+      "alt_allele": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
         }
+      },
+      "chr_id": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "gene_id": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "gene_id_distance": {
+        "type": "long"
+      },
+      "gene_id_prot_coding": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "gene_id_prot_coding_distance": {
+        "type": "long"
+      },
+      "gnomad_afr": {
+        "type": "float"
+      },
+      "gnomad_amr": {
+        "type": "float"
+      },
+      "gnomad_asj": {
+        "type": "float"
+      },
+      "gnomad_eas": {
+        "type": "float"
+      },
+      "gnomad_fin": {
+        "type": "float"
+      },
+      "gnomad_nfe": {
+        "type": "float"
+      },
+      "gnomad_nfe_est": {
+        "type": "float"
+      },
+      "gnomad_nfe_nwe": {
+        "type": "float"
+      },
+      "gnomad_nfe_onf": {
+        "type": "float"
+      },
+      "gnomad_nfe_seu": {
+        "type": "float"
+      },
+      "gnomad_oth": {
+        "type": "float"
+      },
+      "gnomad_seu": {
+        "type": "float"
+      },
+      "most_severe_consequence": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "phred": {
+        "type": "float"
+      },
+      "position": {
+        "type": "long"
+      },
+      "raw": {
+        "type": "float"
+      },
+      "ref_allele": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "rs_id": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "variant_id": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      }
+    }
+  }
 }
 
 
