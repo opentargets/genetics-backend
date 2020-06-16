@@ -18,6 +18,3 @@ gcloud compute instances create clickhouse-$1  \
        --project $ot_project \
        --scopes default,storage-rw
 
-# --metadata es_server=http://10.132.0.3:9200,es_prefix=mkes5.2
-
-# --boot-disk-device-name "ot-es550" \

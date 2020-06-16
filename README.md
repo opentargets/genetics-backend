@@ -71,10 +71,8 @@ You can use wget to download the release data. Below is an example of the comman
 | Date | Name | Version | 
 | --- | --- | --- | 
 | 11/6/20 | ElasticSearch | [7.7.1](https://www.elastic.co/guide/en/elasticsearch/reference/7.7/getting-started-install.html) |
-| 11/6/20 | ClickHouse | [20.1.4](https://clickhouse.tech/docs/en/) |
+| 11/6/20 | ClickHouse | [20.4.5.36](https://clickhouse.tech/docs/en/) |
  
-
-
 Clickhouse is currently used by the Genetics Platform and API. A number of [scripts](gcp/clickhouse) are provided to 
 create and configure VM instances. 
 
@@ -87,6 +85,10 @@ create and configure VM instances.
 
 - Create the machine with this [script](gcp/create_clickhouse_node_es.sh). It automatically calls a [startup script](gcp/clickhouse_node_es.sh) that configures the machine with Clickhouse and ElasticSearch.
 - The startup script will fetch the latest version of the data from [Github](loaders/clickhouse) and call this [script](loaders/clickhouse/create_and_load_everything_from_scratch.sh) to add the data to ClickHouse and ElasticSearch.
+
+#### Notes and links
+
+- [`elasticsearch_loader`](https://pypi.org/project/elasticsearch-loader/) is a `pip` package used to import the Clickhouse data into ElasticSearch. 
 
 
 

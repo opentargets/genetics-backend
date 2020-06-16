@@ -1,5 +1,13 @@
 #!/bin/bash
 
+#This script performs the following actions:
+#  - Downloads, installs and configures Clickhouse and Elasticsearch
+#  - Obtains scripts from `https://github.com/opentargets/genetics-backend/archive/${backend_version}.zip`
+#  - Populates the Clickhouse DB using the SQL scripts in `./loaders/clickhouse/*.sql`
+#  - Creates ES indices using `index_settings*.json` files in `./loaders/clickhouse/`
+
+set -x
+# See if the VM has already been configured
 OT_RCFILE=/etc/opentargets.rc
 
 if [ -f "$OT_RCFILE" ]; then
@@ -7,9 +15,13 @@ if [ -f "$OT_RCFILE" ]; then
     exit 0
 fi
 
+## Versions
 clickhouseVersion=20.4.5.36
-elastic_version=7.7.1
+elastic_version=7.x
+backend_version=20.02.03
+genetics_data="gs://genetics-portal-output/20022712"
 
+# Install dependencies
 apt-get update && DEBIAN_FRONTEND=noninteractive \
     apt-get \
     -o Dpkg::Options::="--force-confnew" \
@@ -25,47 +37,57 @@ apt-get update && DEBIAN_FRONTEND=noninteractive \
 
 pip install elasticsearch-loader
 
+# Install and configure Elasticsearch
+wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add -
+echo "deb https://artifacts.elastic.co/packages/${elastic_version}/apt stable main" | \
+    tee -a /etc/apt/sources.list.d/elastic-${elastic_version}.list
 
-elastic_deb=https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${elastic_version}-amd64.deb
-kibana_deb=https://artifacts.elastic.co/downloads/kibana/kibana-${elastic_version}-amd64.deb
+apt-get update && apt-get install elasticsearch kibana
+
+systemctl stop kibana
+systemctl stop elasticsearch
 
 cluster_id=$(uuidgen -r)
 
-(cd /tmp; \
- wget --no-check-certificate $elastic_deb; \
- dpkg -i elasticsearch-${elastic_version}-amd64.deb; \
- rm -f elasticsearch-${elastic_version}-amd64.deb)
-
 cat <<EOF > /etc/elasticsearch/elasticsearch.yml
 cluster.name: ${cluster_id}
+node.name: 'genetics-es'
 network.host: 0.0.0.0
 http.port: 9200
 bootstrap.memory_lock: true
+path.data: /var/lib/elasticsearch
+path.logs: /var/log/elasticsearch
+discovery.seed_hosts: ["127.0.0.1", "[::1]"]
+discovery.type: single-node
 
 EOF
-
+mem=$(free -g  | grep Mem | awk '{print $2}')
+es_mem=$((x/2 + 1))
 # https://www.elastic.co/guide/en/elasticsearch/reference/master/jvm-options.html
 cat <<EOF > /etc/elasticsearch/jvm.options.d/conf
--Xms16g
--Xmx16g
--XX:+UseConcMarkSweepGC
+-Xms${es_mem}g
+-Xmx${es_mem}g
 -XX:CMSInitiatingOccupancyFraction=75
 -XX:+UseCMSInitiatingOccupancyOnly
--XX:+DisableExplicitGC
+-Des.networkaddress.cache.ttl=60
+-Des.networkaddress.cache.negative.ttl=10
 -XX:+AlwaysPreTouch
--server
 -Xss1m
 -Djava.awt.headless=true
 -Dfile.encoding=UTF-8
 -Djna.nosys=true
--Djdk.io.permissionsUseCanonicalPath=true
+-XX:-OmitStackTraceInFastThrow
 -Dio.netty.noUnsafe=true
 -Dio.netty.noKeySetOptimization=true
 -Dio.netty.recycler.maxCapacityPerThread=0
+-Dio.netty.allocator.numDirectArenas=0
 -Dlog4j.shutdownHookEnabled=false
 -Dlog4j2.disable.jmx=true
--Dlog4j.skipJansi=true
+-Djava.io.tmpdir=/tmp
+-Djna.tmpdir=/tmp
 -XX:+HeapDumpOnOutOfMemoryError
+-XX:HeapDumpPath=/var/lib/elasticsearch
+-XX:ErrorFile=/var/log/elasticsearch/hs_err_pid%p.log
 
 EOF
 
@@ -74,6 +96,8 @@ cat <<EOF > /etc/security/limits.conf
 * hard nofile 65536
 * soft memlock unlimited
 * hard memlock unlimited
+elasticsearch soft memlock unlimited
+elasticsearch hard memlock unlimited
 
 EOF
 
@@ -108,6 +132,7 @@ net.ipv4.tcp_rmem = 4096 87380 16777216
 net.ipv4.tcp_wmem = 4096 65536 16777216
 net.ipv4.tcp_congestion_control = cubic
 vm.swappiness = 1
+vm.max_map_count=262144
 net.ipv4.tcp_tw_reuse = 1
 
 EOF
@@ -115,45 +140,31 @@ EOF
 # set all sysctl configurations
 sysctl -p
 
-# echo disable swap noop scheduler
-# swapoff -a
-# echo 'never' | tee /sys/kernel/mm/transparent_hugepage/enabled
-echo 'noop' | tee /sys/block/sda/queue/scheduler
+swapoff -a
+
 echo "block/sda/queue/scheduler = noop" >> /etc/sysfs.conf
-# echo "kernel/mm/transparent_hugepage/enabled = never" >> /etc/sysfs.conf
 
 sed -i 's/\#LimitMEMLOCK=infinity/LimitMEMLOCK=infinity/g' /usr/lib/systemd/system/elasticsearch.service
 sed -i '46iLimitMEMLOCK=infinity' /usr/lib/systemd/system/elasticsearch.service
 
 systemctl daemon-reload
-echo install elasticsearch plugins gcs and gce
 
 echo start elasticsearch
 systemctl enable elasticsearch
-
-# /etc/init.d/elasticsearch start
 systemctl start elasticsearch
 
-echo install kibana
-
-(cd /tmp; \
- wget --no-check-certificate $kibana_deb; \
- dpkg -i kibana-${elastic_version}-amd64.deb; \
- rm -f kibana-${elastic_version}-amd64.deb)
-
+## Configure and start kibana
 cat <<EOF > /etc/kibana/kibana.yml
 server.port: 5601
 server.host: "localhost"
-elasticsearch.url: "http://127.0.0.1:9200"
 
 EOF
 
 echo start kibana
-
 systemctl enable kibana
-
 sleep 3 && systemctl start kibana
 
+# Install and configure clickhouse
 echo install clickhouse
 echo "deb http://repo.yandex.ru/clickhouse/deb/stable/ main/" > /etc/apt/sources.list.d/clickhouse.list
 
@@ -321,97 +332,17 @@ systemctl start clickhouse-server
 
 echo "starting clickhouse... done."
 
-cat <<EOF > /etc/tmux.conf
-set -g status "on"
-unbind C-b
-set-option -g prefix M-x
-bind-key M-x send-prefix
-bind | split-window -h
-bind - split-window -v
-bind x killp
-unbind '"'
-unbind %
-bind r source-file ~/.tmux.conf
-bind -n M-S-Left select-window -p
-bind -n M-S-Right select-window -n
-bind -n M-Left select-pane -L
-bind -n M-Right select-pane -R
-bind -n M-Up select-pane -U
-bind -n M-Down select-pane -D
-set-option -g allow-rename off
-set -g mouse on
-set -g pane-border-fg black
-set -g pane-active-border-fg brightred
-set -g status-justify left
-set -g status-interval 2
-setw -g window-status-format " #F#I:#W#F "
-setw -g window-status-current-format " #F#I:#W#F "
-# setw -g window-status-format "#[fg=magenta]#[bg=black] #I #[bg=cyan]#[fg=colour8] #W "
-# setw -g window-status-current-format "#[bg=brightmagenta]#[fg=colour8] #I #[fg=colour8]#[bg=colour14] #W "
-setw -g window-status-current-attr dim
-setw -g window-status-attr reverse
-
-set -g status-left ''
-
-set-option -g visual-activity off
-set-option -g visual-bell off
-set-option -g visual-silence off
-set-window-option -g monitor-activity off
-set-option -g bell-action none
-
-setw -g mode-attr bold
-set -g status-position bottom
-set -g status-attr dim
-set -g status-left ''
-# set -g status-right '#[fg=colour233,bg=colour245,bold] %d/%m #[fg=colour233,bg=colour245,bold] %H:%M:%S '
-set -g status-right-length 50
-set -g status-left-length 20
-
-setw -g window-status-current-attr bold
-# setw -g window-status-current-format ' #I#[fg=colour250]:#[fg=colour255]#W#[fg=colour50]#F '
-
-setw -g window-status-attr none
-# setw -g window-status-format ' #I#[fg=colour237]:#[fg=colour250]#W#[fg=colour244]#F '
-
-setw -g window-status-bell-attr bold
-setw -g window-status-bell-fg colour255
-setw -g window-status-bell-bg colour1
-
-set -g message-attr bold
-set -g default-terminal "screen-256color"  # Setting the correct term
-set -g status-bg default # transparent
-set -g status-fg magenta
-set -g status-attr default
-setw -g window-status-fg blue
-setw -g window-status-bg default
-setw -g window-status-attr dim
-setw -g window-status-current-fg brightred
-setw -g window-status-current-bg default
-setw -g window-status-current-attr bright
-setw -g window-status-bell-bg red
-setw -g window-status-bell-fg white
-setw -g window-status-bell-attr bright
-setw -g window-status-activity-bg blue
-setw -g window-status-activity-fg white
-setw -g window-status-activity-attr bright
-set -g pane-border-fg white
-set -g pane-border-bg default
-set -g pane-active-border-fg brightblack
-set -g pane-active-border-bg default
-set -g message-fg default
-set -g message-bg default
-set -g message-attr bright
-
-EOF
-
 echo "do not forget to create the tables and load the data in"
-
-backend_version=20.02.03
 wget "https://github.com/opentargets/genetics-backend/archive/${backend_version}.zip"
 unzip "${backend_version}.zip"
 cd "genetics-backend-${backend_version}/loaders/clickhouse"
-bash create_and_load_everything_from_scratch.sh "gs://genetics-portal-output/20022712"
+bash create_and_load_everything_from_scratch.sh ${genetics_data}
 
 echo touching $OT_RCFILE
-echo "backend_version=${backend_version}" > $OT_RCFILE
-date >> $OT_RCFILE
+cat <<EOF > $OT_RCFILE
+`date`
+backend_version=${backend_version}
+elastic_version=${elastic_version}
+clickhouseVersion=${clickhouseVersion}
+genetics_data=${genetics_data}
+EOF
