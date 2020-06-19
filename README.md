@@ -65,3 +65,31 @@ You can use wget to download the release data. Below is an example of the comman
 ```bash
     wget --mirror ftp://ftp.ebi.ac.uk/pub/databases/opentargets/genetics/190504/
 ```
+
+## Clickhouse and Elastic Search
+
+| Date | Name | Version | 
+| --- | --- | --- | 
+| 11/6/20 | ElasticSearch | [7.7.1](https://www.elastic.co/guide/en/elasticsearch/reference/7.7/getting-started-install.html) |
+| 11/6/20 | ClickHouse | [20.4.5.36](https://clickhouse.tech/docs/en/) |
+ 
+Clickhouse is currently used by the Genetics Platform and API. A number of [scripts](gcp/clickhouse) are provided to 
+create and configure VM instances. 
+
+- __bake\_clickhouse\_*.sh__: Create a GCP compute engine _image_ 
+- __clickhouse\_node\_es.sh__: Initialisation script to install and configure Clickhouse and ElasticSearch  
+- __clickhouse\_node\_sumstats.sh__: Initialisation script to install and configure Clickhouse  
+- __create\_clickhouse\_node*.sh__: Create GCP _instance_  
+
+### Creating the persistence layer for the Genetics API
+
+- Create the machine with this [script](gcp/create_clickhouse_node_es.sh). It automatically calls a [startup script](gcp/clickhouse_node_es.sh) that configures the machine with Clickhouse and ElasticSearch.
+- The startup script will fetch the latest version of the data from [Github](loaders/clickhouse) and call this [script](loaders/clickhouse/create_and_load_everything_from_scratch.sh) to add the data to ClickHouse and ElasticSearch.
+
+#### Notes and links
+
+- [`elasticsearch_loader`](https://pypi.org/project/elasticsearch-loader/) is a `pip` package used to import the Clickhouse data into ElasticSearch. 
+
+
+
+ 
