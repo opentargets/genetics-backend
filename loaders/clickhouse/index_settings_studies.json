@@ -51,61 +51,59 @@
     }
   },
   "mappings": {
-    "pub_author": {
-      "type": "text",
-      "fields": {
-        "keyword": {
-          "type": "keyword",
-          "ignore_above": 256
-        }
-      },
-      "copy_to": "mixed_field"
-    },
-    "pub_date": {
-      "type": "date"
-    },
-    "pub_journal": {
-      "type": "text",
-      "fields": {
-        "keyword": {
-          "type": "keyword",
-          "ignore_above": 256
-        }
-      },
-      "copy_to": "mixed_field"
-    },
-    "pub_title": {
-      "type": "text",
-      "analyzer": "standard",
-      "fields": {
-        "keyword": {
-          "type": "keyword",
-          "ignore_above": 256
+    "properties": {
+      "pub_author": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
         },
-        "completion": {
-          "type": "completion"
-        }
+        "copy_to": "mixed_field"
       },
-      "copy_to": "mixed_field"
-    },
-    "trait_reported": {
-      "type": "text",
-      "fields": {
-        "keyword": {
-          "type": "keyword",
-          "ignore_above": 256
-        }
+      "pub_date": {
+        "type": "date"
       },
-      "copy_to": "mixed_field"
-    },
-    "mixed_field": {
-      "type": "text",
-      "analyzer": "autocomplete",
-      "search_analyzer": "autocomplete_search"
+      "pub_journal": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        },
+        "copy_to": "mixed_field"
+      },
+      "pub_title": {
+        "type": "text",
+        "analyzer": "standard",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          },
+          "completion": {
+            "type": "completion"
+          }
+        },
+        "copy_to": "mixed_field"
+      },
+      "trait_reported": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        },
+        "copy_to": "mixed_field"
+      },
+      "mixed_field": {
+        "type": "text",
+        "analyzer": "autocomplete",
+        "search_analyzer": "autocomplete_search"
+      }
     }
   }
 }
-}
-
-
-

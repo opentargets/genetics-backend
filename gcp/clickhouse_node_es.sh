@@ -18,7 +18,7 @@ fi
 ## Versions
 clickhouseVersion=20.4.5.36
 elastic_version=7.x
-backend_version=20.02.03
+backend_version=es7-test
 genetics_data="gs://genetics-portal-output/20022712"
 
 # Install dependencies
@@ -325,7 +325,7 @@ echo copying dictionaries from gcloud to clickhouse dictionaries folder
 gsutil cp gs://genetics-portal-data/lut/v2g_scoring_source_weights.190521.json \
     /etc/clickhouse-server/dictionaries/v2g_scoring_source_weights.json
 
-chown -R clickhouse:clickhouse dictionaries/
+chown -R clickhouse:clickhouse /etc/clickhouse-server/dictionaries/
 
 systemctl enable clickhouse-server
 systemctl start clickhouse-server
