@@ -1,1 +1,14 @@
 .git
+.gitignore
+/terraform/
+/reference_data/
+/makeLUTs/
+/make_readme/
+/loaders/
+/.idea/
+/gcp/
+/fix_betas_for_release3/
+/biofeatureLUT/
+LICENSE
+README.md
+environment.yaml
