@@ -1,0 +1,7 @@
+cluster.name: genetics-ot
+node.name: 'genetics-es'
+network.host: 0.0.0.0
+http.port: 9200
+bootstrap.memory_lock: true
+discovery.seed_hosts: ["127.0.0.1", "[::1]"]
+discovery.type: single-node
