@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<yandex>
+    <profiles>
+        <default>
+            <joined_subquery_requires_alias>0</joined_subquery_requires_alias>
+            <max_memory_usage>100000000000</max_memory_usage>
+		    <max_bytes_before_external_sort>100000000000</max_bytes_before_external_sort>
+		    <max_bytes_before_external_group_by>100000000000</max_bytes_before_external_group_by>
+            <use_uncompressed_cache>1</use_uncompressed_cache>
+            <load_balancing>random</load_balancing>
+        </default>
+        <readonly>
+            <max_memory_usage>100000000000</max_memory_usage>
+		    <max_bytes_before_external_sort>80000000000</max_bytes_before_external_sort>
+		    <max_bytes_before_external_group_by>80000000000</max_bytes_before_external_group_by>
+            <use_uncompressed_cache>1</use_uncompressed_cache>
+            <load_balancing>random</load_balancing>
+            <readonly>128</readonly>
+        </readonly>
+    </profiles>
+    <users>
+        <default>
+            <password></password>
+            <networks incl="networks" replace="replace">
+                <ip>::/0</ip>
+                <ip>0.0.0.0</ip>
+            </networks>
+            <profile>default</profile>
+            <quota>default</quota>
+        </default>
+        <readonly>
+            <password></password>
+            <networks incl="networks" replace="replace">
+                <ip>::/0</ip>
+                <ip>0.0.0.0</ip>
+            </networks>
+            <profile>default</profile>
+            <quota>default</quota>
+        </readonly>
+    </users>
+    <quotas>
+        <default>
+            <interval>
+                <duration>3600</duration>
+                <queries>0</queries>
+                <errors>0</errors>
+                <result_rows>0</result_rows>
+                <read_rows>0</read_rows>
+                <execution_time>0</execution_time>
+            </interval>
+        </default>
+    </quotas>
+</yandex>

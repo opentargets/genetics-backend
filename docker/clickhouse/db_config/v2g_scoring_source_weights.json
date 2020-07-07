@@ -1,0 +1,7 @@
+{"source_id": "vep", "weight": 1.0}
+{"source_id": "eqtl", "weight": 0.66}
+{"source_id": "pqtl", "weight": 0.66}
+{"source_id": "javierre2016", "weight": 0.33}
+{"source_id": "andersson2014", "weight": 0.33}
+{"source_id": "thurman2012", "weight": 0.33}
+{"source_id": "canonical_tss", "weight": 0.33}
