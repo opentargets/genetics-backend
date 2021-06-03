@@ -56,7 +56,7 @@ If this option is _not_ specified, the default database used is `homo_sapiens_co
 An optional argument can be used to specify a file to which gene information required by opentargets/data_pipeline is written:
 
 ```
-python create_genes_dictionary.py -o "./" -e -z -n homo_sapiens_core_93_38
+python create_genes_dictionary.py -o "./" -e -z -n homo_sapiens_core_103_38
 ```
 
 Note that if the filename ends in `.gz` the output will be automatically `gzip`-compressed.
