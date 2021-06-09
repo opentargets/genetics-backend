@@ -1,4 +1,5 @@
 create database if not exists ot;
+set joined_subquery_requires_alias=0;
 create table if not exists ot.d2v2g_scored
   engine MergeTree partition by (source_id, tag_chrom) order by (tag_pos)
 as select
@@ -69,11 +70,9 @@ as select
           SELECT
             *
           FROM ot.d2v2g
-          ORDER BY tag_chrom, tag_pos, tag_ref, tag_alt, gene_id
           )
     ALL INNER JOIN (
      SELECT
        *
      FROM ot.d2v2g_score_by_overall
-     ORDER BY tag_chrom, tag_pos, tag_ref, tag_alt, gene_id
     ) USING (tag_chrom, tag_pos, tag_ref, tag_alt, gene_id);
