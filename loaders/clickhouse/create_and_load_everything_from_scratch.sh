@@ -85,6 +85,8 @@ clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/studies_overlap
 clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n -q "drop table ot.studies_overlap_log;"
 
 echo create dictionaries tables
+cp -f dictionaries/*.xml /etc/clickhouse-server/
+chown clickhouse.clickhouse /etc/clickhouse-server/*.xml
 clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/dictionaries.sql"
 
 echo create variants tables
