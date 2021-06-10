@@ -8,6 +8,7 @@ create table if not exists ot.studies_log (
   pub_author Nullable(String),
   has_sumstats UInt8,
   trait_reported String,
+  source Nullable(String),
   trait_efos Array(String) default [],
   ancestry_initial Array(String) default [],
   ancestry_replication Array(String) default [],

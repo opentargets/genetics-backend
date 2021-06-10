@@ -10,6 +10,7 @@ as select
        if(length(pub_author) > 0, pub_author, NULL) as pub_author,
        has_sumstats,
        if(length(trait_reported) > 0, trait_reported, NULL) as trait_reported,
+       source,
        trait_efos,
        arrayFilter(x -> length(x) > 0, ancestry_initial) as ancestry_initial,
        arrayFilter(x -> length(x) > 0, ancestry_replication) as ancestry_replication,
