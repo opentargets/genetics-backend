@@ -49,10 +49,9 @@
         }
       }
     }
-    },
-    "mappings": {
-      "gene": {
-        "properties": {
+  },
+  "mappings": {
+    "properties": {
           "biotype": {
             "type": "text",
             "fields": {
@@ -116,6 +115,5 @@
             "type": "long"
           }
         }
-      }
-    }
   }
+}
