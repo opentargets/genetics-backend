@@ -15,6 +15,6 @@ create table if not exists ot.studies_log (
   n_initial Nullable(UInt32),
   n_replication Nullable(UInt32),
   n_cases Nullable(UInt32),
-  trait_category Nullable(String),
+  trait_category Nullable(String) default 'Uncategorised',
   num_assoc_loci Nullable(UInt32))
 engine = Log;
