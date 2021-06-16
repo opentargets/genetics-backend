@@ -1,5 +1,4 @@
 create database if not exists ot;
-set joined_subquery_requires_alias=0;
 create table if not exists ot.manhattan
   engine MergeTree order by (study, chrom, pos, ref, alt)
 as SELECT study,
@@ -20,10 +19,10 @@ as SELECT study,
        credibleSetSize,
        ldSetSize,
        uniq_variants,
-       top10_genes_raw.2   as top10_genes_raw_ids,
-       top10_genes_raw.1   as top10_genes_raw_score,
-       top10_genes_coloc.2 as top10_genes_coloc_ids,
-       top10_genes_coloc.1 as top10_genes_coloc_score
+       L.top10_genes_raw.2   as top10_genes_raw_ids,
+       L.top10_genes_raw.1   as top10_genes_raw_score,
+       L.top10_genes_coloc.2 as top10_genes_coloc_ids,
+       L.top10_genes_coloc.1 as top10_genes_coloc_score
 FROM (
          SELECT study_id as study,
                 lead_chrom                                                          as chrom,
@@ -50,7 +49,7 @@ FROM (
              lead_pos,
              lead_ref,
              lead_alt
-         )
+         ) S
          FULL OUTER JOIN
      (
          select study,
@@ -93,7 +92,7 @@ FROM (
                               left_pos,
                               left_ref,
                               left_alt
-                    )
+                    ) T
                union all
                select
                       study,
@@ -123,14 +122,14 @@ FROM (
                                  lead_pos,
                                  lead_ref,
                                  lead_alt
-                            )
-                   )
+                            ) U
+                   ) R
                group by study,
                     chrom,
                    pos,
                    ref,
                    alt
-         ) USING (study, chrom, pos, ref, alt);
+         ) L USING (study, chrom, pos, ref, alt);
 
 create view if not exists ot.manhattan_with_l2g as
     select study,
