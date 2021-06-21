@@ -1,6 +1,7 @@
 create database if not exists ot;
 create table if not exists ot.v2d_log(
   study_id String,
+  source String,
   pmid Nullable(String),
   pub_date Nullable(String),
   pub_journal Nullable(String),

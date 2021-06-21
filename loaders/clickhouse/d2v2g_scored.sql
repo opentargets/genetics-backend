@@ -70,9 +70,9 @@ as select
           SELECT
             *
           FROM ot.d2v2g
-          )
+          ) T
     ALL INNER JOIN (
      SELECT
        *
      FROM ot.d2v2g_score_by_overall
-    ) USING (tag_chrom, tag_pos, tag_ref, tag_alt, gene_id);
+    ) S USING (tag_chrom, tag_pos, tag_ref, tag_alt, gene_id);
