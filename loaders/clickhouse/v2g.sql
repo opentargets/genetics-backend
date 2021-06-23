@@ -16,7 +16,7 @@ as select
   fpred_max_score,
   qtl_beta,
   qtl_se,
-  qtl_pval,
+  if (qtl_pval = 0,toFloat64('1E-323'), qtl_pval) as qtl_pval,
   qtl_score,
   interval_score,
   qtl_score_q,
