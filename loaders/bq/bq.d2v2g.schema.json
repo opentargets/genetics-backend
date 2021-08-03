@@ -310,5 +310,10 @@
     "name":"distance_score_q",
     "type": "FLOAT",
     "mode": "NULLABLE"
+  },
+  {
+    "name":"source",
+    "type": "STRING",
+    "mode": "NULLABLE"
   }
 ]
