@@ -52,7 +52,7 @@
   {
     "name": "logABF",
     "type": "FLOAT",
-    "mode": "REQUIRED"
+    "mode": "NULLABLE"
   },
   {
     "name": "multisignal_method",
@@ -127,6 +127,11 @@
   {
     "name": "tag_se_cond",
     "type": "FLOAT",
+    "mode": "NULLABLE"
+  },
+  {
+    "name":"source",
+    "type": "STRING",
     "mode": "NULLABLE"
   }
 ]

@@ -220,5 +220,10 @@
     "name":"pval",
     "type": "FLOAT",
     "mode": "REQUIRED"
+  },
+  {
+    "name":"source",
+    "type": "STRING",
+    "mode": "NULLABLE"
   }
 ]

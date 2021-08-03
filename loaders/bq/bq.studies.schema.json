@@ -79,5 +79,10 @@
     "name":"has_sumstats",
     "type": "BOOLEAN",
     "mode": "NULLABLE"
+  },
+  {
+    "name":"source",
+    "type": "STRING",
+    "mode": "NULLABLE"
   }
 ]
