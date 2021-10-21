@@ -5,7 +5,7 @@ AS SELECT
     type_id,
     source_id,
     groupUniqArray(feature) AS feature_set
-FROM ot.v2g
+FROM ot.v2g_scored
 WHERE chr_id = '1'
 GROUP BY 
     type_id,

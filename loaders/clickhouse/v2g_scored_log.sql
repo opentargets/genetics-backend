@@ -1,5 +1,5 @@
 create database if not exists ot;
-create table if not exists ot.v2g_log(
+create table if not exists ot.v2g_scored_log(
   chr_id String,
   position UInt32,
   ref_allele String,
@@ -21,6 +21,9 @@ create table if not exists ot.v2g_log(
   interval_score_q Nullable(Float64),
   d Nullable(UInt32),
   distance_score Nullable(Float64),
-  distance_score_q Nullable(Float64))
+  distance_score_q Nullable(Float64),
+  source_list Array(String) default [],
+  source_score_list Array(Float64) default [],
+  overall_score Float64)
 engine = Log;
 

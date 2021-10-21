@@ -95,12 +95,6 @@ load_foreach_json "${base_path}/lut/variant-index" "ot.variants_log"
 clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/variants.sql"
 clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n -q "drop table ot.variants_log;"
 
-echo create d2v2g tables
-clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/d2v2g_log.sql"
-load_foreach_json "${base_path}/d2v2g" "ot.d2v2g_log"
-clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/d2v2g.sql"
-clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n -q "drop table ot.d2v2g_log;"
-
 echo create v2d tables
 clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/v2d_log.sql"
 load_foreach_json "${base_path}/v2d" "ot.v2d_log"
@@ -108,19 +102,19 @@ clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/v2d.sql"
 clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n -q "drop table ot.v2d_log;"
 
 echo create v2g tables
-clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/v2g_log.sql"
+clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/v2g_scored_log.sql"
 load_foreach_json "${base_path}/v2g" "ot.v2g_log"
-clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/v2g.sql"
-clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n -q "drop table ot.v2g_log;"
+clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/v2g_scored.sql"
+clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n -q "drop table ot.v2g_scored_log;"
 
 echo create v2g structure
 clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/v2g_structure.sql"
 
-#echo compute v2g_scored table
-#clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/v2g_scored.sql"
-
-echo compute d2v2g_scored table
+echo create d2v2g_scored tables
+clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/d2v2g_scored_log.sql"
+load_foreach_json "${base_path}/d2v2g" "ot.d2v2g_scored_log"
 clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/d2v2g_scored.sql"
+clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n -q "drop table ot.d2v2g_scored_log;"
 
 # echo compute locus 2 gene table
 # clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/d2v2g_scored_l2g.sql"
