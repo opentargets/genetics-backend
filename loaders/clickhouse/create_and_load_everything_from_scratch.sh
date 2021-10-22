@@ -63,8 +63,6 @@ load_foreach_parquet(){
     echo "done loading $path_prefix glob files into this table $table_name"
 }
 
-# CURRENTLY, IN ORDER TO BUILD SOME TABLES WE NEED A HIGHMEM MACHINE
-
 # drop all dbs
 clickhouse-client -h "${CLICKHOUSE_HOST}" --query="drop database if exists ot;"
 
