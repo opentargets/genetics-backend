@@ -44,7 +44,6 @@ as select
      pval_mantissa ,
      pval_exponent ,
      pval ,
-     gene_id ,
      assumeNotNull(gene_id) as gene_id,
      assumeNotNull(feature) as feature,
      assumeNotNull(type_id) as type_id,
