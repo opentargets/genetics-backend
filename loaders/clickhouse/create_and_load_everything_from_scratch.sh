@@ -103,7 +103,7 @@ clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n -q "drop table ot.v2d_log;"
 
 echo create v2g tables
 clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/v2g_scored_log.sql"
-load_foreach_json "${base_path}/v2g" "ot.v2g_log"
+load_foreach_json "${base_path}/v2g_scored" "ot.v2g_scored_log"
 clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/v2g_scored.sql"
 clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n -q "drop table ot.v2g_scored_log;"
 
@@ -112,7 +112,7 @@ clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/v2g_structure.s
 
 echo create d2v2g_scored tables
 clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/d2v2g_scored_log.sql"
-load_foreach_json "${base_path}/d2v2g" "ot.d2v2g_scored_log"
+load_foreach_json "${base_path}/d2v2g_scored" "ot.d2v2g_scored_log"
 clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/d2v2g_scored.sql"
 clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n -q "drop table ot.d2v2g_scored_log;"
 
