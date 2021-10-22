@@ -1,5 +1,5 @@
 create database if not exists ot;
-create table if not exists ot.d2v2g_log(
+create table if not exists ot.d2v2g_scored_log(
   study_id String,
   source String,
   pmid Nullable(String),
