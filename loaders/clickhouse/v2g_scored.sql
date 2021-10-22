@@ -27,5 +27,5 @@ as select
   source_list,
   source_score_list,
   overall_score
-from (select * from ot.v2g_log where chr_id in ('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', 'X', 'Y','MT'));
+from (select * from ot.v2g_scored_log where chr_id in ('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', 'X', 'Y','MT'));
 
