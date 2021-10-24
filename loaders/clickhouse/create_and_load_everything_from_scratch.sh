@@ -114,9 +114,6 @@ load_foreach_json "${base_path}/d2v2g_scored" "ot.d2v2g_scored_log"
 clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/d2v2g_scored.sql"
 clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n -q "drop table ot.d2v2g_scored_log;"
 
-# echo compute locus 2 gene table
-# clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/d2v2g_scored_l2g.sql"
-
 echo load coloc data
 clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/v2d_coloc_log.sql"
 load_foreach_json "${base_path}/v2d_coloc" "ot.v2d_coloc_log"
@@ -147,8 +144,11 @@ load_foreach_parquet "${base_path}/l2g" "ot.l2g_log"
 clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/l2g.sql"
 clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n -q "drop table ot.l2g_log;"
 
-echo building manhattan table
+echo create manhattan table
+clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/manhattan_log.sql"
+load_foreach_json "${base_path}/manhattan" "ot.manhattan_log"
 clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/manhattan.sql"
+clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n -q "drop table ot.manhattan_log;"
 
 # elasticsearch process
 echo load elasticsearch studies data
