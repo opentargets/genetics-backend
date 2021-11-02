@@ -146,14 +146,17 @@ clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/manhattan.sql"
 clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n -q "drop table ot.manhattan_log;"
 
 # elasticsearch process
+# elasticsearch mapping index for studies uses a weird custom date format parsing configration
+# that it is worth to correct at ETL pipeline
 echo load elasticsearch studies data
 curl -XDELETE "${ES_HOST}:9200/studies"
-"${SCRIPT_DIR}/run.sh" cat "${base_path}"/lut/study-index/part-* | elasticsearch_loader --es-host "http://${ES_HOST}:9200" --index-settings-file "${SCRIPT_DIR}/index_settings_studies.json" --bulk-size 10000 --index studies --type study json --json-lines -
+"${SCRIPT_DIR}/run.sh" cat "${base_path}"/lut/study-index/part-* | elasticsearch_loader --es-host "http://${ES_HOST}:9200" --index-settings-file "${SCRIPT_DIR}/index_settings_studies.json" --bulk-size 10000 --index studies json --json-lines -
 
 echo load elasticsearch genes data
 curl -XDELETE "${ES_HOST}:9200/genes"
-"${SCRIPT_DIR}/run.sh" cat "${base_path}"/lut/genes-index/part-* | elasticsearch_loader --es-host "http://${ES_HOST}:9200" --index-settings-file "${SCRIPT_DIR}/index_settings_genes.json" --bulk-size 10000 --with-retry --timeout 300 --index genes --type gene json --json-lines -
+"${SCRIPT_DIR}/run.sh" cat "${base_path}"/lut/genes-index/part-* | elasticsearch_loader --es-host "http://${ES_HOST}:9200" --index-settings-file "${SCRIPT_DIR}/index_settings_genes.json" --bulk-size 10000 --with-retry --timeout 300 --index genes json --json-lines -
 
+# it needs to load after clickhouse variant index loaded
 echo load elasticsearch variants data
 for chr in "1" "2" "3" "4" "5" "6" "7" "8" "9" "10" "11" "12" "13" "14" "15" "16" "17" "18" "19" "20" "21" "22" "x" "y" "mt"; do
 	chrU=$(echo -n $chr | awk '{print toupper($0)}')

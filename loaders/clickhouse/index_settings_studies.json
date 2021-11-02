@@ -63,7 +63,8 @@
           "copy_to": "mixed_field"
         },
         "pub_date": {
-          "type": "date"
+          "type": "date",
+          "format": "yyyy-M-dd||yyyy-MM-dd"
         },
         "pub_journal": {
           "type": "text",
