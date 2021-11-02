@@ -150,10 +150,6 @@ echo load elasticsearch studies data
 curl -XDELETE "${ES_HOST}:9200/studies"
 "${SCRIPT_DIR}/run.sh" cat "${base_path}"/lut/study-index/part-* | elasticsearch_loader --es-host "http://${ES_HOST}:9200" --index-settings-file "${SCRIPT_DIR}/index_settings_studies.json" --bulk-size 10000 --index studies --type study json --json-lines -
 
-#clickhouse-client -h "${CLICKHOUSE_HOST}" --query="select * from ot.studies format JSONEachRow "| \
-#    jq -r 'del(.[] | nulls)|@json' | \
-#    elasticsearch_loader --es-host "http://${ES_HOST}:9200" --index-settings-file "${SCRIPT_DIR}/index_settings_studies.json" --bulk-size 10000 --with-retry --timeout 300 --index studies --type study json --json-lines -
-
 echo load elasticsearch genes data
 curl -XDELETE "${ES_HOST}:9200/genes"
 "${SCRIPT_DIR}/run.sh" cat "${base_path}"/lut/genes-index/part-* | elasticsearch_loader --es-host "http://${ES_HOST}:9200" --index-settings-file "${SCRIPT_DIR}/index_settings_genes.json" --bulk-size 10000 --with-retry --timeout 300 --index genes --type gene json --json-lines -
