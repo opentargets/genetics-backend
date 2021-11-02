@@ -82,11 +82,6 @@ load_foreach_json "${base_path}/lut/overlap-index" "ot.studies_overlap_log"
 clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/studies_overlap.sql"
 clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n -q "drop table ot.studies_overlap_log;"
 
-echo create dictionaries tables
-cp -f dictionaries/*.xml /etc/clickhouse-server/
-chown clickhouse.clickhouse /etc/clickhouse-server/*.xml
-clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/dictionaries.sql"
-
 echo create variants tables
 clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/variants_log.sql"
 load_foreach_json "${base_path}/lut/variant-index" "ot.variants_log"

@@ -3,7 +3,7 @@
                 <name>v2gw</name>
                 <source>
                         <file>
-                                <path>/etc/clickhouse-server/dictionaries/v2g_scoring_source_weights.190521.json</path>
+                                <path>/etc/clickhouse-server/dictionaries/v2g_scoring_source_weights.json</path>
                                 <format>JSONEachRow</format>
                         </file>
                 </source>
