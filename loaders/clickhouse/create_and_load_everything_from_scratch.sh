@@ -161,7 +161,7 @@ echo load elasticsearch variants data
 for chr in "1" "2" "3" "4" "5" "6" "7" "8" "9" "10" "11" "12" "13" "14" "15" "16" "17" "18" "19" "20" "21" "22" "x" "y" "mt"; do
 	chrU=$(echo -n $chr | awk '{print toupper($0)}')
 	curl -XDELETE "${ES_HOST}:9200/variant_${chr}"
-	clickhouse-client -h "${CLICKHOUSE_HOST}" -q "select * from ot.variants prewhere chr_id = '${chrU}' format JSONEachRow" | elasticsearch_loader --es-host "http://${ES_HOST}:9200" --index-settings-file "${SCRIPT_DIR}/index_settings_variants.json" --bulk-size 10000 --with-retry --timeout 300 --index variant_$chr --type variant json --json-lines -
+	clickhouse-client -h "${CLICKHOUSE_HOST}" -q "select * from ot.variants prewhere chr_id = '${chrU}' format JSONEachRow" | elasticsearch_loader --es-host "http://${ES_HOST}:9200" --index-settings-file "${SCRIPT_DIR}/index_settings_variants.json" --bulk-size 10000 --with-retry --timeout 300 --index variant_$chr json --json-lines -
 done
 
 
