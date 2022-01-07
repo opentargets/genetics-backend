@@ -116,9 +116,9 @@ clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/v2d_coloc.sql"
 clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n -q "drop table ot.v2d_coloc_log;"
 
 echo load credible set
-clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/v2d_credibleset_log.sql"
+clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/v2d_credset_log.sql"
 load_foreach_json_gz "${base_path}/v2d_credset" "ot.v2d_credset_log"
-clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/v2d_credibleset.sql"
+clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/v2d_credset.sql"
 clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n -q "drop table ot.v2d_credset_log;"
 
 echo generate sumstats gwas tables
@@ -128,9 +128,9 @@ clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/v2d_sa_gwas.sql
 clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n -q "drop table if exists ot.v2d_sa_gwas_log;"
 
 echo generate sumstats molecular trait tables
-clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/v2d_sa_molecular_traits_log.sql"
+clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/v2d_sa_molecular_trait_log.sql"
 load_foreach_parquet "${base_path}/sa/molecular_trait" "ot.v2d_sa_molecular_trait_log"
-clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/v2d_sa_molecular_traits.sql"
+clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/v2d_sa_molecular_trait.sql"
 clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n -q "drop table if exists ot.v2d_sa_molecular_trait_log;"
 
 echo load locus 2 gene

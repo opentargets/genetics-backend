@@ -26,11 +26,11 @@ clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/v2d_sa_gwas.sql
 echo create genes table
 
 moltraits_files=$("${SCRIPT_DIR}/run.sh" ls "${base_path}/molecular_trait/part-*")
-clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/v2d_sa_molecular_traits_log.sql"
+clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/v2d_sa_molecular_trait_log.sql"
 for file in $moltraits_files; do
         echo $file
         "${SCRIPT_DIR}/run.sh" cat "${file}" | \
          clickhouse-client -h "${CLICKHOUSE_HOST}" \
              --query="insert into ot.v2d_sa_molecular_trait_log format JSONEachRow "
 done
-clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/v2d_sa_molecular_traits.sql"
+clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/v2d_sa_molecular_trait.sql"
