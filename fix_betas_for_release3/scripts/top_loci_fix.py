@@ -22,8 +22,8 @@ from pyspark.sql.functions import *
 def main():
 
     # Args (local)
-    inf = 'gs://genetics-portal-staging/v2d/190705/toploci_broken.parquet'
-    outf = 'gs://genetics-portal-staging/v2d/190705/toploci.parquet'
+    inf = 'gs://genetics-portal-dev-staging/v2d/220111/toploci.parquet'
+    outf = 'gs://genetics-portal-dev-staging/v2d/220113/toploci.parquet'
 
     # Studies to fix
     studies = [
@@ -33,7 +33,11 @@ def main():
         'GCST001725',
         'GCST001728',
         'GCST001729',
-        'GCST000964'
+        'GCST000964',
+        'GCST000758',
+        'GCST000760',
+        'GCST000755',
+        'GCST000759'
     ]
 
     # Make spark session

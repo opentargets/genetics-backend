@@ -22,8 +22,8 @@ from pyspark.sql.functions import *
 def main():
 
     # Args (local)
-    inf = 'gs://genetics-portal-sumstats-b38/filtered/pvalue_0.05/gwas/190425/'
-    outf = 'gs://genetics-portal-sumstats-b38/filtered/pvalue_0.05/gwas/190612/'
+    inf = 'gs://genetics-portal-dev-sumstats/filtered/pvalue_0.005/gwas/220105'
+    outf = 'gs://genetics-portal-dev-sumstats/filtered/pvalue_0.005/gwas/220113'
 
     # Studies to fix
     studies = [
@@ -33,7 +33,11 @@ def main():
         'GCST001725',
         'GCST001728',
         'GCST001729',
-        'GCST000964'
+        'GCST000964',
+        'GCST000758',
+        'GCST000760',
+        'GCST000755',
+        'GCST000759'
     ]
 
     # Make spark session
@@ -45,7 +49,7 @@ def main():
     print('Spark version: ', spark.version)
     
     # Load data
-    df = spark.read.json(inf)
+    df = spark.read.parquet(inf)
     
     # Get which rows to fix
     to_fix = col('study_id').isin(*studies)
@@ -64,6 +68,7 @@ def main():
     # Save
     (
         df_fixed
+        .repartition(5000)
         .write
         .parquet(outf, mode='overwrite')
     )

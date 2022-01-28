@@ -16,16 +16,21 @@ Studies to flip betas for:
 - GCST001728
 - GCST001729
 - GCST000964
+- GCST000758
+- GCST000760
+- GCST000755
+- GCST000759
 
 ```
 # Start cluster
 gcloud beta dataproc clusters create \
     em-cluster-fix-betas \
     --image-version=1.4 \
-    --properties=spark:spark.debug.maxToStringFields=100,spark:spark.executor.cores=15,spark:spark.executor.instances=1 \
-    --master-machine-type=n1-standard-16 \
-    --master-boot-disk-size=1TB \
-    --num-master-local-ssds=1 \
+    --region europe-west1 \
+    --properties=spark:spark.debug.maxToStringFields=100,spark:spark.driver.memory=30g,spark:spark.executor.memory=30g,spark:spark.executor.cores=5,spark:spark.executor.instances=3 \
+    --master-machine-type=n2-highmem-16 \
+    --master-boot-disk-size=2TB \
+    --num-master-local-ssds=0 \
     --zone=europe-west1-d \
     --initialization-action-timeout=20m \
     --single-node \
@@ -34,18 +39,27 @@ gcloud beta dataproc clusters create \
 # Submit to cluster
 gcloud dataproc jobs submit pyspark \
     --cluster=em-cluster-fix-betas \
+    --region europe-west1 \
     scripts/top_loci_fix.py
+
 gcloud dataproc jobs submit pyspark \
     --cluster=em-cluster-fix-betas \
+    --region europe-west1 \
     scripts/credset_fix.py
+
 gcloud dataproc jobs submit pyspark \
     --cluster=em-cluster-fix-betas \
+    --region europe-west1 \
     scripts/coloc_fix.py
+
 gcloud dataproc jobs submit pyspark \
     --cluster=em-cluster-fix-betas \
+    --region europe-west1 \
     scripts/sumstats_fix.py
+
 gcloud dataproc jobs submit pyspark \
     --cluster=em-cluster-fix-betas \
+    --region europe-west1 \
     scripts/fine_mapping_top_loci_fix.py
 
 # To monitor
