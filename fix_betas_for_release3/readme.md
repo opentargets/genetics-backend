@@ -28,7 +28,7 @@ gcloud beta dataproc clusters create \
     --image-version=1.4 \
     --region europe-west1 \
     --properties=spark:spark.debug.maxToStringFields=100,spark:spark.driver.memory=30g,spark:spark.executor.memory=30g,spark:spark.executor.cores=5,spark:spark.executor.instances=3 \
-    --master-machine-type=n2-highmem-16 \
+    --master-machine-type=n2-highmem-32 \
     --master-boot-disk-size=2TB \
     --num-master-local-ssds=0 \
     --zone=europe-west1-d \
@@ -64,10 +64,10 @@ gcloud dataproc jobs submit pyspark \
 
 # To monitor
 gcloud compute ssh em-cluster-fix-betas-m \
-  --project=open-targets-genetics \
+  --project=open-targets-genetics-dev \
   --zone=europe-west1-d -- -D 1080 -N
 
-"EdApplications/Google Chrome.app/Contents/MacOS/Google Chrome" \
+"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
   --proxy-server="socks5://localhost:1080" \
-  --user-data-dir="/tmp/em-cluster-fix-betas-m" http://em-cluster-gtex7-ingest-m:8088
+  --user-data-dir="/tmp/em-cluster-fix-betas-m" http://em-cluster-fix-betas-m:8088
 ```

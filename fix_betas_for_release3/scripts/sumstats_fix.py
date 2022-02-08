@@ -22,8 +22,8 @@ from pyspark.sql.functions import *
 def main():
 
     # Args (local)
-    inf = 'gs://genetics-portal-dev-sumstats/filtered/pvalue_0.005/gwas/220105'
-    outf = 'gs://genetics-portal-dev-sumstats/filtered/pvalue_0.005/gwas/220113'
+    inf = 'gs://genetics-portal-dev-sumstats/filtered/pvalue_0.005/gwas/220207'
+    outf = 'gs://genetics-portal-dev-sumstats/filtered/pvalue_0.005/gwas/220208'
 
     # Studies to fix
     studies = [

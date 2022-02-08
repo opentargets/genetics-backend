@@ -22,8 +22,8 @@ from pyspark.sql.functions import *
 def main():
 
     # Args (local)
-    inf = 'gs://genetics-portal-dev-staging/v2d/220111/toploci.parquet'
-    outf = 'gs://genetics-portal-dev-staging/v2d/220113/toploci.parquet'
+    inf = 'gs://genetics-portal-dev-staging/v2d/220208/toploci_bad_betas.parquet'
+    outf = 'gs://genetics-portal-dev-staging/v2d/220208/toploci.parquet'
 
     # Studies to fix
     studies = [
@@ -67,6 +67,7 @@ def main():
     # Save
     (
         df_fixed
+        .coalesce(1)
         .write
         .parquet(outf, mode='overwrite')
     )
