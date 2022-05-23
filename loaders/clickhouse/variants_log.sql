@@ -15,7 +15,6 @@ create table if not exists ot.variants_log (
   raw Float64,
   phred Float64,
   gnomad_afr Float64,
-  gnomad_seu Float64,
   gnomad_amr Float64,
   gnomad_asj Float64,
   gnomad_eas Float64,
