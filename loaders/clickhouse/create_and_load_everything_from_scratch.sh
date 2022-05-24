@@ -29,87 +29,82 @@ load_foreach_parquet(){
     echo "done loading $path_prefix glob files into this table $table_name"
 }
 
+## Database setup
 # drop all dbs
-clickhouse-client -h "${CLICKHOUSE_HOST}" --query="drop database if exists ot;"
+echo "Initialising database..."
+clickhouse-client -h "localhost" --query="drop database if exists ot;"
 
-echo create genes table
-clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/genes.sql"
-load_foreach_parquet "${base_path}/lut/genes-index" "ot.genes"
+intermediateTables=(
+  studies
+  studies_overlap
+  variants
+  v2d
+  v2g_scored
+  d2v2g
+  v2d_coloc
+  v2d_credibleset
+  v2d_sa_gwas
+  v2d_sa_molecular_traits
+  l2g
+  manhattan
+)
+## Create intermediary tables
+for t in "${intermediateTables[@]}"; do 
+  echo "Creating intermediary table: ${t}";
+  clickhouse-client -m -n < "${SCRIPT_DIR}/${t}_log.sql";
+done
 
-echo create studies tables
-clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/studies_log.sql"
-load_foreach_parquet "${base_path}/lut/study-index" "ot.studies_log"
-clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/studies.sql"
-clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n -q "drop table ot.studies_log;"
+## Load data
+load_foreach_parquet "${base_path}/lut/study-index" "ot.studies_log" &
+load_foreach_parquet "${base_path}/lut/overlap-index" "ot.studies_overlap_log" &
+load_foreach_parquet "${base_path}/lut/variant-index" "ot.variants_log" &
+load_foreach_parquet "${base_path}/d2v2g" "ot.d2v2g_log" &
+load_foreach_parquet "${base_path}/v2d" "ot.v2d_log" &
+load_foreach_parquet "${base_path}/v2g" "ot.v2g_log" &
+load_foreach_parquet "${base_path}/v2d_coloc" "ot.v2d_coloc_log" &
+load_foreach_parquet "${base_path}/v2d_credset" "ot.v2d_credset_log" &
+load_foreach_parquet "${base_path}/sa/gwas" "ot.v2d_sa_gwas_log" &
+load_foreach_parquet "${base_path}/sa/molecular_trait" "ot.v2d_sa_molecular_trait_log" &
+load_foreach_parquet "${base_path}/l2g" "ot.l2g_log" &
+wait
 
-echo create studies overlap tables
-clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/studies_overlap_log.sql"
-load_foreach_parquet "${base_path}/lut/overlap-index" "ot.studies_overlap_log"
-clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/studies_overlap.sql"
-clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n -q "drop table ot.studies_overlap_log;"
+## Create final tables
+finalTables=(
+  genes
+  studies
+  studies_overlap
+  variants
+  v2d
+  v2g_scored
+  v2g_structure
+  d2v2g_scored
+  v2d_coloc
+  v2d_credibleset
+  v2d_sa_gwas
+  v2d_sa_molecular_traits
+  l2g
+  manhattan
+)
 
-echo create variants tables
-clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/variants_log.sql"
-load_foreach_parquet "${base_path}/lut/variant-index" "ot.variants_log"
-clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/variants.sql"
-clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n -q "drop table ot.variants_log;"
+## Create final tables
+for t in "${finalTables[@]}"; do 
+  echo "Creating table: ${t}";
+  clickhouse-client -m -n < "${SCRIPT_DIR}/${t}.sql" &;
+done
 
-echo create v2d tables
-clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/v2d_log.sql"
-load_foreach_parquet "${base_path}/v2d" "ot.v2d_log"
-clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/v2d.sql"
-clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n -q "drop table ot.v2d_log;"
+echo "Load gene index"
+load_foreach_parquet "${base_path}/lut/genes-index" "ot.genes" &
 
-echo create v2g tables
-clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/v2g_scored_log.sql"
-load_foreach_parquet "${base_path}/v2g_scored" "ot.v2g_scored_log"
-clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/v2g_scored.sql"
-clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n -q "drop table ot.v2g_scored_log;"
+wait 
 
 echo create v2g structure
 clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/v2g_structure.sql"
 
-echo create d2v2g_scored tables
-clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/d2v2g_scored_log.sql"
-load_foreach_parquet "${base_path}/d2v2g_scored" "ot.d2v2g_scored_log"
-clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/d2v2g_scored.sql"
-clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n -q "drop table ot.d2v2g_scored_log;"
-
-echo load coloc data
-clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/v2d_coloc_log.sql"
-load_foreach_parquet "${base_path}/v2d_coloc" "ot.v2d_coloc_log"
-clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/v2d_coloc.sql"
-clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n -q "drop table ot.v2d_coloc_log;"
-
-echo load credible set
-clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/v2d_credibleset_log.sql"
-load_foreach_parquet "${base_path}/v2d_credset" "ot.v2d_credset_log"
-clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/v2d_credibleset.sql"
-clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n -q "drop table ot.v2d_credset_log;"
-
-echo generate sumstats gwas tables
-clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/v2d_sa_gwas_log.sql"
-load_foreach_parquet "${base_path}/sa/gwas" "ot.v2d_sa_gwas_log"
-clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/v2d_sa_gwas.sql"
-clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n -q "drop table if exists ot.v2d_sa_gwas_log;"
-
-echo generate sumstats molecular trait tables
-clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/v2d_sa_molecular_traits_log.sql"
-load_foreach_parquet "${base_path}/sa/molecular_trait" "ot.v2d_sa_molecular_trait_log"
-clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/v2d_sa_molecular_traits.sql"
-clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n -q "drop table if exists ot.v2d_sa_molecular_trait_log;"
-
-echo load locus 2 gene
-clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/l2g_log.sql"
-load_foreach_parquet "${base_path}/l2g" "ot.l2g_log"
-clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/l2g.sql"
-clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n -q "drop table ot.l2g_log;"
-
-echo create manhattan table
-clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/manhattan_log.sql"
-load_foreach_parquet "${base_path}/manhattan" "ot.manhattan_log"
-clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/manhattan.sql"
-clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n -q "drop table ot.manhattan_log;"
+## Drop intermediate tables
+for t in "${intermediateTables[@]}"; do 
+  echo "Deleting intermediate table: ${t}";
+  clickhouse-client -m -n -q " drop table ot.${t}_log";
+done
 
 # # elasticsearch process
 # # elasticsearch mapping index for studies uses a weird custom date format parsing configration
