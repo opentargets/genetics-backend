@@ -40,7 +40,7 @@ intermediateTables=(
   variants
   v2d
   v2g_scored
-  d2v2g
+  d2v2g_scored
   v2d_coloc
   v2d_credibleset
   v2d_sa_gwas
@@ -58,14 +58,15 @@ done
 load_foreach_parquet "${base_path}/lut/study-index" "ot.studies_log" &
 load_foreach_parquet "${base_path}/lut/overlap-index" "ot.studies_overlap_log" &
 load_foreach_parquet "${base_path}/lut/variant-index" "ot.variants_log" &
-load_foreach_parquet "${base_path}/d2v2g" "ot.d2v2g_log" &
+load_foreach_parquet "${base_path}/d2v2g_scored" "ot.d2v2g_scored_log" &
 load_foreach_parquet "${base_path}/v2d" "ot.v2d_log" &
-load_foreach_parquet "${base_path}/v2g" "ot.v2g_log" &
+load_foreach_parquet "${base_path}/v2g_scored" "ot.v2g_scored_log" &
 load_foreach_parquet "${base_path}/v2d_coloc" "ot.v2d_coloc_log" &
 load_foreach_parquet "${base_path}/v2d_credset" "ot.v2d_credset_log" &
 load_foreach_parquet "${base_path}/sa/gwas" "ot.v2d_sa_gwas_log" &
 load_foreach_parquet "${base_path}/sa/molecular_trait" "ot.v2d_sa_molecular_trait_log" &
 load_foreach_parquet "${base_path}/l2g" "ot.l2g_log" &
+load_foreach_parquet "${base_path}/manhattan" "ot.manhattan_log" &
 wait
 
 ## Create final tables
