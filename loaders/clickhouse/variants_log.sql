@@ -6,7 +6,7 @@ create table if not exists ot.variants_log (
   position_b37 UInt32,
   ref_allele String,
   alt_allele String,
-  rs_id String,
+  rs_id Nullable(String),
   gene_id_prot_coding String,
   gene_id_any String,
   gene_id_any_distance UInt32,
