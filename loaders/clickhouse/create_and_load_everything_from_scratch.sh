@@ -32,7 +32,7 @@ load_foreach_parquet(){
 ## Database setup
 # drop all dbs
 echo "Initialising database..."
-clickhouse-client -h "localhost" --query="drop database if exists ot;"
+clickhouse-client -h "${CLICKHOUSE_HOST}" --query="drop database if exists ot;"
 
 intermediateTables=(
   studies
@@ -51,7 +51,7 @@ intermediateTables=(
 ## Create intermediary tables
 for t in "${intermediateTables[@]}"; do 
   echo "Creating intermediary table: ${t}";
-  clickhouse-client -m -n < "${SCRIPT_DIR}/${t}_log.sql";
+  clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/${t}_log.sql";
 done
 
 ## Load data
@@ -103,7 +103,7 @@ clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/v2g_structure.s
 ## Drop intermediate tables
 for t in "${intermediateTables[@]}"; do 
   echo "Deleting intermediate table: ${t}";
-  clickhouse-client -m -n -q " drop table ot.${t}_log";
+  clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n -q " drop table ot.${t}_log";
 done
 
 # # elasticsearch process
