@@ -16,7 +16,7 @@ as select
     bio_feature,
     is95_credset,
     is99_credset,
-    logABF,
+    assumeNotNull(logABF),
     multisignal_method,
     phenotype_id,
     postprob,
