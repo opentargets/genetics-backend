@@ -21,12 +21,12 @@ load_foreach_parquet(){
     local path_prefix=$1
     local table_name=$2
     echo loading $path_prefix glob files into this table $table_name
-    local q="clickhouse-client -h ${CLICKHOUSE_HOST} --query=insert into ${table_name} format Parquet "
+    local q="clickhouse-client -h ${CLICKHOUSE_HOST} --query=\"insert into ${table_name} format Parquet\" "
     
     # Set max-procs to 0 to allow xargs to max out allowed process count.
     gsutil ls "${path_prefix}"/*.parquet | \ 
-    xargs --max-procs=$cpu_count -I {} \
-    bash -c 'gsutil cat "$@" | $q' _ {}
+    xargs --max-procs=$cpu_count -t -I % \ 
+    bash -c "gsutil cat % | ${q}"
     echo "done loading $path_prefix glob files into this table $table_name"
 }
 
