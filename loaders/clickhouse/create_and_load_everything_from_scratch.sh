@@ -15,25 +15,18 @@ base_path="${1}"
 cpu_count=$(nproc --all)
 echo "${cpu_count} CPUs available for parallelisation."
 
-load_parquet(){
-    local file=$1
-    local table_name=$2
-    echo $file >> "${table_name}.log"
-    "${SCRIPT_DIR}/run.sh" cat "${file}" | \
-    clickhouse-client -h "${CLICKHOUSE_HOST}" \
-    --query="insert into ${table_name} format Parquet "
-}
-export -f load_parquet
-
 load_foreach_parquet(){
     # you need two parameters, the path_prefix to make the wildcard and
     # the table_name name to load into
     local path_prefix=$1
     local table_name=$2
     echo loading $path_prefix glob files into this table $table_name
+    local q="clickhouse-client -h ${CLICKHOUSE_HOST} --query=insert into ${table_name} format Parquet "
     
     # Set max-procs to 0 to allow xargs to max out allowed process count.
-    $("${SCRIPT_DIR}/run.sh" ls "${path_prefix}"/*.parquet) | xargs --max-procs=$cpu_count -I {} bash -c 'load_parquet "$@" "$table_name"' _ {}
+    gsutil ls "${path_prefix}"/*.parquet | \ 
+    xargs --max-procs=$cpu_count -I {} \
+    bash -c 'gsutil cat "$@" | $q' _ {}
     echo "done loading $path_prefix glob files into this table $table_name"
 }
 
@@ -49,9 +42,9 @@ intermediateTables=(
   v2g_scored
   d2v2g_scored
   v2d_coloc
-  v2d_credibleset
+  v2d_credset
   v2d_sa_gwas
-  v2d_sa_molecular_traits
+  v2d_sa_molecular_trait
   l2g
   manhattan
 )
@@ -77,28 +70,11 @@ load_foreach_parquet "${base_path}/manhattan" "ot.manhattan_log" &
 wait
 
 ## Create final tables
-finalTables=(
-  genes
-  studies
-  studies_overlap
-  variants
-  v2d
-  v2g_scored
-  d2v2g_scored
-  v2d_coloc
-  v2d_credset
-  v2d_sa_gwas
-  v2d_sa_molecular_trait
-  l2g
-  manhattan
-)
-
-## Create final tables
 echo "Load gene index"
 clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/genes.sql";
 load_foreach_parquet "${base_path}/lut/genes-index" "ot.genes" &
 
-for t in "${finalTables[@]}"; do 
+for t in "${intermediateTables[@]}"; do 
   echo "Creating final table: ${t}";
   clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/${t}.sql" &
 done
