@@ -86,9 +86,9 @@ finalTables=(
   v2g_scored
   d2v2g_scored
   v2d_coloc
-  v2d_credibleset
+  v2d_credset
   v2d_sa_gwas
-  v2d_sa_molecular_traits
+  v2d_sa_molecular_trait
   l2g
   manhattan
 )
