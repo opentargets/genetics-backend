@@ -12,6 +12,18 @@ if [ $# -ne 1 ]; then
     exit 1
 fi
 base_path="${1}"
+cpu_count=$(nproc --all)
+echo "${cpu_count} CPUs available for parallelisation."
+
+load_parquet(){
+    local file=$1
+    local table_name=$2
+    echo $file >> "${table_name}.log"
+    "${SCRIPT_DIR}/run.sh" cat "${file}" | \
+    clickhouse-client -h "${CLICKHOUSE_HOST}" \
+    --query="insert into ${table_name} format Parquet "
+}
+export -f load_parquet
 
 load_foreach_parquet(){
     # you need two parameters, the path_prefix to make the wildcard and
@@ -19,18 +31,13 @@ load_foreach_parquet(){
     local path_prefix=$1
     local table_name=$2
     echo loading $path_prefix glob files into this table $table_name
-    gs_files=$("${SCRIPT_DIR}/run.sh" ls "${path_prefix}"/*.parquet)
-    for file in $gs_files; do
-            echo $file
-            "${SCRIPT_DIR}/run.sh" cat "${file}" | \
-             clickhouse-client -h "${CLICKHOUSE_HOST}" \
-                 --query="insert into ${table_name} format Parquet "
-    done
+    
+    # Set max-procs to 0 to allow xargs to max out allowed process count.
+    $("${SCRIPT_DIR}/run.sh" ls "${path_prefix}"/*.parquet) | xargs --max-procs=$cpu_count -I {} bash -c 'load_parquet "$@" "$table_name"' _ {}
     echo "done loading $path_prefix glob files into this table $table_name"
 }
 
 ## Database setup
-# drop all dbs
 echo "Initialising database..."
 clickhouse-client -h "${CLICKHOUSE_HOST}" --query="drop database if exists ot;"
 
@@ -50,7 +57,7 @@ intermediateTables=(
 )
 ## Create intermediary tables
 for t in "${intermediateTables[@]}"; do 
-  echo "Creating intermediary table: ${t}";
+  echo "Creating intermediary table: ${t}_log";
   clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/${t}_log.sql";
 done
 
@@ -77,7 +84,6 @@ finalTables=(
   variants
   v2d
   v2g_scored
-  v2g_structure
   d2v2g_scored
   v2d_coloc
   v2d_credibleset
@@ -88,23 +94,25 @@ finalTables=(
 )
 
 ## Create final tables
-for t in "${finalTables[@]}"; do 
-  echo "Creating table: ${t}";
-  clickhouse-client -m -n < "${SCRIPT_DIR}/${t}.sql" &;
-done
-
 echo "Load gene index"
+clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/genes.sql";
 load_foreach_parquet "${base_path}/lut/genes-index" "ot.genes" &
+
+for t in "${finalTables[@]}"; do 
+  echo "Creating final table: ${t}";
+  clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/${t}.sql" &
+done
 
 wait 
 
-echo create v2g structure
+echo "Create v2g structure"
 clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/v2g_structure.sql"
 
 ## Drop intermediate tables
 for t in "${intermediateTables[@]}"; do 
-  echo "Deleting intermediate table: ${t}";
-  clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n -q " drop table ot.${t}_log";
+  table="${t}_log";
+  echo "Deleting intermediate table: ${table}";
+  clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n -q " drop table ot.${table}";
 done
 
 # # elasticsearch process
