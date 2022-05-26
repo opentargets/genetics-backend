@@ -61,25 +61,25 @@ done
   clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/studies_overlap.sql"; } &
 { load_foreach_parquet "${base_path}/lut/variant-index" "ot.variants_log";
   clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/variants.sql"; } &
-{ load_foreach_parquet "${base_path}/d2v2g_scored" "ot.d2v2g_scored_log" &
+{ load_foreach_parquet "${base_path}/d2v2g_scored" "ot.d2v2g_scored_log"
   clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/d2v2g_scored.sql"; } &
-{ load_foreach_parquet "${base_path}/v2d" "ot.v2d_log" &
+{ load_foreach_parquet "${base_path}/v2d" "ot.v2d_log"
   clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/v2d.sql"; } &
-{ load_foreach_parquet "${base_path}/v2g_scored" "ot.v2g_scored_log" &
+{ load_foreach_parquet "${base_path}/v2g_scored" "ot.v2g_scored_log"
   clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/v2g_scored.sql"; 
   echo "Create v2g structure"
   clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/v2g_structure.sql"; } &
-{ load_foreach_parquet "${base_path}/v2d_coloc" "ot.v2d_coloc_log" &
+{ load_foreach_parquet "${base_path}/v2d_coloc" "ot.v2d_coloc_log"
   clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/v2d_coloc.sql"; } &
-{ load_foreach_parquet "${base_path}/v2d_credset" "ot.v2d_credset_log" &
+{ load_foreach_parquet "${base_path}/v2d_credset" "ot.v2d_credset_log"
   clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/v2d_credset.sql"; } &
-{ load_foreach_parquet "${base_path}/sa/gwas" "ot.v2d_sa_gwas_log" &
+{ load_foreach_parquet "${base_path}/sa/gwas" "ot.v2d_sa_gwas_log"
   clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/v2d_sa_gwas.sql"; } &
 { load_foreach_parquet "${base_path}/sa/molecular_trait" "ot.v2d_sa_molecular_trait_log" &
   clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/v2d_sa_molecular_trait.sql"; } &
-{ load_foreach_parquet "${base_path}/l2g" "ot.l2g_log" &
+{ load_foreach_parquet "${base_path}/l2g" "ot.l2g_log"
   clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/l2g.sql"; } &
-{ load_foreach_parquet "${base_path}/manhattan" "ot.manhattan_log" &
+{ load_foreach_parquet "${base_path}/manhattan" "ot.manhattan_log"
   clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/manhattan.sql"; } &
 { echo "Load gene index";
   clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/genes.sql";
