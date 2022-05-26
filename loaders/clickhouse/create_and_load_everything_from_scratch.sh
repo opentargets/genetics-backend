@@ -55,7 +55,7 @@ for t in "${intermediateTables[@]}"; do
 done
 
 ## Load data
-{ load_foreach_parquet "${base_path}/lut/study-index" "ot.studies_log"; 
+{ load_foreach_parquet "${base_path}/lut/studies-index" "ot.studies_log"; 
   clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/studies.sql"; } &
 { load_foreach_parquet "${base_path}/lut/overlap-index" "ot.studies_overlap_log" 
   clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n < "${SCRIPT_DIR}/studies_overlap.sql"; } &
