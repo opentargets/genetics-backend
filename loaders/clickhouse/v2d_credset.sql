@@ -23,7 +23,7 @@ as select
     tag_beta,
     tag_pval,
     tag_se,
-    cast(assumeNotNull(type) as Enum8('eqtl' = 1, 'pqtl' = 2, 'gwas' = 3)) as data_type
+    cast(assumeNotNull(type) as Enum8('eqtl' = 1, 'pqtl' = 2, 'gwas' = 3, 'sqtl' = 4)) as data_type
 from (select * from ot.v2d_credset_log where lead_chrom in ('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', 'X', 'Y','MT') and
                                            tag_chrom in ('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', 'X', 'Y','MT'));
 
