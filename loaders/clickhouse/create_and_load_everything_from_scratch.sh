@@ -56,7 +56,7 @@ done
 
 ## Load data
 {
-  load_foreach_parquet "${base_path}/lut/studies-index" "ot.studies_log"
+  load_foreach_parquet "${base_path}/lut/study-index" "ot.studies_log"
   clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n <"${SCRIPT_DIR}/studies.sql"
 } &
 {
@@ -104,7 +104,7 @@ done
   clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n <"${SCRIPT_DIR}/v2d_sa_gwas.sql"
 } &
 {
-  load_foreach_parquet "${base_path}/sa/molecular_trait" "ot.v2d_sa_molecular_trait_log" &
+  load_foreach_parquet "${base_path}/sa/molecular_trait" "ot.v2d_sa_molecular_trait_log"
   clickhouse-client -h "${CLICKHOUSE_HOST}" -m -n <"${SCRIPT_DIR}/v2d_sa_molecular_trait.sql"
 } &
 {
