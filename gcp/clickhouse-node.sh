@@ -117,8 +117,11 @@ cat <<EOF > /etc/clickhouse-server/config.xml
     <listen_try>0</listen_try>
     <listen_reuse_port>1</listen_reuse_port>
     <listen_backlog>256</listen_backlog>
-    <max_connections>2048</max_connections>
+    <max_connections>4096</max_connections>
     <keep_alive_timeout>60</keep_alive_timeout>
+    <lock_acquire_timeout>3000</lock_acquire_timeout>
+    <send_timeout>3000</send_timeout>
+    <receive_timeout>3000</receive_timeout>
     <max_concurrent_queries>256</max_concurrent_queries>
     <max_open_files>262144</max_open_files>
     <uncompressed_cache_size>17179869184</uncompressed_cache_size>
