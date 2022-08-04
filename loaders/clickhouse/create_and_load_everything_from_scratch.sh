@@ -133,7 +133,7 @@ wait
 # This is done after creating all the CH tables as it involves large streaming reads. When executed concurrently
 # with the data inserts it results in timeouts. 
 echo "Load Elasticsearch variants data from Clickhouse"
-for chr in "1" "2" "3" "4" "5" "6" "7" "8" "9" "10" "11" "12" "13" "14" "15" "16" "17" "18" "19" "20" "21" "22" "x" "y" "mt"; do
+for chr in "1" "2" "3" "4" "5" "6" "7" "8" "9" "10" "11" "12" "13" "14" "15" "16" "17" "18" "19" "20" "21" "22" "x" "y"; do
   chrU=$(echo -n $chr | awk '{print toupper($0)}')
   curl -XDELETE "${ES_HOST}:9200/variant_${chr}"
   clickhouse-client -h "${CLICKHOUSE_HOST}" -q "select * from ot.variants prewhere chr_id = '${chrU}' format JSONEachRow" |
