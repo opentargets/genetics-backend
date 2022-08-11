@@ -17,6 +17,7 @@ create table if not exists ot.v2d_credset_log(
     logABF Nullable(Float64),
     multisignal_method String,
     phenotype_id Nullable(String),
+    gene_id Nullable(String),
     postprob Float64,
     postprob_cumsum Float64,
     tag_beta Float64,
@@ -25,6 +26,5 @@ create table if not exists ot.v2d_credset_log(
     tag_pval_cond Float64,
     tag_se Float64,
     tag_se_cond Float64,
-    type String)
-engine = Log;
-
+    type String
+) engine = Log;
