@@ -16,7 +16,6 @@ as select
      n_initial,
      n_replication,
      n_cases,
-     trait_category,
      num_assoc_loci,
      cast(assumeNotNull(lead_chrom) as Enum8('1' = 1, '2' = 2, '3' = 3, '4' = 4, '5' = 5, '6' = 6, '7' = 7, '8' = 8, '9' = 9, '10' = 10, '11' = 11, '12' = 12, '13' = 13, '14' = 14, '15' = 15, '16' = 16, '17' = 17, '18' = 18, '19' = 19, '20' = 20, '21' = 21, '22' = 22, 'X'= 23, 'Y' = 24, 'MT'=25 )) as lead_chrom,
      lead_pos,

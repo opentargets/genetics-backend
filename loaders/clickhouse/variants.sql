@@ -18,7 +18,6 @@ as select
   raw,
   phred,
   gnomad_afr,
-  gnomad_seu,
   gnomad_amr,
   gnomad_asj,
   gnomad_eas,

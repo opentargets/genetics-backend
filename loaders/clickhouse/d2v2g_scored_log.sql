@@ -15,7 +15,6 @@ create table if not exists ot.d2v2g_scored_log(
   n_initial Nullable(UInt32),
   n_replication Nullable(UInt32),
   n_cases Nullable(UInt32),
-  trait_category Nullable(String),
   num_assoc_loci Nullable(UInt32),
   lead_chrom String,
   lead_pos UInt32,
