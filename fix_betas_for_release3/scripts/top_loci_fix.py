@@ -22,8 +22,8 @@ from pyspark.sql.functions import *
 def main():
 
     # Args (local)
-    inf = 'gs://genetics-portal-staging/v2d/190705/toploci_broken.parquet'
-    outf = 'gs://genetics-portal-staging/v2d/190705/toploci.parquet'
+    inf = 'gs://genetics-portal-dev-staging/v2d/220208/toploci_bad_betas.parquet'
+    outf = 'gs://genetics-portal-dev-staging/v2d/220208/toploci.parquet'
 
     # Studies to fix
     studies = [
@@ -33,7 +33,11 @@ def main():
         'GCST001725',
         'GCST001728',
         'GCST001729',
-        'GCST000964'
+        'GCST000964',
+        'GCST000758',
+        'GCST000760',
+        'GCST000755',
+        'GCST000759'
     ]
 
     # Make spark session
@@ -55,11 +59,15 @@ def main():
         df.withColumn('odds_ratio', when(to_fix, col('odds_ratio') ** -1).otherwise(col('odds_ratio')))
           .withColumn('oddsr_ci_lower', when(to_fix, col('oddsr_ci_upper') ** -1).otherwise(col('oddsr_ci_lower')))
           .withColumn('oddsr_ci_upper', when(to_fix, col('oddsr_ci_lower') ** -1).otherwise(col('oddsr_ci_upper')))
+          .withColumn('beta', when(to_fix, col('beta') * -1).otherwise(col('beta')))
+          .withColumn('beta_ci_lower', when(to_fix, col('beta_ci_lower') * -1).otherwise(col('beta_ci_lower')))
+          .withColumn('beta_ci_upper', when(to_fix, col('beta_ci_upper') * -1).otherwise(col('beta_ci_upper')))
     )
     
     # Save
     (
         df_fixed
+        .coalesce(1)
         .write
         .parquet(outf, mode='overwrite')
     )

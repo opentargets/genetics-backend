@@ -22,8 +22,8 @@ from pyspark.sql.functions import *
 def main():
 
     # Args (local)
-    inf = 'gs://genetics-portal-staging/coloc/190601/coloc_processed_w_betas.parquet'
-    outf = 'gs://genetics-portal-staging/coloc/190612/coloc_processed_w_betas.parquet'
+    inf = 'gs://genetics-portal-dev-staging/coloc/220127/coloc_processed_w_betas.parquet'
+    outf = 'gs://genetics-portal-dev-staging/coloc/220127/coloc_processed_w_betas_fixed.parquet'
 
     # Studies to fix
     studies = [
@@ -34,6 +34,10 @@ def main():
         'GCST001728',
         'GCST001729',
         'GCST000964',
+        'GCST000758',
+        'GCST000760',
+        'GCST000755',
+        'GCST000759',
         # 'GTEX_v7'  # DEBUG
     ]
 
@@ -67,6 +71,7 @@ def main():
     # Save
     (
         df_fixed
+        .repartitionByRange(100, 'left_chrom', 'left_pos')
         .write
         .parquet(outf, mode='overwrite')
     )
