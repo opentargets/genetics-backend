@@ -1,4 +1,4 @@
-**Deprecation notice**: With the merger of Open Targets Genetics into the main Plaform, this is not needed anyomre.
+**Deprecation notice**: With the merger of Open Targets Genetics into the main Plaform, this is not needed anymore.
 
 # genetics-backend
 QC, spin VMs, load data into DBs, create LUTs and other fun backend stuff we need to do to spin https://genetics.opentargets.io
